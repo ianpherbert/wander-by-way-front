@@ -88,6 +88,8 @@ type MapProps = BoxProps & {
 export default function Map({ points, showConnections, onSelectPoint, selectedPoint, autoZoom, autoZoomLevel, ...props }: MapProps) {
     const [map, setMap] = useState<MapBox>();
     const [mapError, setMapError] = useState<MapBoxError>();
+    // Unfortunately we are obligated to have a selectedId state in order to ensure that the mapbox js calls the same function every time without reloading
+    // However this state should not be used internally, and serves only to elevate the selected point.
     const [selectedId, setSelectedId] = useState<string>();
 
     //Initialize map
@@ -109,7 +111,8 @@ export default function Map({ points, showConnections, onSelectPoint, selectedPo
 
     useEffect(()=>{
         if(autoZoom){
-            const feature = features?.find(it => it.properties.id === selectedId)
+            // Here we use the selectedPoint.id instead of selectedId because the parent is the one who decides which point is selected.
+            const feature = features?.find(it => it.properties.id === selectedPoint?.id)
             const geometry = feature?.geometry as unknown as {
                 coordinates: number[],
                 type: string;
