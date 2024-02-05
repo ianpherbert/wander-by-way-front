@@ -15,28 +15,28 @@ const points: Point[] = [
         id: "2",
         longitude: -1.5536, // Rennes
         latitude: 48.1173,
-        type: MapPointType.DESTINATION,
+        type: MapPointType.AIRPORT,
         label: "Rennes",
     },
     {
         id: "3",
         longitude: 3.0572, // Lyon
         latitude: 45.7640,
-        type: MapPointType.INTERMEDIATE,
+        type: MapPointType.TRAIN_STATION,
         label: "Lyon",
     },
     {
         id: "4",
         longitude: 5.7245, // Nice
         latitude: 43.7102,
-        type: MapPointType.LAYOVER,
+        type: MapPointType.PORT,
         label: "Nice",
     },
     {
         id: "5",
         longitude: -0.5792, // Bordeaux
         latitude: 44.8378,
-        type: MapPointType.SEARCH_ITEM,
+        type: MapPointType.BUS_STATION,
         label: "Bordeaux",
     }
 ];

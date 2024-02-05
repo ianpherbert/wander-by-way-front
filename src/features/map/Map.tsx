@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { mapIcons } from "./icons";
 import { Feature } from "geojson";
 import { Point } from "./Point";
-import mapPoints from "./mapPointInfo";
+import mapPointsToFeatures from "./mapPointInfo";
 import mapboxgl from "mapbox-gl";
 import MapError from "../MapError";
 
@@ -121,7 +121,7 @@ export default function Map({ points, showConnections, onSelectPoint, autoZoom, 
         onSelectPoint?.(selectedPoint)
     }, [selectedId])
 
-    const features = useMemo(() => points ? mapPoints(points, Boolean(showConnections)) : [], [points, showConnections]);
+    const features = useMemo(() => points ? mapPointsToFeatures(points) : [], [points, showConnections]);
 
     // Add points data to map
     useEffect(() => {

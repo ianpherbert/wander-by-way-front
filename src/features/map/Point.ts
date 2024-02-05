@@ -10,23 +10,21 @@ export interface Point {
     latitude: number;
     type: MapPointType;
     label: string;
-    // routeInfo?: {
-    //     routes: RouteOutput[];
-    //     durationAverage: number;
-    //     lineDistanceAverage: number;
-    // } | null;
-    // stopRouteInfo?: {
-    //     durationMinutes: number;
-    //     fromName: string;
-    //     type: RouteType;
-    // };
     match?: boolean
 }
 
 export enum MapPointType {
-    ORIGIN,
-    DESTINATION,
-    INTERMEDIATE,
-    LAYOVER,
-    SEARCH_ITEM,
+    ORIGIN = "ORIGIN",
+    DESTINATION = "DESTINATION",
+    INTERMEDIATE = "INTERMEDIATE",
+    PORT = "PORT",
+    AIRPORT = "AIRPORT",
+    BUS_STATION = "BUS_STATION",
+    TRAIN_STATION = "TRAIN_STATION",
+    PORT_CONNECTION = "PORT_CONNECTION",
+    AIRPORT_CONNECTION = "AIRPORT_CONNECTION",
+    BUS_STATION_CONNECTION = "BUS_STATION_CONNECTION",
+    TRAIN_STATION_CONNECTION = "TRAIN_STATION_CONNECTION",
+    SEARCH_ITEM = "SEARCH_ITEM",
+    SEARCH_ITEM_CONNECTION = "SEARCH_ITEM_CONNECTION"
 }
