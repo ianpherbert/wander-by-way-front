@@ -85,7 +85,7 @@ type MapProps = BoxProps & {
     onSelectPoint?: (point?: Point) => void;
 }
 
-export default function Map({ points, showConnections, onSelectPoint, autoZoom, autoZoomLevel, ...props }: MapProps) {
+export default function Map({ points, showConnections, onSelectPoint, selectedPoint, autoZoom, autoZoomLevel, ...props }: MapProps) {
     const [map, setMap] = useState<MapBox>();
     const [mapError, setMapError] = useState<MapBoxError>();
     const [selectedId, setSelectedId] = useState<string>();
@@ -103,6 +103,11 @@ export default function Map({ points, showConnections, onSelectPoint, autoZoom, 
     }, [])
 
     useEffect(()=>{
+        const selectPoint = points?.find(it => it.id === selectedId);
+        onSelectPoint?.(selectPoint)
+    }, [selectedId])
+
+    useEffect(()=>{
         if(autoZoom){
             const feature = features?.find(it => it.properties.id === selectedId)
             const geometry = feature?.geometry as unknown as {
@@ -117,9 +122,7 @@ export default function Map({ points, showConnections, onSelectPoint, autoZoom, 
                 padding: { top: 0, bottom: 0, left: 0, right: 0 }
             });
         }
-        const selectedPoint = points?.find(it => it.id === selectedId);
-        onSelectPoint?.(selectedPoint)
-    }, [selectedId])
+    },[selectedPoint])
 
     const features = useMemo(() => points ? mapPointsToFeatures(points) : [], [points, showConnections]);
 
