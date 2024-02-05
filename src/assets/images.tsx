@@ -6,7 +6,8 @@ export const imageUrls = {
     man: `${graphicsDirectory}/man.png`,
     street: `${graphicsDirectory}/street.png`,
     trainStation: `${graphicsDirectory}/train_station.png`,
-    womanGlasses: `${graphicsDirectory}/womanSunglasses.png`
+    womanGlasses: `${graphicsDirectory}/womanSunglasses.png`,
+    womanLost: `${graphicsDirectory}/woman_lost.png`
 }
 
 /**
