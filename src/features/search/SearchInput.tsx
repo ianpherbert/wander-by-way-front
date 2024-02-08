@@ -1,4 +1,4 @@
-import { Autocomplete, AutocompleteProps, LinearProgress, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack, TextField, Typography } from "@mui/material";
+import { Autocomplete, AutocompleteProps, LinearProgress, ListItem, ListItemButton, ListItemIcon, ListItemText, TextField } from "@mui/material";
 import { useSearchByNameQuery } from "./SearchRest";
 import { FormEvent, SyntheticEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { skipToken } from "@reduxjs/toolkit/query";
