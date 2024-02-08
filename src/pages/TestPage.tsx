@@ -1,50 +1,26 @@
 import { Box } from "@mui/material";
-import Map from "../features/map/Map";
-import { MapPointType, Point } from "../features/map/Point";
+import SearchInput from "../features/search/SearchInput";
+import { useState } from "react";
 
-
-const points: Point[] = [
-    {
-        id: "1",
-        longitude: 2.3522, // Paris
-        latitude: 48.8566,
-        type: MapPointType.ORIGIN,
-        label: "Paris",
-    },
-    {
-        id: "2",
-        longitude: -1.5536, // Rennes
-        latitude: 48.1173,
-        type: MapPointType.AIRPORT,
-        label: "Rennes",
-    },
-    {
-        id: "3",
-        longitude: 3.0572, // Lyon
-        latitude: 45.7640,
-        type: MapPointType.TRAIN_STATION,
-        label: "Lyon",
-    },
-    {
-        id: "4",
-        longitude: 5.7245, // Nice
-        latitude: 43.7102,
-        type: MapPointType.PORT,
-        label: "Nice",
-    },
-    {
-        id: "5",
-        longitude: -0.5792, // Bordeaux
-        latitude: 44.8378,
-        type: MapPointType.BUS_STATION,
-        label: "Bordeaux",
-    }
-];
+const options = {
+    airport: true,
+    train: true,
+    city: true,
+    port: true,
+    bus: true,
+}
 
 export default function TestPage() {
+    const [selected, setSelected] = useState<SearchItem | null>(null);
+
+    function handleSelect(item: SearchItem | null){
+        setSelected(item)
+    }
+
     return (
-        <Box >
-            <Map height={800} width={800} points={points} autoZoom={true} />
+        <Box height={"90vw"}>
+            {selected?.name}
+            <SearchInput onSelect={handleSelect} selectedItem={selected} searchOptions={options}/>
         </Box>
 
     )
