@@ -18,6 +18,8 @@ type SearchInputProps = Omit<AutocompleteProps<SearchItem, false, false, false>,
     onSelect: (item: SearchItem | null) => void;
     selectedItem?: SearchItem | null;
     searchOptions: SearchOptions;
+    label: string;
+    error?: string;
 }
 
 const searchIcons: { [key in SearchItemType]: JSX.Element } = {
@@ -39,7 +41,7 @@ function Option({ item, ...props }: React.HTMLAttributes<HTMLLIElement> & { item
     )
 }
 
-export default function SearchInput({ onSelect, selectedItem, searchOptions, ...props }: SearchInputProps) {
+export default function SearchInput({ onSelect, selectedItem, searchOptions, label, error, ...props }: SearchInputProps) {
     const [queryString, setQueryString] = useState<string>("");
     const [searchInput, setSearchInput] = useState<string>("");
 
@@ -84,7 +86,7 @@ export default function SearchInput({ onSelect, selectedItem, searchOptions, ...
         <Autocomplete
             {...props}
             options={options}
-            renderInput={(params) => <TextField {...params} onInput={changeSearchTerm} />}
+            renderInput={(params) => <TextField {...params} onInput={changeSearchTerm} label={label} error={Boolean(error)} helperText={error} />}
             getOptionLabel={(option: SearchItem) => `${option.name} (${countriesEn[option.country]})`}
             noOptionsText={noResults}
             onChange={handleSelect}
