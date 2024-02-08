@@ -1,4 +1,4 @@
-import { Box, BoxProps, Button, Card, Divider, IconButton, Stack, Tooltip } from "@mui/material";
+import { Box, BoxProps, Button, Card, IconButton, Stack, Tooltip } from "@mui/material";
 import { SearchItem, SearchOptions } from "./SearchResult";
 import { SubmitHandler, useForm } from "react-hook-form";
 import SearchInput from "./SearchInput";
