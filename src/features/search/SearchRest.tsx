@@ -1,4 +1,5 @@
 import rest from "../../redux/rest";
+import { SearchOptions, SearchResult } from "./SearchResult";
 
 interface SearchParams {
     queryString: string;
@@ -10,13 +11,9 @@ const searchApi = rest.injectEndpoints({
       searchByName: builder.query<SearchResult, SearchParams>({
         query: ({queryString, searchOptions}: SearchParams) => {
             const queryParams = new URLSearchParams();
-            
             Object.entries(searchOptions).forEach(([key, value])=>{
                 queryParams.append(key, String(value))
             })
-
-            console.log(queryParams)
-
             return `/search/${encodeURIComponent(queryString)}?${queryParams}`;
         },
       }),

@@ -1,6 +1,7 @@
 import { Box } from "@mui/material";
 import SearchInput from "../features/search/SearchInput";
 import { useState } from "react";
+import { SearchItem } from "../features/search/SearchResult";
 
 const options = {
     airport: true,

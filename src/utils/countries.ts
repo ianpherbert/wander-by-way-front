@@ -1,0 +1,109 @@
+export type CountryCode = "AT"
+    | "BG"
+    | "CZ"
+    | "DK"
+    | "BY"
+    | "DE"
+    | "BE"
+    | "HU"
+    | "IE"
+    | "IT"
+    | "PL"
+    | "RO"
+    | "FR"
+    | "ES"
+    | "SE"
+    | "UA"
+    | "EN"
+    | "BA"
+    | "HR"
+    | "FI"
+    | "RS"
+    | "GR"
+    | "LV"
+    | "LT"
+    | "PT"
+    | "NO"
+    | "SC"
+    | "AL"
+    | "EE"
+    | "SK"
+    | "SI"
+    | "CH"
+    | "WL"
+    | "NI"
+    | "IS"
+    | "ME"
+    | "LU"
+    | "AD"
+    | "GI"
+    | "IM"
+    | "MT"
+    | "MC"
+    | "NL"
+    | "RU"
+    | "TR"
+    | "GE"
+    | "MK"
+    | "XK"
+    | "CY"
+    | "MD"
+    | "JE"
+    | "GG";
+
+type CountryLabel = {[key in CountryCode]: string}
+
+export const countriesEn: CountryLabel = {
+    AT: "Austria",
+    BG: "Bulgaria",
+    CZ: "Czechia",
+    DK: "Denmark",
+    BY: "Belarus",
+    DE: "Germany",
+    BE: "Belgium",
+    HU: "Hungary",
+    IE: "Ireland",
+    IT: "Italy",
+    PL: "Poland",
+    RO: "Romania",
+    FR: "France",
+    ES: "Spain",
+    SE: "Sweden",
+    UA: "Ukraine",
+    EN: "England",
+    BA: "Bosnia and Herzegovina",
+    HR: "Croatia",
+    FI: "Finland",
+    RS: "Serbia",
+    GR: "Greece",
+    LV: "Latvia",
+    LT: "Lithuania",
+    PT: "Portugal",
+    NO: "Norway",
+    SC: "Scotland",
+    AL: "Albania",
+    EE: "Estonia",
+    SK: "Slovakia",
+    SI: "Slovenia",
+    CH: "Switzerland",
+    WL: "Wales",
+    NI: "Northern Ireland",
+    IS: "Iceland",
+    ME: "Montenegro",
+    LU: "Luxembourg",
+    AD: "Andorra",
+    GI: "Gibraltar",
+    IM: "Isle of Man",
+    MT: "Malta",
+    MC: "Monaco",
+    NL: "Netherlands",
+    RU: "Russia",
+    TR: "Turkey",
+    GE: "Georgia",
+    MK: "North Macedonia",
+    XK: "Kosovo",
+    CY: "Cyprus",
+    MD: "Moldova",
+    JE: "Jersey",
+    GG: "Guernsey"
+}

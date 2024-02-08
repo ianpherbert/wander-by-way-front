@@ -1,4 +1,6 @@
-type SearchOptions = {
+import { CountryCode } from "../../utils/countries";
+
+export type SearchOptions = {
     airport: boolean,
     train: boolean,
     city: boolean,
@@ -6,7 +8,7 @@ type SearchOptions = {
     bus: boolean,
 }
 
-enum SearchItemType {
+export enum SearchItemType {
     AIRPORT = "AIRPORT",
     PORT = "PORT",
     BUS_STATION = "BUS_STATION",
@@ -14,16 +16,16 @@ enum SearchItemType {
     TRAIN_STATION = "TRAIN_STATION"
 }
 
-type SearchItem = {
+export type SearchItem = {
     id: number;
     name: string,
     slug: string,
     type: SearchItemType,
-    country: string,
+    country: CountryCode,
     children: SearchItem[]
 }
 
-type SearchResult = {
+export type SearchResult = {
     count: number,
     options: SearchOptions,
     results: SearchItem[]

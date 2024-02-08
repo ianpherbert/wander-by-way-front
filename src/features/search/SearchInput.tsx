@@ -1,9 +1,12 @@
-import { Autocomplete, AutocompleteProps, LinearProgress, ListItem, ListItemButton, ListItemIcon, ListItemText, TextField } from "@mui/material";
+import { Autocomplete, AutocompleteProps, LinearProgress, ListItem, ListItemIcon, ListItemText, TextField } from "@mui/material";
 import { useSearchByNameQuery } from "./SearchRest";
 import { FormEvent, SyntheticEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { skipToken } from "@reduxjs/toolkit/query";
 import debounce from 'lodash/debounce';
 import { BoatIcon, BusIcon, CityIcon, PlaneIcon, TrainIcon } from "../../utils/icons";
+import { countriesEn } from "../../utils/countries";
+import { SearchItem, SearchOptions, SearchItemType } from "./SearchResult";
+
 
 const styles = {
     icons: {
@@ -28,12 +31,10 @@ const searchIcons: { [key in SearchItemType]: JSX.Element } = {
 function Option({ item, ...props }: React.HTMLAttributes<HTMLLIElement> & { item: SearchItem }) {
     return (
         <ListItem {...props} disablePadding={true}>
-            <ListItemButton>
-                <ListItemIcon>
+            <ListItemIcon>
                 {searchIcons[item.type]}
-                </ListItemIcon>
-                <ListItemText primary={`${item.name} (${item.country})`}/>
-            </ListItemButton>
+            </ListItemIcon>
+            <ListItemText primary={`${item.name} (${countriesEn[item.country]})`} />
         </ListItem>
     )
 }
@@ -43,8 +44,8 @@ export default function SearchInput({ onSelect, selectedItem, searchOptions, ...
     const [searchInput, setSearchInput] = useState<string>("");
 
 
-    const { data, isFetching } = useSearchByNameQuery(Boolean(queryString) ? {queryString, searchOptions} : skipToken);
-    const options: SearchItem[] = useMemo(() => data?.results ?? [], [data]);
+    const { data, isFetching } = useSearchByNameQuery(Boolean(queryString) ? { queryString, searchOptions } : skipToken);
+    const options: SearchItem[] = useMemo(() => data?.results && queryString ? data?.results : [], [data]);
 
 
     const changeSearchTerm = useCallback((e: FormEvent<HTMLDivElement>) => {
@@ -84,7 +85,7 @@ export default function SearchInput({ onSelect, selectedItem, searchOptions, ...
             {...props}
             options={options}
             renderInput={(params) => <TextField {...params} onInput={changeSearchTerm} />}
-            getOptionLabel={(option: SearchItem) => `${option.name} (${option.country})`}
+            getOptionLabel={(option: SearchItem) => `${option.name} (${countriesEn[option.country]})`}
             noOptionsText={noResults}
             onChange={handleSelect}
             value={selectedItem}
