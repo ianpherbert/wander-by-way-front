@@ -29,7 +29,7 @@ const styles = {
         borderRadius: '50%',
         background: `radial-gradient(circle, ${theme.palette.primary.main} 60%, transparent 20%)`,
         display: 'inline-block',
-        m: 4
+        m: 2
     },
     card: {
         width: "90%",
