@@ -1,7 +1,7 @@
 import { Stack, Checkbox, FormControlLabel, StackProps } from "@mui/material";
 import { useCallback } from "react";
 import useTranslation from "../../translations/useTranslation";
-import { SearchOptionLabels } from "../../translations/search";
+import { searchOptionLabels } from "./searchTranslations";
 import { SearchOptions } from "./SearchResult";
 
 type TypeChoiceProps = Omit<StackProps, "direction"> & {
@@ -11,7 +11,7 @@ type TypeChoiceProps = Omit<StackProps, "direction"> & {
 
 export default function TypeChoice({ selectedOptions, setSelectedOptions, ...props }: TypeChoiceProps) {
 
-    const optionLabels = useTranslation(SearchOptionLabels);
+    const optionLabels = useTranslation(searchOptionLabels);
 
     const toggleOption = useCallback((key: keyof SearchOptions) => {
         setSelectedOptions({

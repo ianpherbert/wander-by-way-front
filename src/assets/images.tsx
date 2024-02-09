@@ -7,6 +7,7 @@ export const imageUrls = {
     street: `${graphicsDirectory}/street.png`,
     trainStation: `${graphicsDirectory}/train_station.png`,
     womanGlasses: `${graphicsDirectory}/womanSunglasses.png`,
+    womanGlassesTrans: `${graphicsDirectory}/woman_sunglasses_trans.png`,
     womanLost: `${graphicsDirectory}/woman_lost.png`
 }
 
@@ -30,9 +31,10 @@ export function Image({ url, ...props }: ImageProps) {
     const imgUrl = imageUrls[url];
 
     const imgStyle = {
-        height: props.height ? "100%" : "auto",
-        width: props.width ? "100%" : "auto",
-    }
+        maxWidth: '100%',
+        maxHeight: '100%',
+        objectFit: 'cover' as const, // This ensures the image covers the area, you can adjust as needed
+    };
 
     return (
         <Box {...props}

@@ -1,9 +1,11 @@
-import { Box } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
+import WelcomeCard from "../features/home/WelcomeCard";
 
 export default function HomePage() {
     return (
-        <Box>
-            <h1>Home</h1>
-        </Box>
+        <Stack justifyContent="center">
+            <Typography variant="h1" component="p" m="auto">Wander.</Typography> 
+            <WelcomeCard/>
+        </Stack>
     )
 }
