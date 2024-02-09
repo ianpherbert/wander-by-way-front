@@ -1,4 +1,4 @@
-import { Box, Card, Stack, Typography, darken } from "@mui/material";
+import { Box, Card, Stack, Typography} from "@mui/material";
 import { Image } from "../../assets/images";
 import { theme } from "../../theme";
 import useTranslation from "../../translations/useTranslation";
