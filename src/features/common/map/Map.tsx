@@ -1,13 +1,13 @@
 import { Box, BoxProps } from "@mui/material";
 import mapBox, { GeoJSONSource, LngLatLike } from "mapbox-gl";
-import { mapKey, mapStyle } from "../../variables";
+import { mapKey, mapStyle } from "../../../variables";
 import { useEffect, useMemo, useState } from "react";
 import { mapIcons } from "./icons";
 import { Feature } from "geojson";
 import { Point } from "./Point";
 import mapPointsToFeatures from "./mapPointInfo";
 import mapboxgl from "mapbox-gl";
-import MapError from "../MapError";
+import MapError from "./MapError";
 
 type MapBox = mapBox.Map;
 type MapBoxError = mapBox.ErrorEvent

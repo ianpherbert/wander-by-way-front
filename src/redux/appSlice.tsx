@@ -1,28 +1,29 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { RootState, useSelector } from "react-redux";
+import { Languages } from "../translations/global";
 
 export interface AppState {
-    connected: boolean;
+    language: Languages
 }
 
 const initialState: AppState = {
-    connected: false
+    language: Languages.EN
 };
 
 export const appSlice = createSlice({
     name: "appSlice",
     initialState,
     reducers: {
-        toggleConnected: (state: AppState) => {
-            state.connected = !state.connected;
+        setLanguage: (state: AppState, action: PayloadAction<Languages>) => {
+            state.language = action.payload;
         },
     }
 });
 
-export const {toggleConnected} = appSlice.actions;
+export const {setLanguage} = appSlice.actions;
 
-export const useAppState = () => {
+export const useAppLanguage = () => {
     return useSelector((state: RootState)=>{
-        return state.appSlice;
+        return state.appSlice.language;
     });
 };
