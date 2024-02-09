@@ -6,6 +6,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { grey } from "@mui/material/colors";
 import { SwapHoriz } from "@mui/icons-material";
 import TypeChoice from "./TypeChoice";
+import useTranslation from "../../translations/useTranslation";
+import { inputLabels } from "./searchTranslation";
 
 const defaultOptions: SearchOptions = {
     airport: true,
@@ -30,6 +32,8 @@ export default function SearchForm({ onSubmit, ...props }: SearchFromProps) {
     const [to, setTo] = useState<SearchItem | null>(null)
     const [from, setFrom] = useState<SearchItem | null>(null)
     const [selectedOptions, setSelectedOptions] = useState(defaultOptions);
+
+    const {to: toLabel, from: fromLabel, submit: submitLabel} = useTranslation(inputLabels)
 
     const {
         handleSubmit,
@@ -69,17 +73,17 @@ export default function SearchForm({ onSubmit, ...props }: SearchFromProps) {
             <Box sx={styles.container} {...props}>
                 <Card sx={styles.card}>
                     <Stack direction="row" spacing={.5} pt={1} mb={1}>
-                        <SearchInput selectedItem={from} onSelect={setFormValue("from")} label="From" searchOptions={selectedOptions} fullWidth size="small" error={errors.from?.message} />
+                        <SearchInput selectedItem={from} onSelect={setFormValue("from")} label={fromLabel} searchOptions={selectedOptions} fullWidth size="small" error={errors.from?.message} />
                         <Tooltip title="Swap origin and destination">
                             <IconButton disabled={!swapButtonActive} onClick={swapInputs}>
                                 <SwapHoriz />
                             </IconButton>
                         </Tooltip>
-                        <SearchInput selectedItem={to} onSelect={setFormValue("to")} label="To" searchOptions={selectedOptions} fullWidth size="small" />
+                        <SearchInput selectedItem={to} onSelect={setFormValue("to")} label={toLabel} searchOptions={selectedOptions} fullWidth size="small" />
                     </Stack>
                     <TypeChoice selectedOptions={selectedOptions} setSelectedOptions={setSelectedOptions}/>
                 </Card>
-                <Button sx={styles.submitButton} type="submit" variant="contained">Go there!</Button>
+                <Button sx={styles.submitButton} type="submit" variant="contained">{submitLabel}</Button>
             </Box>
         </form>)
 
