@@ -1,4 +1,4 @@
-import { Stack, Checkbox, FormControlLabel, StackProps } from "@mui/material";
+import { Stack, Checkbox, FormControlLabel, StackProps, Grid } from "@mui/material";
 import { useCallback } from "react";
 import useTranslation from "../../translations/useTranslation";
 import { searchOptionLabels } from "./searchTranslations";
@@ -21,16 +21,29 @@ export default function TypeChoice({ selectedOptions, setSelectedOptions, ...pro
     }, [setSelectedOptions, selectedOptions, optionLabels])
 
     return (
-        <Stack direction="row" {...props}>
-            {Object.entries(optionLabels).map(([key, label]) => (
-                <FormControlLabel
-                    key={key}
-                    checked={selectedOptions[key as keyof SearchOptions]}
-                    control={<Checkbox size="small" color="info" />}
-                    label={label}
-                    onMouseDown={() => toggleOption(key as keyof SearchOptions)}
-                />
-            ))}
-        </Stack>
+        <>
+            <Grid container {...props} spacing={.5}> {/* Adjust spacing as needed */}
+                {Object.entries(optionLabels).map(([key, label]) => (
+                    <Grid item>
+                        <FormControlLabel
+                            checked={selectedOptions[key as keyof SearchOptions]} onChange={() => toggleOption(key as keyof SearchOptions)}
+                            control={<Checkbox size="small" color="info" />}
+                            label={label}
+                        />
+                    </Grid>
+                ))}
+            </Grid>
+            {/* <Stack direction="row" {...props}>
+                {Object.entries(optionLabels).map(([key, label]) => (
+                    <FormControlLabel
+                        key={key}
+                        checked={selectedOptions[key as keyof SearchOptions]}
+                        control={<Checkbox size="small" color="info" />}
+                        label={label}
+                        onMouseDown={() => toggleOption(key as keyof SearchOptions)}
+                    />
+                ))}
+            </Stack> */}
+        </>
     )
 }

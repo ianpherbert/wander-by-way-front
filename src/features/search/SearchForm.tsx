@@ -1,4 +1,4 @@
-import { Box, BoxProps, Button, Card, IconButton, Stack, Tooltip } from "@mui/material";
+import { Box, BoxProps, Button, Card, Grid, IconButton, Stack, Tooltip } from "@mui/material";
 import { SearchItem, SearchOptions } from "./SearchResult";
 import { SubmitHandler, useForm } from "react-hook-form";
 import SearchInput from "./SearchInput";
@@ -34,7 +34,7 @@ export default function SearchForm({ onSubmit, ...props }: SearchFromProps) {
     const [from, setFrom] = useState<SearchItem | null>(null)
     const [selectedOptions, setSelectedOptions] = useState(defaultOptions);
 
-    const {to: toLabel, from: fromLabel, submit: submitLabel} = useTranslation(inputLabels)
+    const { to: toLabel, from: fromLabel, submit: submitLabel } = useTranslation(inputLabels)
 
     const {
         handleSubmit,
@@ -57,7 +57,7 @@ export default function SearchForm({ onSubmit, ...props }: SearchFromProps) {
     }, [setTo, setFrom, toWatch, fromWatch])
 
 
-    const setFormValue = useCallback((fieldName: "to" | "from") => (value: SearchItem | null) => {setValue(fieldName, value)}, [setValue])
+    const setFormValue = useCallback((fieldName: "to" | "from") => (value: SearchItem | null) => { setValue(fieldName, value) }, [setValue])
 
     const swapButtonActive = useMemo(() => Boolean(to) && Boolean(from), [to, from])
 
@@ -73,16 +73,22 @@ export default function SearchForm({ onSubmit, ...props }: SearchFromProps) {
         <form onSubmit={handleSubmit(doSubmit)}>
             <Box sx={styles.container} {...props}>
                 <WanderCard sx={styles.card} background="noiseGrey">
-                    <Stack direction="row" spacing={.5} pt={1} mb={1}>
-                        <SearchInput selectedItem={from} onSelect={setFormValue("from")} label={fromLabel} searchOptions={selectedOptions} fullWidth size="small" error={errors.from?.message} />
-                        <Tooltip title="Swap origin and destination">
-                            <IconButton disabled={!swapButtonActive} onClick={swapInputs}>
-                                <SwapHoriz />
-                            </IconButton>
-                        </Tooltip>
-                        <SearchInput selectedItem={to} onSelect={setFormValue("to")} label={toLabel} searchOptions={selectedOptions} fullWidth size="small" />
-                    </Stack>
-                    <TypeChoice selectedOptions={selectedOptions} setSelectedOptions={setSelectedOptions}/>
+                    <Grid container spacing={.5} pt={1} mb={1}>
+                        <Grid item xs={12} md={5.5}>
+                            <SearchInput selectedItem={from} onSelect={setFormValue("from")} label={fromLabel} searchOptions={selectedOptions} fullWidth size="small" error={errors.from?.message} />
+                        </Grid>
+                        <Grid item xs={12} md={1}>
+                            <Tooltip title="Swap origin and destination">
+                                <IconButton disabled={!swapButtonActive} onClick={swapInputs}>
+                                    <SwapHoriz />
+                                </IconButton>
+                            </Tooltip>
+                        </Grid>
+                        <Grid item xs={12} md={5.5}>
+                            <SearchInput selectedItem={to} onSelect={setFormValue("to")} label={toLabel} searchOptions={selectedOptions} fullWidth size="small" />
+                        </Grid>
+                    </Grid>
+                    <TypeChoice selectedOptions={selectedOptions} setSelectedOptions={setSelectedOptions} />
                 </WanderCard>
                 <Button sx={styles.submitButton} type="submit" variant="contained">{submitLabel}</Button>
             </Box>
@@ -99,9 +105,11 @@ const styles = {
     },
     card: { p: 3, backgroundColor: grey[100], textAlign: "center" },
     submitButton: {
+        minWidth: 200,
         position: "absolute",
-        bottom: "-15%",
-        right: "30%",
-        left: "30%"
+        bottom: -20,
+        width: "40%",
+        left: "50%",
+        transform: "translateX(-50%)",
     },
 }
