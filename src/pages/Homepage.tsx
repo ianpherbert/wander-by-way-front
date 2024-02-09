@@ -1,9 +1,10 @@
 import { Box } from "@mui/material";
+import WelcomeCard from "../features/home/WelcomeCard";
 
 export default function HomePage() {
     return (
         <Box>
-            <h1>Home</h1>
+            <WelcomeCard />
         </Box>
     )
 }

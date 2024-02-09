@@ -1,5 +1,26 @@
 import {createTheme, ThemeOptions} from "@mui/material";
 
+declare module "@mui/material/styles" {
+    interface Palette {
+      backGround: {
+        light: string;
+        dark: string;
+      }
+    }
+    interface PaletteOptions {
+      backGround: {
+        light: string;
+        dark: string;
+      }
+    }
+  }
+  
+  declare module "@mui/material/Button" {
+    interface ButtonPropsColorOverrides {
+      backGround: true;
+    }
+  }
+
 const themeOptions: ThemeOptions = {
     palette: {
         primary: {
@@ -11,6 +32,10 @@ const themeOptions: ThemeOptions = {
         info: {
             main: '#507e7f',
         },
+        backGround: {
+            light: "#F6F6F6",
+            dark: "#242526"
+        }
     },
     typography: {
         fontFamily: 'Duru Sans',
