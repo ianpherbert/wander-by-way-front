@@ -10,7 +10,7 @@ export default function WelcomeCard() {
     const welcomeText = useTranslation(welcomeCopy)
 
     return (
-        <Card sx={styles.card}>
+        <Card sx={styles.card} elevation={5}>
             <Stack direction="row" alignContent="center" m={2}>
                 <Stack flex={3} m={5} justifyContent="center" spacing={2}>
                     <Typography variant="body1">{welcomeText}</Typography>
