@@ -1,13 +1,15 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { RootState, useSelector } from "react-redux";
 import { Languages } from "../translations/global";
+import { getLanguage } from "../utils/languageUtils";
+import { LocalStorageItem, writeLocalStorageItem } from "../assets/localStorage";
 
 export interface AppState {
     language: Languages
 }
 
 const initialState: AppState = {
-    language: Languages.EN
+    language: getLanguage()
 };
 
 export const appSlice = createSlice({
@@ -15,6 +17,7 @@ export const appSlice = createSlice({
     initialState,
     reducers: {
         setLanguage: (state: AppState, action: PayloadAction<Languages>) => {
+            writeLocalStorageItem(LocalStorageItem.LANGUAGE_PREFERENCE, action.payload);
             state.language = action.payload;
         },
     }

@@ -8,7 +8,10 @@ export const imageUrls = {
     trainStation: `${graphicsDirectory}/train_station.png`,
     womanGlasses: `${graphicsDirectory}/womanSunglasses.png`,
     womanGlassesTrans: `${graphicsDirectory}/woman_sunglasses_trans.png`,
-    womanLost: `${graphicsDirectory}/woman_lost.png`
+    womanLost: `${graphicsDirectory}/woman_lost.png`,
+    shortLogo: `${graphicsDirectory}/wander_logo.png`,
+    langFr: `${graphicsDirectory}/language/flag_FR.png`,
+    langEn: `${graphicsDirectory}/language/flag_EN.png`
 }
 
 /**

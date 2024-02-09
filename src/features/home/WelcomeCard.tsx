@@ -16,7 +16,7 @@ export default function WelcomeCard() {
                     <Typography variant="body1">{welcomeText}</Typography>
                     <SearchForm onSubmit={(a) => console.log(a)} m="auto"/>
                 </Stack>
-                <Box flex={1}>
+                <Box flex={1} m="auto">
                     <Image url="womanGlassesTrans" sx={styles.image} />
                 </Box>
             </Stack>
