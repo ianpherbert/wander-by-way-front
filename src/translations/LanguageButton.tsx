@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Image, imageUrls } from "../assets/images";
 import { setLanguage, useAppLanguage } from "../redux/appSlice";
 import { Languages, TranslationLabelObject, languageLabel } from "./global";
-import { Box, Fade, IconButton, List, ListItem, ListItemButton, ListItemText, Popper, Tooltip } from "@mui/material";
+import { Fade, IconButton, List, ListItem, ListItemButton, ListItemText, Popper, Tooltip } from "@mui/material";
 import { useDispatch } from "react-redux";
 
 type LanguageImage = { [key in Languages]: keyof typeof imageUrls }
@@ -81,6 +81,6 @@ export default function LanguageButton() {
 const styles = {
     image: {
         height: 50,
-        width: 50
+        width: 50,
     }
 }

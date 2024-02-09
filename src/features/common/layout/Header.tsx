@@ -1,6 +1,6 @@
 import { Box, Divider, Stack, Typography } from "@mui/material";
-import { Image } from "../../../assets/images";
 import LanguageButton from "../../../translations/LanguageButton";
+
 
 export default function Header() {
     return (
