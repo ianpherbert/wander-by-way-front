@@ -18,12 +18,13 @@ export default function TypeChoice({ selectedOptions, setSelectedOptions, ...pro
             ...selectedOptions,
             [key]: !selectedOptions[key]
         })
-    }, [setSelectedOptions, selectedOptions,optionLabels])
+    }, [setSelectedOptions, selectedOptions, optionLabels])
 
     return (
         <Stack direction="row" {...props}>
             {Object.entries(optionLabels).map(([key, label]) => (
                 <FormControlLabel
+                    key={key}
                     checked={selectedOptions[key as keyof SearchOptions]}
                     control={<Checkbox size="small" color="info" />}
                     label={label}

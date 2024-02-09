@@ -8,6 +8,7 @@ import { SwapHoriz } from "@mui/icons-material";
 import TypeChoice from "./TypeChoice";
 import useTranslation from "../../translations/useTranslation";
 import { inputLabels } from "./searchTranslation";
+import WanderCard from "../common/WanderCard";
 
 const defaultOptions: SearchOptions = {
     airport: true,
@@ -71,7 +72,7 @@ export default function SearchForm({ onSubmit, ...props }: SearchFromProps) {
     return (
         <form onSubmit={handleSubmit(doSubmit)}>
             <Box sx={styles.container} {...props}>
-                <Card sx={styles.card}>
+                <WanderCard sx={styles.card} background="noiseGrey">
                     <Stack direction="row" spacing={.5} pt={1} mb={1}>
                         <SearchInput selectedItem={from} onSelect={setFormValue("from")} label={fromLabel} searchOptions={selectedOptions} fullWidth size="small" error={errors.from?.message} />
                         <Tooltip title="Swap origin and destination">
@@ -82,7 +83,7 @@ export default function SearchForm({ onSubmit, ...props }: SearchFromProps) {
                         <SearchInput selectedItem={to} onSelect={setFormValue("to")} label={toLabel} searchOptions={selectedOptions} fullWidth size="small" />
                     </Stack>
                     <TypeChoice selectedOptions={selectedOptions} setSelectedOptions={setSelectedOptions}/>
-                </Card>
+                </WanderCard>
                 <Button sx={styles.submitButton} type="submit" variant="contained">{submitLabel}</Button>
             </Box>
         </form>)

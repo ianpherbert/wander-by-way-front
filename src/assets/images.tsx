@@ -2,16 +2,25 @@ import { Box, BoxProps } from "@mui/material"
 import { graphicsDirectory } from "../variables"
 
 export const imageUrls = {
-    coupleLost: `${graphicsDirectory}/couple_lost.png`,
-    man: `${graphicsDirectory}/man.png`,
-    street: `${graphicsDirectory}/street.png`,
-    trainStation: `${graphicsDirectory}/train_station.png`,
-    womanGlasses: `${graphicsDirectory}/womanSunglasses.png`,
-    womanGlassesTrans: `${graphicsDirectory}/woman_sunglasses_trans.png`,
-    womanLost: `${graphicsDirectory}/woman_lost.png`,
-    shortLogo: `${graphicsDirectory}/wander_logo.png`,
-    langFr: `${graphicsDirectory}/language/flag_FR.png`,
-    langEn: `${graphicsDirectory}/language/flag_EN.png`
+    coupleLost: "couple_lost.png",
+    man: "man.png",
+    street: "street.png",
+    trainStation: "train_station.png",
+    womanGlasses: "womanSunglasses.png",
+    womanGlassesTrans: "woman_sunglasses_trans.png",
+    womanLost: "woman_lost.png",
+    shortLogo: "wander_logo.png",
+    langFr: "language/flag_FR.png",
+    langEn: "language/flag_EN.png",
+}
+
+export const backgroundUrls = {
+    noisePrimary: "noisePrimary.svg",
+    noiseGrey: "noiseGrey.svg"
+}
+
+export function getBackgroundUrl(url: keyof typeof backgroundUrls){
+    return `${graphicsDirectory}/backgrounds/${backgroundUrls[url]}`
 }
 
 /**
@@ -48,7 +57,7 @@ export function Image({ url, ...props }: ImageProps) {
             justifyItems="center"
             alignContent="center"
         >
-            <img src={imgUrl} style={imgStyle} />
+            <img src={`${graphicsDirectory}/${imgUrl}`} style={imgStyle} />
         </Box>
     )
 }
