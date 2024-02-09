@@ -21,6 +21,4 @@ export default function useBreakPoint() {
         return 'xl';
 
     }, [isXs, isSm, isMd, isLg, theme])
-
-
 }

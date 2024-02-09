@@ -6,7 +6,6 @@ import useTranslation from "../../../translations/useTranslation";
 
 
 type FooterLabels = {
-
     contactUs: string;
     funding: string;
 }
