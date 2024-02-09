@@ -4,8 +4,9 @@ import { FormEvent, SyntheticEvent, useCallback, useEffect, useMemo, useState } 
 import { skipToken } from "@reduxjs/toolkit/query";
 import debounce from 'lodash/debounce';
 import { BoatIcon, BusIcon, CityIcon, PlaneIcon, TrainIcon } from "../../utils/icons";
-import { countriesEn } from "../../utils/countries";
+import { countryLabels } from "../../translations/countries";
 import { SearchItem, SearchOptions, SearchItemType } from "./SearchResult";
+import useTranslation from "../../translations/useTranslation";
 
 
 const styles = {
@@ -31,12 +32,13 @@ const searchIcons: { [key in SearchItemType]: JSX.Element } = {
 }
 
 function Option({ item, ...props }: React.HTMLAttributes<HTMLLIElement> & { item: SearchItem }) {
+    const countries = useTranslation(countryLabels)
     return (
         <ListItem {...props} disablePadding={true}>
             <ListItemIcon>
                 {searchIcons[item.type]}
             </ListItemIcon>
-            <ListItemText primary={`${item.name} (${countriesEn[item.country]})`} />
+            <ListItemText primary={`${item.name} (${countries[item.country]})`} />
         </ListItem>
     )
 }
@@ -45,9 +47,13 @@ export default function SearchInput({ onSelect, selectedItem, searchOptions, lab
     const [queryString, setQueryString] = useState<string>("");
     const [searchInput, setSearchInput] = useState<string>("");
 
+    const countries = useTranslation(countryLabels)
 
     const { data, isFetching } = useSearchByNameQuery(Boolean(queryString) ? { queryString, searchOptions } : skipToken);
-    const options: SearchItem[] = useMemo(() => data?.results && queryString ? data?.results : [], [data]);
+    const options: SearchItem[] = useMemo(() => {
+        if (data?.results && queryString) return data?.results
+        return []
+    }, [data]);
 
 
     const changeSearchTerm = useCallback((e: FormEvent<HTMLDivElement>) => {
@@ -87,7 +93,7 @@ export default function SearchInput({ onSelect, selectedItem, searchOptions, lab
             {...props}
             options={options}
             renderInput={(params) => <TextField {...params} onInput={changeSearchTerm} label={label} error={Boolean(error)} helperText={error} />}
-            getOptionLabel={(option: SearchItem) => `${option.name} (${countriesEn[option.country]})`}
+            getOptionLabel={(option: SearchItem) => `${option.name} (${countries[option.country]})`}
             noOptionsText={noResults}
             onChange={handleSelect}
             value={selectedItem}

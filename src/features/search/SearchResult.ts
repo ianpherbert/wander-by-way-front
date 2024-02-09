@@ -1,4 +1,4 @@
-import { CountryCode } from "../../utils/countries";
+import { CountryCode } from "../../translations/countries";
 
 export type SearchOptions = {
     airport: boolean,

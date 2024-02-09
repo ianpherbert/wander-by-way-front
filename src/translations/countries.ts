@@ -1,3 +1,5 @@
+import { TranslationLabelObject, Languages } from "./global";
+
 export type CountryCode = "AT"
     | "BG"
     | "CZ"
@@ -51,9 +53,9 @@ export type CountryCode = "AT"
     | "JE"
     | "GG";
 
-type CountryLabel = {[key in CountryCode]: string}
+type CountryLabel = { [key in CountryCode]: string }
 
-export const countriesEn: CountryLabel = {
+const countriesEn: CountryLabel = {
     AT: "Austria",
     BG: "Bulgaria",
     CZ: "Czechia",
@@ -106,4 +108,64 @@ export const countriesEn: CountryLabel = {
     MD: "Moldova",
     JE: "Jersey",
     GG: "Guernsey"
+}
+
+const countriesFr: CountryLabel = {
+    AT: "Autriche",
+    BG: "Bulgarie",
+    CZ: "Tchéquie",
+    DK: "Danemark",
+    BY: "Biélorussie",
+    DE: "Allemagne",
+    BE: "Belgique",
+    HU: "Hongrie",
+    IE: "Irlande",
+    IT: "Italie",
+    PL: "Pologne",
+    RO: "Roumanie",
+    FR: "France",
+    ES: "Espagne",
+    SE: "Suède",
+    UA: "Ukraine",
+    EN: "Angleterre",
+    BA: "Bosnie-Herzégovine",
+    HR: "Croatie",
+    FI: "Finlande",
+    RS: "Serbie",
+    GR: "Grèce",
+    LV: "Lettonie",
+    LT: "Lituanie",
+    PT: "Portugal",
+    NO: "Norvège",
+    SC: "Écosse",
+    AL: "Albanie",
+    EE: "Estonie",
+    SK: "Slovaquie",
+    SI: "Slovénie",
+    CH: "Suisse",
+    WL: "Pays de Galles",
+    NI: "Irlande du Nord",
+    IS: "Islande",
+    ME: "Monténégro",
+    LU: "Luxembourg",
+    AD: "Andorre",
+    GI: "Gibraltar",
+    IM: "Île de Man",
+    MT: "Malte",
+    MC: "Monaco",
+    NL: "Pays-Bas",
+    RU: "Russie",
+    TR: "Turquie",
+    GE: "Géorgie",
+    MK: "Macédoine du Nord",
+    XK: "Kosovo",
+    CY: "Chypre",
+    MD: "Moldavie",
+    JE: "Jersey",
+    GG: "Guernesey"
+    }
+
+export const countryLabels: TranslationLabelObject<CountryLabel> = {
+    [Languages.EN]: countriesEn,
+    [Languages.FR]: countriesFr
 }

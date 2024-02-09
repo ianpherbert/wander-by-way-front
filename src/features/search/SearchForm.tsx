@@ -50,7 +50,7 @@ export default function SearchForm({ onSubmit, ...props }: SearchFromProps) {
     }, [setTo, setFrom, toWatch, fromWatch])
 
 
-    const setFormValue = useCallback((fieldName: "to" | "from") => (value: SearchItem | null) => setValue(fieldName, value), [setValue])
+    const setFormValue = useCallback((fieldName: "to" | "from") => (value: SearchItem | null) => {setValue(fieldName, value)}, [setValue])
 
     const swapButtonActive = useMemo(() => Boolean(to) && Boolean(from), [to, from])
 
