@@ -1,4 +1,4 @@
-import { Box, Grid, Stack, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import { Image } from "../../assets/images";
 import { theme } from "../../theme";
 import useTranslation from "../../translations/useTranslation";

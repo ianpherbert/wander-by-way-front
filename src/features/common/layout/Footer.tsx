@@ -1,4 +1,4 @@
-import { Divider, Grid, Link, Stack, Typography } from "@mui/material";
+import { Divider, Grid, Link, Typography } from "@mui/material";
 import { Image } from "../../../assets/images";
 import { Languages, TranslationLabelObject } from "../../../translations/global";
 import useTranslation from "../../../translations/useTranslation";

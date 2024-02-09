@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Image, getBackgroundUrl, imageUrls } from "../assets/images";
+import { Image, imageUrls } from "../assets/images";
 import { setLanguage, useAppLanguage } from "../redux/appSlice";
 import { Languages, TranslationLabelObject, languageLabel } from "./global";
 import { Fade, IconButton, List, ListItem, ListItemButton, ListItemText, Popper, Tooltip } from "@mui/material";
