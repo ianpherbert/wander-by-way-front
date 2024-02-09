@@ -18,8 +18,8 @@ function LanguageListItem({ language, image }: { language: string, image: string
     const changeLanguage = useCallback(() => dispatch(setLanguage(language as Languages)), [language])
 
     return (
-        <ListItem dense>
-            <ListItemButton sx={{ display: "flex" }} onClick={changeLanguage} dense>
+        <ListItem dense  disablePadding>
+            <ListItemButton sx={{ display: "flex" }} onClick={changeLanguage} dense >
                 <Image url={image as keyof typeof imageUrls} component={IconButton} sx={styles.image} />
                 <ListItemText primary={languageLabel[language as Languages]} />
             </ListItemButton>
@@ -56,13 +56,13 @@ export default function LanguageButton() {
 
     return (
         <>
-            <Tooltip title={changeText[language]}>
+            <Tooltip title={changeText[language]} placement="left">
                 <Image url={icon} component={IconButton} sx={styles.image} onClick={handleClick} />
             </Tooltip>
             <Popper id={id} open={open} anchorEl={anchorEl} transition>
                 {({ TransitionProps }) => (
                     <Fade {...TransitionProps} timeout={350}>
-                        <List dense>
+                        <List dense sx={styles.list} disablePadding>
                             {languageOptions.map(
                                 ([language, image]) => (
                                     <LanguageListItem
@@ -82,5 +82,8 @@ const styles = {
     image: {
         height: 50,
         width: 50,
+    },
+    list: {
+        bgcolor: "white"
     }
 }

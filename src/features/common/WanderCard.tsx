@@ -11,7 +11,7 @@ export default function WanderCard({ children, background,  ...props }: WanderCa
         backgroundImage: `url(${getBackgroundUrl(background)})`,
         backgroundSize: 'cover', // Cover the entire Card
         backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'center',
+        backgroundPosition: 'left',
     } : props.sx
     return <Card {...props} sx={sx}>{children}</Card>
 }

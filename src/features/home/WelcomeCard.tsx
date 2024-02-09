@@ -1,4 +1,4 @@
-import { Box, Stack, Typography} from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import { Image } from "../../assets/images";
 import { theme } from "../../theme";
 import useTranslation from "../../translations/useTranslation";
@@ -8,19 +8,22 @@ import WanderCard from "../common/WanderCard";
 
 export default function WelcomeCard() {
 
-    const welcomeText = useTranslation(welcomeCopy)
+    const welcomeText = useTranslation(welcomeCopy);
+
 
     return (
         <WanderCard sx={styles.card} elevation={5} background="noisePrimary">
-            <Stack direction="row" alignContent="center" m={2}>
-                <Stack flex={2} m={5} justifyContent="center" spacing={2}>
+            <Grid container spacing={2} alignItems="center" justifyContent="center">
+                <Grid item xs={12} md={12} lg={8} sm={12} justifyContent="center" display="flex" flexDirection="column" spacing={2}>
                     <Typography variant="body1">{welcomeText}</Typography>
-                    <SearchForm onSubmit={(a) => console.log(a)} m="auto"/>
-                </Stack>
-                <Box flex={1} m="auto">
-                    <Image url="womanGlassesTrans" sx={styles.image} />
-                </Box>
-            </Stack>
+                    <SearchForm onSubmit={(a) => console.log(a)} mt={2} />
+                </Grid>
+                <Grid item xs={12} md={12} lg={4} sm={12} display="flex" justifyContent="center" alignItems="center">
+                    <Box m="auto">
+                        <Image url="womanGlassesTrans" sx={styles.image} />
+                    </Box>
+                </Grid>
+            </Grid>
         </WanderCard>
     )
 }
@@ -30,13 +33,11 @@ const styles = {
         borderRadius: '50%',
         background: `radial-gradient(circle, ${theme.palette.primary.main} 60%, transparent 20%)`,
         display: 'inline-block',
-        m: 2
     },
     card: {
-        width: "90%",
         maxWidth: 1200,
         margin: "auto",
-        mt: 5
+        p: 4
     }
 }
 

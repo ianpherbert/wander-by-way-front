@@ -1,4 +1,4 @@
-import { Divider, Link, Stack, Typography } from "@mui/material";
+import { Divider, Grid, Link, Typography } from "@mui/material";
 import { Image } from "../../../assets/images";
 import { Languages, TranslationLabelObject } from "../../../translations/global";
 import useTranslation from "../../../translations/useTranslation";
@@ -6,7 +6,6 @@ import useTranslation from "../../../translations/useTranslation";
 
 
 type FooterLabels = {
-
     contactUs: string;
     funding: string;
 }
@@ -32,7 +31,40 @@ export default function Footer() {
 
     return <footer style={footerStyle}>
         <Divider />
-        <Stack direction="row" justifyContent="space-between" mx={20} my={5}>
+        <Grid container my={2} spacing={4}>
+            <Grid item xs={12} md={6}>
+                <Grid container direction="column" spacing={1} justifyContent="center" textAlign="center">
+                    <Grid item>
+                        <Image url="shortLogo" height={100} />
+                    </Grid>
+                    <Grid item>
+                        <Typography variant="caption">Wander by Way ©2024</Typography>
+                    </Grid>
+                </Grid>
+            </Grid>
+
+            {/* Contact and funding section */}
+            <Grid item xs={12} md={6}>
+                <Grid container direction="column" spacing={2}>
+                    {/* Contact Us */}
+                    <Grid item xs={12}>
+                        <Typography>{labels.contactUs}:</Typography>
+                        <Link underline="hover" color="info" href="mailto:hello@wanderbyway.com">hello@wanderbyway.com</Link>
+                    </Grid>
+
+                    <Grid item>
+                        <Divider />
+                    </Grid>
+
+                    {/* Funding */}
+                    <Grid item sx={{ marginTop: '2rem' }}>
+                        <Typography>{labels.funding}:</Typography>
+                        <Link underline="hover" color="info" href="https://bmc.link/ianpatrickherbert">Buy me a coffee</Link>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Grid>
+        {/* <Stack direction="row" justifyContent="space-between" mx={20} my={5}>
             <Stack>
                 <Image url="shortLogo" height={100} />
                 <Typography variant={"caption"}>Wander by Way ©2024</Typography>
@@ -53,7 +85,7 @@ export default function Footer() {
                 </Stack>
             </Stack>
 
-        </Stack>
+        </Stack> */}
     </footer>;
 }
 
