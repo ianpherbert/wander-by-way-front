@@ -9,15 +9,20 @@ import { Provider } from "react-redux";
 import { ThemeProvider } from '@mui/material'
 import store from './redux/store.ts'
 import TestPage from './pages/TestPage.tsx'
+import TripPlannerPage from './pages/TripPlannerPage.tsx'
 
 export const paths = {
   home: { entrypoint: "home" },
-  test: { entrypoint: "test" }
+  test: { entrypoint: "test" },
+  tripPlanner: { entrypoint: "trip-planner" }
 }
 
 const routes = [
   { path: paths.home.entrypoint, element: <HomePage /> },
-  { path: paths.test.entrypoint, element: <TestPage /> }
+  { path: paths.test.entrypoint, element: <TestPage /> },
+  { path: paths.tripPlanner.entrypoint, element: <TripPlannerPage /> },
+  { path: `${paths.tripPlanner.entrypoint}/:origin`, element: <TripPlannerPage /> },
+  { path: `${paths.tripPlanner.entrypoint}/:origin/:destination`, element: <TripPlannerPage /> }
 ]
 
 const router = createBrowserRouter([
