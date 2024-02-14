@@ -14,7 +14,7 @@ export default function WelcomeCard() {
     const welcomeText = useTranslation(welcomeCopy);
     const navigate = useNavigate();
 
-    const redirectToTripPlanner = useCallback(({from, to, options}: SearchFormType)=>{
+    const redirectToTripPlanner = useCallback(({from, to}: SearchFormType)=>{
         const origin = from?.id ? `/${from?.id}-${from?.type}` : "";
         const destination = to?.id ? `/${to?.id}-${to?.type}` : ""
         const path = `/${endPoints.tripPlanner.entrypoint}${origin}${destination}`

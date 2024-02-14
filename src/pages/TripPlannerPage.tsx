@@ -1,5 +1,4 @@
 import { Stack } from "@mui/material";
-import { useParams } from "react-router-dom";
 import useTripParams from "../features/tripPlanner/useTripParams";
 
 export default function TripPlannerPage(){
