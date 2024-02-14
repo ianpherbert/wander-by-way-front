@@ -22,3 +22,32 @@ export const searchOptionLabels: TranslationLabelObject<TranslationLabel<SearchO
     [Languages.EN]: searchOptionsLabelEn,
     [Languages.FR]: searchOptionsLabelFr
 }
+
+type InputLabels = {
+    to: string;
+    from: string;
+    submit: string;
+}
+
+const inputLabelsEn = {
+    to: "To",
+    from: "From",
+    submit: "Let's go!"
+}
+
+const inputLabelsFr = {
+    to: "Déstination",
+    from: "Origin",
+    submit: "Allons-y !"
+}
+
+
+export const inputLabels: TranslationLabelObject<InputLabels> = {
+    [Languages.EN]: inputLabelsEn,
+    [Languages.FR]: inputLabelsFr
+}
+
+export const originErrorLabel: TranslationLabelObject<string> = {
+    [Languages.EN]: "Select an origin",
+    [Languages.FR]: "Veuillez selectionner un point de départ"
+}

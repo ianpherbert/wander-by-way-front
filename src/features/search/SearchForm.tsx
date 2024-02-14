@@ -7,7 +7,7 @@ import { grey } from "@mui/material/colors";
 import { SwapHoriz } from "@mui/icons-material";
 import TypeChoice from "./TypeChoice";
 import useTranslation from "../../translations/useTranslation";
-import { inputLabels } from "./searchTranslation";
+import { inputLabels, originErrorLabel } from "./searchTranslations";
 import WanderCard from "../common/WanderCard";
 
 const defaultOptions: SearchOptions = {
@@ -24,7 +24,7 @@ export type SearchFormType = {
     options: SearchOptions;
 }
 
-type SearchFromProps = BoxProps & {
+type SearchFromProps = Omit<BoxProps, "onSubmit"> & {
     onSubmit: (data: SearchFormType) => void;
 }
 
@@ -34,7 +34,8 @@ export default function SearchForm({ onSubmit, ...props }: SearchFromProps) {
     const [from, setFrom] = useState<SearchItem | null>(null)
     const [selectedOptions, setSelectedOptions] = useState(defaultOptions);
 
-    const { to: toLabel, from: fromLabel, submit: submitLabel } = useTranslation(inputLabels)
+    const { to: toLabel, from: fromLabel, submit: submitLabel } = useTranslation(inputLabels);
+    const errorLabel = useTranslation(originErrorLabel);
 
     const {
         handleSubmit,
@@ -42,9 +43,15 @@ export default function SearchForm({ onSubmit, ...props }: SearchFromProps) {
         setValue,
         formState: { errors },
         getValues,
-        setError
-    } = useForm<SearchFormType>()
+        setError,
+        clearErrors
+    } = useForm<SearchFormType>();
+
     const doSubmit: SubmitHandler<SearchFormType> = useCallback((data) => {
+        if(!data.from?.id){
+            setError("from", {message: errorLabel});
+            return;
+        }
         onSubmit(data)
     }, [setError]);
 
@@ -52,6 +59,7 @@ export default function SearchForm({ onSubmit, ...props }: SearchFromProps) {
 
     //For some reason the watch will not work with a setValue, so we are obligated to use a separate state... fuck that.
     useEffect(() => {
+        clearErrors();
         setFrom(fromWatch);
         setTo(toWatch);
     }, [setTo, setFrom, toWatch, fromWatch])

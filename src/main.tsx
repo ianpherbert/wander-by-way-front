@@ -11,18 +11,18 @@ import store from './redux/store.ts'
 import TestPage from './pages/TestPage.tsx'
 import TripPlannerPage from './pages/TripPlannerPage.tsx'
 
-export const paths = {
+export const endPoints = {
   home: { entrypoint: "home" },
   test: { entrypoint: "test" },
   tripPlanner: { entrypoint: "trip-planner" }
 }
 
 const routes = [
-  { path: paths.home.entrypoint, element: <HomePage /> },
-  { path: paths.test.entrypoint, element: <TestPage /> },
-  { path: paths.tripPlanner.entrypoint, element: <TripPlannerPage /> },
-  { path: `${paths.tripPlanner.entrypoint}/:origin`, element: <TripPlannerPage /> },
-  { path: `${paths.tripPlanner.entrypoint}/:origin/:destination`, element: <TripPlannerPage /> }
+  { path: endPoints.home.entrypoint, element: <HomePage /> },
+  { path: endPoints.test.entrypoint, element: <TestPage /> },
+  { path: endPoints.tripPlanner.entrypoint, element: <TripPlannerPage /> },
+  { path: `${endPoints.tripPlanner.entrypoint}/:origin`, element: <TripPlannerPage /> },
+  { path: `${endPoints.tripPlanner.entrypoint}/:origin/:destination`, element: <TripPlannerPage /> }
 ]
 
 const router = createBrowserRouter([
@@ -33,7 +33,6 @@ const router = createBrowserRouter([
     children: routes
   },
 ]);
-
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
