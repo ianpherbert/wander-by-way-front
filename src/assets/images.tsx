@@ -1,17 +1,25 @@
 import { Box, BoxProps } from "@mui/material"
 import { graphicsDirectory } from "../variables"
+import { useMemo } from "react";
 
-export const imageUrls = {
-    coupleLost: "couple_lost.png",
-    man: "man.png",
-    street: "street.png",
-    trainStation: "train_station.png",
-    womanGlasses: "womanSunglasses.png",
-    womanGlassesTrans: "woman_sunglasses_trans.png",
-    womanLost: "woman_lost.png",
-    shortLogo: "wander_logo.png",
-    langFr: "language/flag_FR.png",
-    langEn: "language/flag_EN.png",
+export const internalImages = {
+    coupleLost: { url: "couple_lost.png", alt: "" },
+    man: { url: "man.png", alt: "" },
+    street: { url: "street.png", alt: "" },
+    trainStation: { url: "train_station.png", alt: "" },
+    womanGlasses: { url: "womanSunglasses.png", alt: "" },
+    womanGlassesTrans: { url: "woman_sunglasses_trans.png", alt: "" },
+    womanLost: { url: "woman_lost.png", alt: "" },
+    shortLogo: { url: "wander_logo.png", alt: "" },
+    langFr: { url: "language/flag_FR.png", alt: "" },
+    langEn: { url: "language/flag_EN.png", alt: "" },
+    genericCity: { url: "generic_city.png", alt: "" },
+}
+
+export type InternalImage = keyof typeof internalImages;
+
+export function getInternalImageUrl(url: InternalImage) {
+    return `${graphicsDirectory}/${internalImages[url]}`
 }
 
 export const backgroundUrls = {
@@ -19,7 +27,9 @@ export const backgroundUrls = {
     noiseGrey: "noiseGrey.svg"
 }
 
-export function getBackgroundUrl(url: keyof typeof backgroundUrls){
+
+
+export function getBackgroundUrl(url: keyof typeof backgroundUrls) {
     return `${graphicsDirectory}/backgrounds/${backgroundUrls[url]}`
 }
 
@@ -28,9 +38,13 @@ export function getBackgroundUrl(url: keyof typeof backgroundUrls){
  * Extends BoxProps from Material-UI, omitting certain layout-related props.
  * Adds 'url' prop to specify the key of the desired image from `imageUrls`.
  */
-type ImageProps = Omit<BoxProps, "justifyContent" | "alignItems" | "display" | "justifyItems" | "alignContent"> & { 
-    url: keyof typeof imageUrls; 
+export type ImageProps = Omit<BoxProps, "justifyContent" | "alignItems" | "display" | "justifyItems" | "alignContent"> & {
+    url: InternalImage | string;
+    alt?: string;
+    blur?: number;
 };
+
+
 
 /**
  * Image component
@@ -39,17 +53,33 @@ type ImageProps = Omit<BoxProps, "justifyContent" | "alignItems" | "display" | "
  * @param props - The properties for the Image component, including URL key and any BoxProps.
  * @returns A Box component containing the specified image.
  */
-export function Image({ url, ...props }: ImageProps) {
-    const imgUrl = imageUrls[url];
+export function Image({ alt, url, blur, ...props }: ImageProps) {
+    const { imgUrl, imgAlt } = useMemo(() => {
+        const urlIsInternal = Object.keys(internalImages).includes(url);
+        if (urlIsInternal) {
+            const image = internalImages[url as InternalImage]
+            return {
+                imgUrl: `${graphicsDirectory}/${image.url}`,
+                imgAlt: image.alt
+            }
+        }
+        return {
+            imgAlt: alt ?? "",
+            imgUrl: url
+        }
+    }, [url, alt]);
 
-    const imgStyle = {
+
+    const imgStyle = useMemo(() => ({
         maxWidth: '100%',
         maxHeight: '100%',
-        objectFit: 'cover' as const, // This ensures the image covers the area, you can adjust as needed
-    };
+        objectFit: 'cover' as const,
+        filter: `blur(${blur ?? 0}px)`,
+    }), [blur, props]);
 
     return (
         <Box {...props}
+            position="relative"
             overflow="hidden"
             justifyContent="center"
             alignItems="center"
@@ -57,7 +87,7 @@ export function Image({ url, ...props }: ImageProps) {
             justifyItems="center"
             alignContent="center"
         >
-            <img src={`${graphicsDirectory}/${imgUrl}`} style={imgStyle} />
+            <img src={imgUrl} style={imgStyle} alt={imgAlt} />
         </Box>
     )
 }

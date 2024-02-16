@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Image, imageUrls } from "../assets/images";
+import { Image, internalImages } from "../assets/images";
 import { setLanguage, useAppLanguage } from "../redux/appSlice";
 import { Languages, TranslationLabelObject, languageLabel } from "./global";
 import { Fade, IconButton, List, ListItem, ListItemButton, ListItemText, Popper, Tooltip } from "@mui/material";
 import { useDispatch } from "react-redux";
 
-type LanguageImage = { [key in Languages]: keyof typeof imageUrls }
+type LanguageImage = { [key in Languages]: keyof typeof internalImages }
 
 const languageIcons: LanguageImage = {
     [Languages.EN]: "langEn",
@@ -18,9 +18,9 @@ function LanguageListItem({ language, image }: { language: string, image: string
     const changeLanguage = useCallback(() => dispatch(setLanguage(language as Languages)), [language])
 
     return (
-        <ListItem dense  disablePadding>
+        <ListItem dense disablePadding>
             <ListItemButton sx={{ display: "flex" }} onClick={changeLanguage} dense >
-                <Image url={image as keyof typeof imageUrls} component={IconButton} sx={styles.image} />
+                <Image url={image as keyof typeof internalImages} component={IconButton} sx={styles.image} />
                 <ListItemText primary={languageLabel[language as Languages]} />
             </ListItemButton>
         </ListItem>
@@ -41,12 +41,12 @@ export default function LanguageButton() {
     const icon = useMemo(() => languageIcons[language], [language]);
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+        console.log(anchorEl)
         setAnchorEl(event.currentTarget);
         setOpen((previousOpen) => !previousOpen);
     };
 
-    const canBeOpen = open && Boolean(anchorEl);
-    const id = canBeOpen ? 'transition-popper' : undefined;
+    const id = useMemo(() => open && Boolean(anchorEl) ? 'transition-popper' : undefined, [open, anchorEl]);
 
     useEffect(() => {
         setOpen(false)

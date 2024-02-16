@@ -11,11 +11,11 @@ export type TripParams = {
     destinationType?: SearchItemType;
 }
 
-export default function useTripParams(): TripParams{
-    const {origin, destination} = useParams();
+export default function useTripParams(): TripParams {
+    const { origin, destination } = useParams();
 
-    const [originId, originType] = useMemo(()=> origin?.split("-") ?? defaultSplit,[origin]);
-    const [destinationId, destinationType] = useMemo(()=> destination?.split("-") ?? defaultSplit,[destination])
+    const [originId, originType] = useMemo(() => origin?.split("-") ?? defaultSplit, [origin]);
+    const [destinationId, destinationType] = useMemo(() => destination?.split("-") ?? defaultSplit, [destination])
 
     return {
         originId,
