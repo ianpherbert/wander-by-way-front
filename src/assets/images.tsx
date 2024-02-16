@@ -19,7 +19,7 @@ export const internalImages = {
 export type InternalImage = keyof typeof internalImages;
 
 export function getInternalImageUrl(url: InternalImage) {
-    return `${graphicsDirectory}/${internalImages[url]}`
+    return `${graphicsDirectory}/${internalImages[url].url}`
 }
 
 export const backgroundUrls = {

@@ -1,11 +1,9 @@
 import { useMemo } from "react";
-import { InternalImage, getInternalImageUrl, } from "../../../assets/images"
+import { getInternalImageUrl, } from "../../../assets/images"
 import { useSearchByKeywordQuery } from "./unsplashRest"
-import { Image } from "../../../assets/images";
-import { Box, BoxProps, Stack, StackProps, Tooltip, Typography } from "@mui/material";
+import { Box, BoxProps, Stack, Tooltip, Typography } from "@mui/material";
 import { Languages, TranslationLabelObject } from "../../../translations/global";
 import useTranslation from "../../../translations/useTranslation";
-import { InfoOutlined } from "@mui/icons-material";
 
 
 
@@ -24,7 +22,6 @@ const labels: TranslationLabelObject<{ responsibility: string }> = {
 }
 
 const defaultImage = getInternalImageUrl("genericCity");
-const altText = "Drawing of a generic european city in the style of a pencil drawing"
 
 export default function CityImage({ cityName, blur, ...props }: CityImageProps) {
     const { data } = useSearchByKeywordQuery({ query: cityName, topics: ["city"], orientation: "landscape" });
