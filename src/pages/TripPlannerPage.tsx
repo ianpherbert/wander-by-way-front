@@ -1,21 +1,35 @@
-import { Box, Stack } from "@mui/material";
 import useTripParams from "../features/tripPlanner/useTripParams";
 import useRouteSearch from "../features/tripPlanner/useRouteSearch";
-import { useCallback, useMemo, useState } from "react";
-import Map from "../features/common/map/Map";
+import { createContext, useCallback, useMemo, useState } from "react";
 import { Point } from "../features/common/map/Point";
-import { mapPointTypeToSearchItemType, searchItemTypeToMapPointType } from "../features/common/SearchItemType";
-import { RouteSearchGroup } from "../features/tripPlanner/RouteSearchResult";
+import { RouteSearchGroup, RouteSearchPlace, RouteSearchResult, RouteSearchRoute } from "../features/tripPlanner/RouteSearchResult";
+import { SearchItem } from "../features/search/SearchResult";
+import TripPlanner from "../features/tripPlanner/TripPlanner";
+
+
+type TripPlannerContext = {
+    selectPoint: (point?: Point) => void;
+    currentPoint?: Point;
+    trip: RouteSearchRoute[];
+    selectedSearchGroup?: RouteSearchGroup;
+    unselectSearchGroup: () => void;
+    addToTrip: (route: RouteSearchRoute) => void;
+    currentSearchResult?: RouteSearchResult;
+    currentOrigin?: SearchItem;
+}
+
+export const tripPlannerContext = createContext<TripPlannerContext>({} as TripPlannerContext);
 
 export default function TripPlannerPage() {
     const { originId, originType, destinationId, destinationType } = useTripParams();
     const [currentPoint, setCurrentPoint] = useState<Point>();
-    const [trip, setTrip] = useState<Point[]>([]);
-    const [selectedPlace, setSelectedPlace] = useState<RouteSearchGroup>();
+    const [trip, setTrip] = useState<RouteSearchRoute[]>([]);
+    const [selectedSearchGroup, setSelectedSearchGroup] = useState<RouteSearchGroup>();
+    const [searchFrom, setSearchFrom] = useState<RouteSearchPlace>()
 
     const currentSearch = useMemo(() =>
-        currentPoint ?
-            { id: currentPoint.id, type: mapPointTypeToSearchItemType[currentPoint.type] } :
+        searchFrom ?
+            { id: String(searchFrom?.id), type: searchFrom?.type } :
             { id: originId, type: originType }
         , [originId, originType, currentPoint]
     );
@@ -23,30 +37,33 @@ export default function TripPlannerPage() {
     const { origin: currentOrigin, routeQuery: currentSearchQuery } = useRouteSearch(currentSearch.id, currentSearch.type);
     // const { origin: destination, routeQuery: destinationRouteQuery } = useRouteSearch(destinationId, destinationType)
 
-    const currentSearchPoints: Point[] = useMemo(() =>
-        currentSearchQuery.data?.destinations.map(({ destination }) => ({
-            id: String(destination.id),
-            longitude: destination.longitude,
-            latitude: destination.latitude,
-            type: searchItemTypeToMapPointType[destination.type],
-            label: destination.name
-        })) ?? []
-        , [currentSearchQuery])
+
 
     const selectPoint = useCallback((point?: Point) => {
+        setCurrentPoint(point);
         const match = point ? currentSearchQuery.data?.destinations.find((it) => String(it.destination.id) === point.id) : undefined;
-        setSelectedPlace(match);
-    }, [setSelectedPlace, currentSearchQuery])
+        setSelectedSearchGroup(match);
+    }, [setSelectedSearchGroup, currentSearchQuery])
 
-    return <Stack direction="row">
-        <h2>{currentOrigin?.name}</h2>
-        <Map height={400} width={400} points={currentSearchPoints} onSelectPoint={selectPoint} />
-        <Stack>
-            <h2>{selectedPlace?.destination.name}</h2>
-            <ul>
-                {selectedPlace?.routes.map(it => <li>{it.durationMinutes}</li>)}
-            </ul>
-        </Stack>
+    const addToTrip = useCallback((route: RouteSearchRoute) => {
+        setSearchFrom(route.destination);
+        setTrip(it => [...it, route]);
+    }, [setTrip])
 
-    </Stack>
+    const unselectSearchGroup = useCallback(()=>{
+        setSelectedSearchGroup(undefined);
+    },[setSelectedSearchGroup])
+
+    return <tripPlannerContext.Provider value={{
+        currentPoint,
+        trip,
+        selectedSearchGroup,
+        addToTrip,
+        selectPoint,
+        currentSearchResult: currentSearchQuery?.data,
+        currentOrigin,
+        unselectSearchGroup
+    }}>
+        <TripPlanner />
+    </tripPlannerContext.Provider>
 }

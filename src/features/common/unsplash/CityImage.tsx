@@ -4,11 +4,12 @@ import { useSearchByKeywordQuery } from "./unsplashRest"
 import { Box, BoxProps, Stack, Tooltip, Typography } from "@mui/material";
 import { Languages, TranslationLabelObject } from "../../../translations/global";
 import useTranslation from "../../../translations/useTranslation";
+import { skipToken } from "@reduxjs/toolkit/query";
 
 
 
-type CityImageProps = BoxProps & {
-    cityName: string;
+type PlaceImageProps = BoxProps & {
+    queryString?: string;
     blur?: number;
 }
 
@@ -23,8 +24,8 @@ const labels: TranslationLabelObject<{ responsibility: string }> = {
 
 const defaultImage = getInternalImageUrl("genericCity");
 
-export default function CityImage({ cityName, blur, ...props }: CityImageProps) {
-    const { data } = useSearchByKeywordQuery({ query: cityName, topics: ["city"], orientation: "landscape" });
+export default function PlaceImage({ queryString, blur, ...props }: PlaceImageProps) {
+    const { data } = useSearchByKeywordQuery(queryString ? { query: queryString, topics: ["city"], orientation: "landscape" } : skipToken);
 
     const { responsibility } = useTranslation(labels);
     const copyright = useMemo(() => data ? `©${data?.user.first_name} ${data?.user.last_name}` : "", [data])
