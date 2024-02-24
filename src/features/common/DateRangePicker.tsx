@@ -1,7 +1,7 @@
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Stack } from '@mui/material';
 import AppLocalizationProvider from './AppLocalizationProvider';
-import { add } from 'date-fns';
+import { add, addDays, isBefore } from 'date-fns';
 import { useCallback, useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 
@@ -18,13 +18,17 @@ type DateRangePickerProps = {
     endLabel?: string;
 }
 
-export default function DateRangePicker({ onChange, startError, endError }: DateRangePickerProps) {
+export default function DateRangePicker({ onChange, startError, endError, startLabel, endLabel }: DateRangePickerProps) {
     const [startDate, setStartDate] = useState<Date | null>(new Date());
     const [endDate, setEndDate] = useState<Date | null>(add(new Date(), { weeks: 1 }));
 
     const handleSetDate = useCallback((type: "start" | "end") => (date: dayjs.Dayjs | null) => {
         const fn = type === "start" ? setStartDate : setEndDate;
-        fn(date?.toDate() ?? null)
+        fn(date?.toDate() ?? null);
+        if (type === "start" && endDate && date) {
+            const beforeNewStart = isBefore(endDate, date.toDate());
+            beforeNewStart && setEndDate(addDays(date.toDate(), 1));
+        }
     }, [setStartDate, setEndDate])
 
     useEffect(() => {
@@ -35,12 +39,14 @@ export default function DateRangePicker({ onChange, startError, endError }: Date
         <AppLocalizationProvider>
             <Stack direction="row" spacing={1}>
                 <DatePicker
+                    label={startLabel}
                     onChange={handleSetDate("start")}
                     value={dayjs(startDate)}
                     minDate={dayjs(new Date())}
                     slotProps={{ textField: { size: "small", error: Boolean(startError), helperText: startError } }}
                 />
                 <DatePicker
+                    label={endLabel}
                     onChange={handleSetDate("end")}
                     value={dayjs(endDate)}
                     minDate={dayjs(startDate)}
