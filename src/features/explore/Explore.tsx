@@ -4,7 +4,7 @@ import SelectedPane from "./SelectedPane";
 import RouteSearchList from "./RouteSearchList";
 import { useCallback, useState } from "react";
 
-export default function TripPlanner() {
+export default function Explore() {
     const [mapLoaded, setMapLoaded] = useState(false);
     // it is essential that the map is initialised in its largest form. otherwise it will not fill space correctly
     const loadMap = useCallback(() => setMapLoaded(true), [setMapLoaded])

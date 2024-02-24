@@ -1,10 +1,10 @@
-import useTripParams from "../features/tripPlanner/hooks/useTripParams";
-import useRouteSearch from "../features/tripPlanner/hooks/useRouteSearch";
+import useExploreParams from "../features/explore/hooks/useExploreParams";
+import useRouteSearch from "../features/explore/hooks/useRouteSearch";
 import { createContext, useCallback, useMemo, useState } from "react";
 import { Point } from "../features/common/map/Point";
-import { RouteSearchGroup, RouteSearchPlace, RouteSearchResult, RouteSearchRoute } from "../features/tripPlanner/RouteSearchResult";
+import { RouteSearchGroup, RouteSearchPlace, RouteSearchResult, RouteSearchRoute } from "../features/explore/RouteSearchResult";
 import { SearchItem } from "../features/search/SearchResult";
-import TripPlanner from "../features/tripPlanner/TripPlanner";
+import Explore from "../features/explore/Explore";
 
 
 type TripPlannerContext = {
@@ -26,7 +26,7 @@ type TripPlannerContext = {
 export const tripPlannerContext = createContext<TripPlannerContext>({} as TripPlannerContext);
 
 export default function TripPlannerPage() {
-    const { originId, originType, destinationId, destinationType } = useTripParams();
+    const { originId, originType } = useExploreParams();
     const [currentPoint, setCurrentPoint] = useState<Point>();
     const [trip, setTrip] = useState<RouteSearchRoute[]>([]);
     const [selectedSearchGroup, setSelectedSearchGroup] = useState<RouteSearchGroup>();
@@ -42,7 +42,6 @@ export default function TripPlannerPage() {
     );
 
     const { origin: currentOrigin, routeQuery: currentSearchQuery } = useRouteSearch(currentSearch.id, currentSearch.type);
-    // const { origin: destination, routeQuery: destinationRouteQuery } = useRouteSearch(destinationId, destinationType)
 
 
 
@@ -76,6 +75,6 @@ export default function TripPlannerPage() {
         selectedRouteStops,
         setSelectedRouteStops,
     }}>
-        <TripPlanner />
+        <Explore />
     </tripPlannerContext.Provider>
 }

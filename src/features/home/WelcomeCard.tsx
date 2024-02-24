@@ -8,16 +8,20 @@ import WanderCard from "../common/WanderCard";
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { endPoints } from "../../main";
+import { format } from 'date-fns';
 
 export default function WelcomeCard() {
 
     const welcomeText = useTranslation(welcomeCopy);
     const navigate = useNavigate();
 
-    const redirectToTripPlanner = useCallback(({from, to}: SearchFormType)=>{
-        const origin = from?.id ? `/${from?.id}-${from?.type}` : "";
-        const destination = to?.id ? `/${to?.id}-${to?.type}` : ""
-        const path = `/${endPoints.tripPlanner.entrypoint}${origin}${destination}`
+    const redirectToTripPlanner = useCallback(({from, startDate, endDate}: SearchFormType)=>{
+        const origin = from?.id ? `${from?.id}-${from?.type}` : "";
+        const queryParams = new URLSearchParams();
+        queryParams.append("origin", origin);
+        queryParams.append("startDate", format(startDate!, 'yyyy-MM-dd'));
+        queryParams.append("endDate", format(endDate!, 'yyyy-MM-dd'));
+        const path = `/${endPoints.explore.entrypoint}?${queryParams}`
         navigate(path);
     },[])
 

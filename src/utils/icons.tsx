@@ -1,6 +1,6 @@
 import { DirectionsBoat, DirectionsBus, Flight, LocationCity, Place, Train } from "@mui/icons-material";
 import { SvgIconProps } from "@mui/material";
-import { RouteSearchRouteType } from "../features/tripPlanner/RouteSearchResult";
+import { RouteSearchRouteType } from "../features/explore/RouteSearchResult";
 import { SearchItemType } from "../features/common/SearchItemType";
 
 

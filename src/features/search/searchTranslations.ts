@@ -3,17 +3,17 @@ import { TranslationLabel, TranslationLabelObject, Languages } from "../../trans
 
 const searchOptionsLabelEn: TranslationLabel<SearchOptions> = {
     airport: "Airport",
-    train: "Train Station", 
-    city: "City", 
-    port: "Sea Port", 
+    train: "Train Station",
+    city: "City",
+    port: "Sea Port",
     bus: "Bus Station"
 }
 
-const searchOptionsLabelFr: TranslationLabel<SearchOptions>= {
+const searchOptionsLabelFr: TranslationLabel<SearchOptions> = {
     airport: "Aéroport",
-    train: "Gare", 
-    city: "Ville", 
-    port: "Port", 
+    train: "Gare",
+    city: "Ville",
+    port: "Port",
     bus: "Gare Routière"
 }
 
@@ -23,31 +23,55 @@ export const searchOptionLabels: TranslationLabelObject<TranslationLabel<SearchO
     [Languages.FR]: searchOptionsLabelFr
 }
 
-type InputLabels = {
-    to: string;
-    from: string;
-    submit: string;
+export const searchLabels: TranslationLabelObject<{
+    searchOptions: {
+        from: string;
+        startDate: string;
+        endDate: string;
+        submit: string
+    },
+    errors: {
+        origin: string,
+        startDate: string,
+        endDate: string
+    }
+}> = {
+    [Languages.EN]: {
+        searchOptions: {
+            from: "From",
+            startDate: "Start date",
+            endDate: "End Date",
+            submit: "let's go!"
+        }, errors: {
+            origin: "Select an origin",
+            startDate: "Select a date to search from",
+            endDate: "Select a date to search to"
+        }
+    },
+    [Languages.FR]: {
+        searchOptions: {
+            from: "Origin",
+            startDate: "Date de début",
+            endDate: "Date de fin",
+            submit: "Allons-y !"
+        },
+        errors: {
+            origin: "Sélectionnez une origine",
+            startDate: "Sélectionnez une date de début de recherche",
+            endDate: "Sélectionnez une date de fin de recherche"
+        }
+    }
 }
 
-const inputLabelsEn = {
-    to: "To",
-    from: "From",
-    submit: "Let's go!"
-}
-
-const inputLabelsFr = {
-    to: "Déstination",
-    from: "Origin",
-    submit: "Allons-y !"
-}
-
-
-export const inputLabels: TranslationLabelObject<InputLabels> = {
-    [Languages.EN]: inputLabelsEn,
-    [Languages.FR]: inputLabelsFr
-}
-
-export const originErrorLabel: TranslationLabelObject<string> = {
-    [Languages.EN]: "Select an origin",
-    [Languages.FR]: "Veuillez selectionner un point de départ"
+export const originErrorLabel: TranslationLabelObject<{ origin: string, startDate: string, endDate: string }> = {
+    [Languages.EN]: {
+        origin: "Select an origin",
+        startDate: "Select a date to search from",
+        endDate: "Select a date to search to"
+    },
+    [Languages.FR]: {
+        origin: "Sélectionnez une origine",
+        startDate: "Sélectionnez une date de début de recherche",
+        endDate: "Sélectionnez une date de fin de recherche"
+    }
 }

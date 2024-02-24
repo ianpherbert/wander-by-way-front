@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { tripPlannerContext } from "../../../pages/TripPlannerPage";
+import { tripPlannerContext } from "../../../pages/ExplorePage";
 
 export function useTripPlannerContext(){
     return useContext(tripPlannerContext);

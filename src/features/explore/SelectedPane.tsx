@@ -10,7 +10,7 @@ import { useDateFormatter } from "../../utils/dateUtils";
 import { Languages, TranslationLabelObject } from "../../translations/global";
 import { SearchItemType } from "../common/SearchItemType";
 import { skipToken } from "@reduxjs/toolkit/query";
-import { useGetRouteQuery } from "./tripPlannerRest";
+import { useGetRouteQuery } from "./exploreRest";
 import { differenceInMinutes, isAfter, parseISO } from "date-fns";
 
 const selectedPaneLabels: TranslationLabelObject<{

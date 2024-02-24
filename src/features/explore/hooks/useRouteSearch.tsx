@@ -1,7 +1,7 @@
 import { useMemo } from "react"
 import { SearchItemType } from "../../common/SearchItemType"
 import { skipToken } from "@reduxjs/toolkit/query"
-import { useSearchFromPointQuery } from "../tripPlannerRest"
+import { useSearchFromPointQuery } from "../exploreRest"
 import { useSearchFromIdQuery } from "../../search/SearchRest"
 
 export default function useRouteSearch(placeId?: string, placeType?: SearchItemType) {

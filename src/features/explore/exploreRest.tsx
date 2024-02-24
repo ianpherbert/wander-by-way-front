@@ -12,7 +12,7 @@ interface RouteParams {
   placeType: SearchItemType;
 }
 
-const tripPlannerApi = rest.injectEndpoints({
+const exploreRest = rest.injectEndpoints({
     endpoints: (builder) => ({
         searchFromPoint: builder.query<RouteSearchResult, SearchParams>({
             query: ({placeId, placeType}: SearchParams) => {
@@ -32,4 +32,4 @@ const tripPlannerApi = rest.injectEndpoints({
     }),
   });
 
-export const {useSearchFromPointQuery, useGetRouteQuery} = tripPlannerApi;
+export const {useSearchFromPointQuery, useGetRouteQuery} = exploreRest;
