@@ -1,5 +1,5 @@
-import useTripParams from "../features/tripPlanner/useTripParams";
-import useRouteSearch from "../features/tripPlanner/useRouteSearch";
+import useTripParams from "../features/tripPlanner/hooks/useTripParams";
+import useRouteSearch from "../features/tripPlanner/hooks/useRouteSearch";
 import { createContext, useCallback, useMemo, useState } from "react";
 import { Point } from "../features/common/map/Point";
 import { RouteSearchGroup, RouteSearchPlace, RouteSearchResult, RouteSearchRoute } from "../features/tripPlanner/RouteSearchResult";
@@ -13,9 +13,14 @@ type TripPlannerContext = {
     trip: RouteSearchRoute[];
     selectedSearchGroup?: RouteSearchGroup;
     unselectSearchGroup: () => void;
+    setSelectedSearchGroup: (group?: RouteSearchGroup) => void;
     addToTrip: (route: RouteSearchRoute) => void;
     currentSearchResult?: RouteSearchResult;
     currentOrigin?: SearchItem;
+    listOpen: boolean;
+    setListOpen: (value: boolean) => void;
+    selectedRouteStops: RouteSearchPlace[];
+    setSelectedRouteStops: (places: RouteSearchPlace[]) => void;
 }
 
 export const tripPlannerContext = createContext<TripPlannerContext>({} as TripPlannerContext);
@@ -25,7 +30,9 @@ export default function TripPlannerPage() {
     const [currentPoint, setCurrentPoint] = useState<Point>();
     const [trip, setTrip] = useState<RouteSearchRoute[]>([]);
     const [selectedSearchGroup, setSelectedSearchGroup] = useState<RouteSearchGroup>();
-    const [searchFrom, setSearchFrom] = useState<RouteSearchPlace>()
+    const [searchFrom, setSearchFrom] = useState<RouteSearchPlace>();
+    const [listOpen, setListOpen] = useState(true);
+    const [selectedRouteStops, setSelectedRouteStops] = useState<RouteSearchPlace[]>([]);
 
     const currentSearch = useMemo(() =>
         searchFrom ?
@@ -50,9 +57,9 @@ export default function TripPlannerPage() {
         setTrip(it => [...it, route]);
     }, [setTrip])
 
-    const unselectSearchGroup = useCallback(()=>{
+    const unselectSearchGroup = useCallback(() => {
         setSelectedSearchGroup(undefined);
-    },[setSelectedSearchGroup])
+    }, [setSelectedSearchGroup])
 
     return <tripPlannerContext.Provider value={{
         currentPoint,
@@ -62,7 +69,12 @@ export default function TripPlannerPage() {
         selectPoint,
         currentSearchResult: currentSearchQuery?.data,
         currentOrigin,
-        unselectSearchGroup
+        unselectSearchGroup,
+        listOpen,
+        setListOpen,
+        setSelectedSearchGroup,
+        selectedRouteStops,
+        setSelectedRouteStops,
     }}>
         <TripPlanner />
     </tripPlannerContext.Provider>

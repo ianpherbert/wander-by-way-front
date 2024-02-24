@@ -1,11 +1,15 @@
 import Map from "../common/map/Map";
 import { useMemo } from "react";
-import { searchItemTypeToMapPointType } from "../common/SearchItemType";
-import { useTripPlannerContext } from "./useTripPlannerContext";
+import { searchItemTypeToMapPointType, searchItemTypeToMapPointTypeConnection } from "../common/SearchItemType";
+import { useTripPlannerContext } from "./hooks/useTripPlannerContext";
 import { Point } from "../common/map/Point";
 
-export default function RouteSearchMap() {
-    const { currentSearchResult, selectPoint } = useTripPlannerContext();
+type RouteSearchMapProps = {
+    onLoad: () => void;
+}
+
+export default function RouteSearchMap({ onLoad }: RouteSearchMapProps) {
+    const { currentSearchResult, selectPoint, selectedRouteStops: selectedRouteStops } = useTripPlannerContext();
     const currentSearchPoints: Point[] = useMemo(() =>
         currentSearchResult?.destinations.map(({ destination }) => ({
             id: String(destination.id),
@@ -15,7 +19,15 @@ export default function RouteSearchMap() {
             label: destination.name
         })) ?? []
         , [currentSearchResult])
+    const selectedRoutePoints = useMemo(() => selectedRouteStops.map(({ id, longitude, latitude, type, name }) => ({
+        id: String(id),
+        longitude: longitude,
+        latitude: latitude,
+        type: searchItemTypeToMapPointTypeConnection[type],
+        label: name
+    })), [selectedRouteStops]);
+
     return (
-        <Map points={currentSearchPoints} onSelectPoint={selectPoint} flex={1} />
+        <Map searchPoints={currentSearchPoints} routePoints={selectedRoutePoints} onSelectPoint={selectPoint} flex={1} onLoad={onLoad} />
     )
 }

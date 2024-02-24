@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { SearchItemType } from "../common/SearchItemType";
+import { SearchItemType } from "../../common/SearchItemType";
 
 const defaultSplit = [undefined, undefined];
 

@@ -32,6 +32,10 @@ export type RouteSearchRoute = {
     durationMinutes: number;
     destinationIata: string | null;
     destinationDbId: string | null;
+    departureTime: string,
+    arrivalTime: string,
+    carriers: string[]
+    routeId: string,
 }
 
 export type RouteSearchResult = {
@@ -39,4 +43,26 @@ export type RouteSearchResult = {
     destinationCount: number;
     destinations: RouteSearchGroup[];
     origin: RouteSearchPlace;
+}
+
+export type RouteStop = {
+    stop: RouteSearchPlace,
+    arrival: string | null,
+    plannedArrival: string | null,
+    arrivalDelay: string | null,
+    arrivalPlatform: string | null,
+    plannedDeparture: string,
+    departureDelay: string | null,
+    dbId: string
+}
+
+export type Route = {
+    origin: RouteSearchPlace,
+    destination: RouteSearchPlace,
+    departure: string,
+    arrival: string,
+    duration: number,
+    routeId: string,
+    type: RouteSearchRouteType,
+    stops: RouteStop[]
 }

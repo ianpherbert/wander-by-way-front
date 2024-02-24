@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Image, internalImages } from "../assets/images";
 import { setLanguage, useAppLanguage } from "../redux/appSlice";
 import { Languages, TranslationLabelObject, languageLabel } from "./global";
-import { Fade, IconButton, List, ListItem, ListItemButton, ListItemText, Popper, Tooltip } from "@mui/material";
+import { Fade, IconButton, List, ListItem, ListItemAvatar, ListItemButton, ListItemText, Popper, Tooltip } from "@mui/material";
 import { useDispatch } from "react-redux";
 
 type LanguageImage = { [key in Languages]: keyof typeof internalImages }
@@ -20,7 +20,9 @@ function LanguageListItem({ language, image }: { language: string, image: string
     return (
         <ListItem dense disablePadding>
             <ListItemButton sx={{ display: "flex" }} onClick={changeLanguage} dense >
-                <Image url={image as keyof typeof internalImages} component={IconButton} sx={styles.image} />
+                <ListItemAvatar>
+                    <Image url={image as keyof typeof internalImages} component={IconButton} sx={styles.image} />
+                </ListItemAvatar>
                 <ListItemText primary={languageLabel[language as Languages]} />
             </ListItemButton>
         </ListItem>
@@ -41,7 +43,6 @@ export default function LanguageButton() {
     const icon = useMemo(() => languageIcons[language], [language]);
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-        console.log(anchorEl)
         setAnchorEl(event.currentTarget);
         setOpen((previousOpen) => !previousOpen);
     };

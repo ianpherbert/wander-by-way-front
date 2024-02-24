@@ -53,7 +53,7 @@ export type CountryCode = "AT"
     | "JE"
     | "GG";
 
-type CountryLabel = { [key in CountryCode]: string }
+export type CountryLabel = { [key in CountryCode]: string }
 
 const countriesEn: CountryLabel = {
     AT: "Austria",

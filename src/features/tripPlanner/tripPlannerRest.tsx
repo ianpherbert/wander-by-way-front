@@ -1,11 +1,16 @@
 import rest from "../../redux/rest";
 import { SearchItemType } from "../common/SearchItemType";
-import { RouteSearchResult } from "./RouteSearchResult";
+import { Route, RouteSearchResult } from "./RouteSearchResult";
 
 interface SearchParams {
     placeId: string;
     placeType: SearchItemType;
-  }
+}
+
+interface RouteParams {
+  routeIds: string[],
+  placeType: SearchItemType;
+}
 
 const tripPlannerApi = rest.injectEndpoints({
     endpoints: (builder) => ({
@@ -13,10 +18,18 @@ const tripPlannerApi = rest.injectEndpoints({
             query: ({placeId, placeType}: SearchParams) => {
                 const queryParams = new URLSearchParams();
                 queryParams.append("type", placeType);
-                return `/search/route/${placeId}?${queryParams}`
-            }
+                return `/route/search/${placeId}?${queryParams}`
+            },
         }),
+        getRoute: builder.query<Route[], RouteParams>({
+          query: ({routeIds, placeType}: RouteParams) => {
+              const queryParams = new URLSearchParams();
+              queryParams.append("type", placeType);
+              return `/route/${routeIds.join(",")}?${queryParams}`
+          },
+          
+      }),
     }),
   });
 
-export const {useSearchFromPointQuery} = tripPlannerApi;
+export const {useSearchFromPointQuery, useGetRouteQuery} = tripPlannerApi;
