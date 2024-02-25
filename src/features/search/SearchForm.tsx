@@ -27,13 +27,14 @@ export type SearchFormType = {
 
 type SearchFromProps = Omit<BoxProps, "onSubmit"> & {
     onSubmit: (data: SearchFormType) => void;
+    defaultValues?: SearchFormType;
 }
 
 
-export default function SearchForm({ onSubmit, ...props }: SearchFromProps) {
+export default function SearchForm({ onSubmit, defaultValues, ...props }: SearchFromProps) {
 
-    const [from, setFrom] = useState<SearchItem | null>(null)
-    const [selectedOptions, setSelectedOptions] = useState(defaultOptions);
+    const [from, setFrom] = useState<SearchItem | null>(defaultValues?.from ?? null)
+    const [selectedOptions, setSelectedOptions] = useState(defaultValues?.options ?? defaultOptions);
     const { errors: errorLabels, searchOptions } = useTranslation(searchLabels);
 
     const {
@@ -85,7 +86,13 @@ export default function SearchForm({ onSubmit, ...props }: SearchFromProps) {
                             <SearchInput selectedItem={from} onSelect={setFormValue("from")} label={searchOptions.from} searchOptions={selectedOptions} fullWidth size="small" error={errors.from?.message} />
                         </Grid>
                         <Grid item xs={12} md={6}>
-                            <DateRangePicker onChange={handleDateChange} endError={errors.endDate?.message} startError={errors.startDate?.message} />
+                            <DateRangePicker
+                                onChange={handleDateChange}
+                                endError={errors.endDate?.message}
+                                startError={errors.startDate?.message}
+                                startDefaultValue={defaultValues?.startDate}
+                                endDefaultValue={defaultValues?.endDate}
+                            />
                         </Grid>
                     </Grid>
                     <TypeChoice selectedOptions={selectedOptions} setSelectedOptions={setSelectedOptions} />

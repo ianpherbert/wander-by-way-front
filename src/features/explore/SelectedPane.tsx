@@ -1,4 +1,4 @@
-import { Box, Button, Card, CircularProgress, Collapse, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack, Tooltip } from "@mui/material";
+import { Box, Button, CircularProgress, Collapse, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack, Tooltip } from "@mui/material";
 import PlaceImage from "../common/unsplash/CityImage";
 import { useTripPlannerContext } from "./hooks/useTripPlannerContext";
 import { IntermediateIcon, routeSearchRouteTypeIcons } from "../../utils/icons";
@@ -12,6 +12,7 @@ import { SearchItemType } from "../common/SearchItemType";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { useGetRouteQuery } from "./exploreRest";
 import { differenceInMinutes, isAfter, parseISO } from "date-fns";
+import WanderCard from "../common/WanderCard";
 
 const selectedPaneLabels: TranslationLabelObject<{
     addToTrip: string;
@@ -92,7 +93,7 @@ function StopList({ open, departureTime, routeId }: {
     return (
         <Collapse in={open}>
             <List component="div" disablePadding>
-                { !loading ? 
+                {!loading ?
                     displayedStops?.map(({ stop, plannedDeparture, plannedArrival }) => (
                         <ListItemButton sx={{ pl: 4 }} key={stop.id}>
                             <ListItemIcon>
@@ -102,7 +103,7 @@ function StopList({ open, departureTime, routeId }: {
                         </ListItemButton>
                     )) :
                     <ListItem sx={{ pl: 4 }}>
-                        <ListItemIcon><CircularProgress/></ListItemIcon>
+                        <ListItemIcon><CircularProgress /></ListItemIcon>
                     </ListItem>
                 }
             </List>
@@ -148,35 +149,32 @@ export default function SelectedPane() {
     }, [setAdditionalSearchPlaces, unselectSearchGroup])
 
     return (
-        <Collapse in={Boolean(selectedSearchGroup)} orientation="horizontal" key={selectedSearchGroup?.destination.id}>
-            <Card sx={{ height: "100%" }}>
-                <Stack height={"100%"}>
-                    <PlaceImage queryString={selectedSearchGroup?.destination.name} height={50} width={400} blur={2}>
-                        <h2>{selectedSearchGroup?.destination.name}</h2>
-                    </PlaceImage>
-                    <Box flex={1} overflow={"auto"}>
-                        <List>
-                            {selectedSearchGroup?.routes.map((props, index) => (
-                                <RouteListItem
-                                    {...props}
-                                    key={props.destination.id + index}
-                                    toggleOpen={handleSetOpenDestinationId(props)}
-                                    open={openDestinationId === props.routeId}
-                                />
-                            ))}
-                        </List>
-                    </Box>
-                    <Button
-                        onClick={closePane}
-                        variant="contained"
-                        color="info"
-                        sx={{ margin: 1 }}
-                    >
-                        Close
-                    </Button>
-                </Stack>
-            </Card>
-
-        </Collapse>
+        <WanderCard sx={{ height: "100%", width: Boolean(selectedSearchGroup) ? "fit-content" : 0 }} elevation={5}>
+            <Stack height={"100%"}>
+                <PlaceImage queryString={selectedSearchGroup?.destination.name} height={50} width={400} blur={2}>
+                    <h2>{selectedSearchGroup?.destination.name}</h2>
+                </PlaceImage>
+                <Box flex={1} overflow={"auto"}>
+                    <List>
+                        {selectedSearchGroup?.routes.map((props, index) => (
+                            <RouteListItem
+                                {...props}
+                                key={props.destination.id + index}
+                                toggleOpen={handleSetOpenDestinationId(props)}
+                                open={openDestinationId === props.routeId}
+                            />
+                        ))}
+                    </List>
+                </Box>
+                <Button
+                    onClick={closePane}
+                    variant="contained"
+                    color="info"
+                    sx={{ margin: 1 }}
+                >
+                    Close
+                </Button>
+            </Stack>
+        </WanderCard>
     )
 }

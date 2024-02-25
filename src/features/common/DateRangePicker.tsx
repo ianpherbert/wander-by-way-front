@@ -16,11 +16,13 @@ type DateRangePickerProps = {
     endError?: string;
     startLabel?: string;
     endLabel?: string;
+    startDefaultValue?: Date | null;
+    endDefaultValue?: Date | null;
 }
 
-export default function DateRangePicker({ onChange, startError, endError, startLabel, endLabel }: DateRangePickerProps) {
-    const [startDate, setStartDate] = useState<Date | null>(new Date());
-    const [endDate, setEndDate] = useState<Date | null>(add(new Date(), { weeks: 1 }));
+export default function DateRangePicker({ onChange, startError, endError, startLabel, endLabel, startDefaultValue, endDefaultValue }: DateRangePickerProps) {
+    const [startDate, setStartDate] = useState<Date | null>(startDefaultValue ?? new Date());
+    const [endDate, setEndDate] = useState<Date | null>(endDefaultValue ?? add(new Date(), { weeks: 1 }));
 
     const handleSetDate = useCallback((type: "start" | "end") => (date: dayjs.Dayjs | null) => {
         const fn = type === "start" ? setStartDate : setEndDate;
