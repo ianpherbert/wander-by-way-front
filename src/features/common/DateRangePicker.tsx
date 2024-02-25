@@ -37,20 +37,20 @@ export default function DateRangePicker({ onChange, startError, endError, startL
 
     return (
         <AppLocalizationProvider>
-            <Stack direction="row" spacing={1}>
+            <Stack direction="row" spacing={1} >
                 <DatePicker
                     label={startLabel}
                     onChange={handleSetDate("start")}
                     value={dayjs(startDate)}
                     minDate={dayjs(new Date())}
-                    slotProps={{ textField: { size: "small", error: Boolean(startError), helperText: startError } }}
+                    slotProps={{ textField: { size: "small", error: Boolean(startError), helperText: startError, fullWidth: true } }}
                 />
                 <DatePicker
                     label={endLabel}
                     onChange={handleSetDate("end")}
                     value={dayjs(endDate)}
                     minDate={dayjs(startDate)}
-                    slotProps={{ textField: { size: "small", error: Boolean(endError), helperText: endError } }}
+                    slotProps={{ textField: { size: "small", error: Boolean(endError), helperText: endError, fullWidth: true } }}
                 />
             </Stack>
         </AppLocalizationProvider>
