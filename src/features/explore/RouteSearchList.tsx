@@ -1,4 +1,4 @@
-import { Card, Stack, Box, List, ListItem, ListItemIcon, ListItemText, ListItemButton } from "@mui/material";
+import { Stack, Box, List, ListItem, ListItemIcon, ListItemText, ListItemButton } from "@mui/material";
 import { useTripPlannerContext } from "./hooks/useTripPlannerContext";
 import { useCallback } from "react";
 import { SearchItemType } from "../common/SearchItemType";

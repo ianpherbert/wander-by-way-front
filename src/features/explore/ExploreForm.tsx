@@ -1,6 +1,6 @@
-import { Accordion, AccordionDetails, AccordionSummary, Box, Collapse, Grid, IconButton, Stack, Typography } from "@mui/material";
+import { Collapse, IconButton, Stack, Typography } from "@mui/material";
 import SearchForm, { SearchFormType } from "../search/SearchForm";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { endPoints } from "../../main";
@@ -9,15 +9,15 @@ import WanderCard from "../common/WanderCard";
 import { Languages, TranslationLabelObject } from "../../translations/global";
 import useTranslation from "../../translations/useTranslation";
 
-const exploreFormLabels: TranslationLabelObject<{searchLabel: string}> = {
-     [Languages.EN]: {searchLabel: "Search"},
-     [Languages.FR]: {searchLabel: "Rechercher"},
+const exploreFormLabels: TranslationLabelObject<{ searchLabel: string }> = {
+    [Languages.EN]: { searchLabel: "Search" },
+    [Languages.FR]: { searchLabel: "Rechercher" },
 }
 
 export default function ExploreForm() {
     const [open, setOpen] = useState(true);
     const navigate = useNavigate();
-    const {searchLabel} = useTranslation(exploreFormLabels);
+    const { searchLabel } = useTranslation(exploreFormLabels);
 
     const redirectToTripPlanner = useCallback(({ from, startDate, endDate }: SearchFormType) => {
         const origin = from?.id ? `${from?.id}-${from?.type}` : "";
@@ -44,7 +44,7 @@ export default function ExploreForm() {
                 </IconButton>
             </Stack>
             <Collapse in={open}>
-                <SearchForm onSubmit={redirectToTripPlanner} m={1}/>
+                <SearchForm onSubmit={redirectToTripPlanner} m={1} />
             </Collapse>
         </WanderCard>
     )

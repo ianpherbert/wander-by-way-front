@@ -3,7 +3,6 @@ import { useMemo } from "react";
 import { searchItemTypeToMapPointType, searchItemTypeToMapPointTypeConnection } from "../common/SearchItemType";
 import { useTripPlannerContext } from "./hooks/useTripPlannerContext";
 import { Point } from "../common/map/Point";
-import WanderCard from "../common/WanderCard";
 
 type RouteSearchMapProps = {
     onLoad: () => void;
