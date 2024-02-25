@@ -5,6 +5,8 @@ import { Route, RouteSearchResult } from "./RouteSearchResult";
 interface SearchParams {
     placeId: string;
     placeType: SearchItemType;
+    startDate: string;
+    endDate: string;
 }
 
 interface RouteParams {
@@ -15,9 +17,11 @@ interface RouteParams {
 const exploreRest = rest.injectEndpoints({
     endpoints: (builder) => ({
         searchFromPoint: builder.query<RouteSearchResult, SearchParams>({
-            query: ({placeId, placeType}: SearchParams) => {
+            query: ({placeId, placeType, startDate, endDate}: SearchParams) => {
                 const queryParams = new URLSearchParams();
                 queryParams.append("type", placeType);
+                queryParams.append("startDate", startDate);
+                queryParams.append("endDate", endDate);
                 return `/route/search/${placeId}?${queryParams}`
             },
         }),

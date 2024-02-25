@@ -26,7 +26,7 @@ type TripPlannerContext = {
 export const tripPlannerContext = createContext<TripPlannerContext>({} as TripPlannerContext);
 
 export default function TripPlannerPage() {
-    const { originId, originType } = useExploreParams();
+    const { originId, originType, startDate, endDate } = useExploreParams();
     const [currentPoint, setCurrentPoint] = useState<Point>();
     const [trip, setTrip] = useState<RouteSearchRoute[]>([]);
     const [selectedSearchGroup, setSelectedSearchGroup] = useState<RouteSearchGroup>();
@@ -36,12 +36,12 @@ export default function TripPlannerPage() {
 
     const currentSearch = useMemo(() =>
         searchFrom ?
-            { id: String(searchFrom?.id), type: searchFrom?.type } :
-            { id: originId, type: originType }
+            { id: String(searchFrom?.id), type: searchFrom?.type, startDate, endDate } :
+            { id: originId, type: originType, startDate, endDate }
         , [originId, originType, currentPoint]
     );
 
-    const { origin: currentOrigin, routeQuery: currentSearchQuery } = useRouteSearch(currentSearch.id, currentSearch.type);
+    const { origin: currentOrigin, routeQuery: currentSearchQuery } = useRouteSearch(currentSearch.id, currentSearch.type, currentSearch.startDate, currentSearch.endDate);
 
 
 

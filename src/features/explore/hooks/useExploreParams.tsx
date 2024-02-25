@@ -7,8 +7,8 @@ const defaultSplit = [undefined, undefined];
 export type TripParams = {
     originId?: string;
     originType?: SearchItemType;
-    dateFrom?: string,
-    dateTo?: string
+    startDate?: string,
+    endDate?: string
 }
 
 export default function useExploreParams(): TripParams {
@@ -21,7 +21,7 @@ export default function useExploreParams(): TripParams {
     return {
         originId,
         originType: originType ? originType as SearchItemType : undefined,
-        dateFrom,
-        dateTo,
+        startDate: dateFrom,
+        endDate: dateTo,
     }
 }
