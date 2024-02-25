@@ -32,12 +32,12 @@ export const mapIcons: MapIcons = {
         name: "plane-point-connection", path: "plane-point-connection.png", scale: 1
     },
     TRAIN_STATION_CONNECTION: {
-        name: "train-point-connection", path: "train-point-connection.png", scale: 1 
+        name: "train-point-connection", path: "train-point-connection.png", scale: 1
     },
     BUS_STATION_CONNECTION: {
-        name: "bus-point-connection", path: "bus-point-connection.png", scale: 1 
+        name: "bus-point-connection", path: "bus-point-connection.png", scale: 1
     },
     PORT_CONNECTION: {
-        name: "ferry-point-connection", path: "ferry-point-connection.png", scale: 1 
+        name: "ferry-point-connection", path: "ferry-point-connection.png", scale: 1
     }
 };

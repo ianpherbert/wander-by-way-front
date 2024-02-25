@@ -66,13 +66,3 @@ export default function TypeChoice({ selectedOptions, setSelectedOptions, ...pro
     }
     return options;
 }
-
-
-const styles = {
-    toggle: {
-        transition: 'transform .3s'
-    },
-    toggleUp: {
-        transform: 'rotate(180deg)'
-    }
-}

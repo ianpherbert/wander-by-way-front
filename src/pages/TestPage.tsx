@@ -1,20 +1,13 @@
-import { Button } from "@mui/material";
-import { LocalStorageItem } from "../assets/localStorage";
-
-
-
+import { Box } from "@mui/material";
+import PlaceImage from "../features/common/unsplash/CityImage";
 
 export default function TestPage() {
 
-    const doIt = () => {
-        const language = localStorage.getItem(LocalStorageItem.LANGUAGE_PREFERENCE);
-        const browserLang = navigator.language;
-        const browserLangs = navigator.languages;
-
-        console.log({language, browserLang, browserLangs})
-    }
-
     return (
-        <Button onClick={doIt}>OK</Button>
+        <PlaceImage queryString="bayonne" height={300} blur={1.5}>
+            <Box>
+
+            </Box>
+        </PlaceImage>
     )
 }

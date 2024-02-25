@@ -9,15 +9,19 @@ import { Provider } from "react-redux";
 import { ThemeProvider } from '@mui/material'
 import store from './redux/store.ts'
 import TestPage from './pages/TestPage.tsx'
+import TripPlannerPage from './pages/ExplorePage.tsx'
 
-export const paths = {
+export const endPoints = {
   home: { entrypoint: "home" },
-  test: { entrypoint: "test" }
+  test: { entrypoint: "test" },
+  explore: { entrypoint: "explore" }
 }
 
 const routes = [
-  { path: paths.home.entrypoint, element: <HomePage /> },
-  { path: paths.test.entrypoint, element: <TestPage /> }
+  { path: endPoints.home.entrypoint, element: <HomePage /> },
+  { path: endPoints.test.entrypoint, element: <TestPage /> },
+  { path: endPoints.explore.entrypoint, element: <TripPlannerPage /> },
+  { path: `${endPoints.explore.entrypoint}`, element: <TripPlannerPage /> },
 ]
 
 const router = createBrowserRouter([
@@ -28,7 +32,6 @@ const router = createBrowserRouter([
     children: routes
   },
 ]);
-
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

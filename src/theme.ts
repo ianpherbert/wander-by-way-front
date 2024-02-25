@@ -1,25 +1,25 @@
-import {createTheme, ThemeOptions} from "@mui/material";
+import { createTheme, ThemeOptions } from "@mui/material";
 
 declare module "@mui/material/styles" {
     interface Palette {
-      backGround: {
-        light: string;
-        dark: string;
-      }
+        backGround: {
+            light: string;
+            dark: string;
+        }
     }
     interface PaletteOptions {
-      backGround: {
-        light: string;
-        dark: string;
-      }
+        backGround: {
+            light: string;
+            dark: string;
+        }
     }
-  }
-  
-  declare module "@mui/material/Button" {
+}
+
+declare module "@mui/material/Button" {
     interface ButtonPropsColorOverrides {
-      backGround: true;
+        backGround: true;
     }
-  }
+}
 
 const themeOptions: ThemeOptions = {
     palette: {

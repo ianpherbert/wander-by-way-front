@@ -1,4 +1,5 @@
 import { CountryCode } from "../../translations/countries";
+import { SearchItemType } from "../common/SearchItemType";
 
 export type SearchOptions = {
     airport: boolean,
@@ -6,14 +7,6 @@ export type SearchOptions = {
     city: boolean,
     port: boolean,
     bus: boolean,
-}
-
-export enum SearchItemType {
-    AIRPORT = "AIRPORT",
-    PORT = "PORT",
-    BUS_STATION = "BUS_STATION",
-    CITY = "CITY",
-    TRAIN_STATION = "TRAIN_STATION"
 }
 
 export type SearchItem = {

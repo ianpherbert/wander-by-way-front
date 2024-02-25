@@ -5,8 +5,9 @@ import { skipToken } from "@reduxjs/toolkit/query";
 import debounce from 'lodash/debounce';
 import { BoatIcon, BusIcon, CityIcon, PlaneIcon, TrainIcon } from "../../utils/icons";
 import { countryLabels } from "../../translations/countries";
-import { SearchItem, SearchOptions, SearchItemType } from "./SearchResult";
+import { SearchItem, SearchOptions } from "./SearchResult";
 import useTranslation from "../../translations/useTranslation";
+import { SearchItemType } from "../common/SearchItemType";
 
 
 const styles = {
