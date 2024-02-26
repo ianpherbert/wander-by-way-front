@@ -8,7 +8,7 @@ import TypeChoice from "./TypeChoice";
 import useTranslation from "../../translations/useTranslation";
 import { searchLabels } from "./searchTranslations";
 import WanderCard from "../common/WanderCard";
-import DateRangePicker, { DateRange } from "../common/DateRangePicker";
+import AppDatePicker from "../common/AppDatePicker";
 
 const defaultOptions: SearchOptions = {
     airport: true,
@@ -20,7 +20,6 @@ const defaultOptions: SearchOptions = {
 
 export type SearchFormType = {
     startDate: Date | null;
-    endDate: Date | null;
     from: SearchItem | null;
     options: SearchOptions;
 }
@@ -54,9 +53,6 @@ export default function SearchForm({ onSubmit, defaultValues, ...props }: Search
         if (!data.startDate) {
             setError("startDate", { message: errorLabels.startDate })
         }
-        if (!data.endDate) {
-            setError("endDate", { message: errorLabels.endDate })
-        }
         onSubmit(data)
     }, [setError]);
 
@@ -70,11 +66,10 @@ export default function SearchForm({ onSubmit, defaultValues, ...props }: Search
     }, [setFrom, fromWatch])
 
 
-    const setFormValue = useCallback((fieldName: "from" | "startDate" | "endDate") => (value: SearchItem | Date | null) => { setValue(fieldName, value) }, [setValue])
+    const setFormValue = useCallback((fieldName: "from" | "startDate") => (value: SearchItem | Date | null) => { setValue(fieldName, value) }, [setValue])
 
-    const handleDateChange = useCallback((dateRange: DateRange) => {
-        setFormValue("startDate")(dateRange.startDate);
-        setFormValue("endDate")(dateRange.endDate);
+    const handleDateChange = useCallback((date: Date | null) => {
+        setFormValue("startDate")(date);
     }, [setFormValue])
 
     return (
@@ -82,17 +77,11 @@ export default function SearchForm({ onSubmit, defaultValues, ...props }: Search
             <Box sx={styles.container} {...props}>
                 <WanderCard sx={styles.card} background="noiseGrey">
                     <Grid container spacing={.5} pt={1} mb={1}>
-                        <Grid item xs={12} md={6}>
+                        <Grid item xs={12} sm={8}>
                             <SearchInput selectedItem={from} onSelect={setFormValue("from")} label={searchOptions.from} searchOptions={selectedOptions} fullWidth size="small" error={errors.from?.message} />
                         </Grid>
-                        <Grid item xs={12} md={6}>
-                            <DateRangePicker
-                                onChange={handleDateChange}
-                                endError={errors.endDate?.message}
-                                startError={errors.startDate?.message}
-                                startDefaultValue={defaultValues?.startDate}
-                                endDefaultValue={defaultValues?.endDate}
-                            />
+                        <Grid item xs={12} sm={4}>
+                            <AppDatePicker onChange={handleDateChange} slotProps={{ textField: { size: "small", error: Boolean(errors?.startDate?.message), helperText: errors?.startDate?.message, fullWidth: true } }} />
                         </Grid>
                     </Grid>
                     <TypeChoice selectedOptions={selectedOptions} setSelectedOptions={setSelectedOptions} />

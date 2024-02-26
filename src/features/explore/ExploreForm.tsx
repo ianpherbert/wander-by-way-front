@@ -19,12 +19,11 @@ export default function ExploreForm() {
     const navigate = useNavigate();
     const { searchLabel } = useTranslation(exploreFormLabels);
 
-    const redirectToTripPlanner = useCallback(({ from, startDate, endDate }: SearchFormType) => {
+    const redirectToTripPlanner = useCallback(({ from, startDate}: SearchFormType) => {
         const origin = from?.id ? `${from?.id}-${from?.type}` : "";
         const queryParams = new URLSearchParams();
         queryParams.append("origin", origin);
-        queryParams.append("startDate", format(startDate!, 'yyyy-MM-dd'));
-        queryParams.append("endDate", format(endDate!, 'yyyy-MM-dd'));
+        queryParams.append("startDate", format(startDate!.toISOString(), 'yyyy-MM-dd'));
         const path = `/${endPoints.explore.entrypoint}?${queryParams}`
         navigate(path);
     }, [])
