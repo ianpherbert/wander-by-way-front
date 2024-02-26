@@ -8,7 +8,7 @@ type RouteSearchMapProps = {
     onLoad: () => void;
 }
 
-export default function RouteSearchMap({ onLoad }: RouteSearchMapProps) {
+export default function ExploreMap({ onLoad }: RouteSearchMapProps) {
     const { currentSearchResult, selectPoint, selectedRouteStops: selectedRouteStops } = useTripPlannerContext();
     const currentSearchPoints: Point[] = useMemo(() =>
         currentSearchResult?.destinations.map(({ destination }) => ({

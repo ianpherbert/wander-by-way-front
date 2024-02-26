@@ -8,6 +8,8 @@ import { ExpandMore, Search } from "@mui/icons-material";
 import WanderCard from "../common/WanderCard";
 import { Languages, TranslationLabelObject } from "../../translations/global";
 import useTranslation from "../../translations/useTranslation";
+import { useTripPlannerContext } from "./hooks/useTripPlannerContext";
+import useExploreParams from "./hooks/useExploreParams";
 
 const exploreFormLabels: TranslationLabelObject<{ searchLabel: string }> = {
     [Languages.EN]: { searchLabel: "Search" },
@@ -18,6 +20,9 @@ export default function ExploreForm() {
     const [open, setOpen] = useState(true);
     const navigate = useNavigate();
     const { searchLabel } = useTranslation(exploreFormLabels);
+    const { currentOrigin } = useTripPlannerContext();
+    const {startDate } = useExploreParams()
+
 
     const redirectToTripPlanner = useCallback(({ from, startDate}: SearchFormType) => {
         const origin = from?.id ? `${from?.id}-${from?.type}` : "";
@@ -28,7 +33,12 @@ export default function ExploreForm() {
         navigate(path);
     }, [])
 
-    const toggleOpen = useCallback(() => setOpen(value => !value), [setOpen])
+    const toggleOpen = useCallback(() => setOpen(value => !value), [setOpen]);
+
+    const defaultValues = {
+        startDate: startDate ? new Date(startDate) : null,
+        from: currentOrigin ?? null,
+    }
 
     return (
         <WanderCard sx={{ mb: 1 }}>
@@ -43,7 +53,7 @@ export default function ExploreForm() {
                 </IconButton>
             </Stack>
             <Collapse in={open}>
-                <SearchForm onSubmit={redirectToTripPlanner} m={1} />
+                <SearchForm onSubmit={redirectToTripPlanner} m={1} defaultValues={defaultValues}/>
             </Collapse>
         </WanderCard>
     )

@@ -1,5 +1,5 @@
 import { Button, Stack } from "@mui/material";
-import RouteSearchMap from "./RouteSearchMap";
+import ExploreMap from "./ExploreMap";
 import SelectedPane from "./SelectedPane";
 import RouteSearchList from "./RouteSearchList";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -68,10 +68,10 @@ export default function Explore() {
     return (
         <Stack>
             <WanderCard background="noisePrimary" sx={{ p: .5 }}>
-            <ExploreForm />
+                <ExploreForm />
                 <Stack direction="row" height={800} position="relative">
                     {shouldShowSearchList && <RouteSearchList visible={listOpen} />}
-                    <RouteSearchMap onLoad={loadMap} />
+                    <ExploreMap onLoad={loadMap} />
                     {shouldShowSelectedPane && <SelectedPane />}
                     {shouldShowToggleButton && <ShowButton toggleVisible={toggleListOpen} listVisible={listOpen} />}
                 </Stack>

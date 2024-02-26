@@ -24,15 +24,15 @@ export type SearchFormType = {
     options: SearchOptions;
 }
 
-type SearchFromProps = Omit<BoxProps, "onSubmit"> & {
+type SearchFromProps = Omit<BoxProps, "onSubmit" | "defaultValues"> & {
     onSubmit: (data: SearchFormType) => void;
-    defaultValues?: SearchFormType;
+    defaultValues?: Partial<SearchFormType>;
 }
 
 
 export default function SearchForm({ onSubmit, defaultValues, ...props }: SearchFromProps) {
-
-    const [from, setFrom] = useState<SearchItem | null>(defaultValues?.from ?? null)
+    const [from, setFrom] = useState<SearchItem | null>(null);
+    const [startDate, setStartDate] = useState<Date | null>(null)
     const [selectedOptions, setSelectedOptions] = useState(defaultValues?.options ?? defaultOptions);
     const { errors: errorLabels, searchOptions } = useTranslation(searchLabels);
 
@@ -45,6 +45,19 @@ export default function SearchForm({ onSubmit, defaultValues, ...props }: Search
         clearErrors
     } = useForm<SearchFormType>();
 
+    //If there are default values, we must set the form values to these
+    useEffect(() => {
+        if (defaultValues?.from) {
+            setFormValue("from")(defaultValues.from);
+            setFrom(defaultValues.from)
+        }
+        if(defaultValues?.startDate){
+            // console.log(typeof defaultValues.startDate)
+            setFormValue("startDate")(defaultValues.startDate);
+            setStartDate(defaultValues.startDate);
+        }
+    }, [defaultValues])
+
     const doSubmit: SubmitHandler<SearchFormType> = useCallback((data) => {
         if (!data.from?.id) {
             setError("from", { message: errorLabels.origin });
@@ -56,21 +69,17 @@ export default function SearchForm({ onSubmit, defaultValues, ...props }: Search
         onSubmit(data)
     }, [setError]);
 
-    const { from: fromWatch } = watch();
+    const { from: fromWatch, startDate: startDateWatch } = watch();
 
     //For some reason the watch will not work with a setValue, so we are obligated to use a separate state... fuck that.
     useEffect(() => {
         clearErrors();
         setFrom(fromWatch);
-
-    }, [setFrom, fromWatch])
+        setStartDate(startDateWatch)
+    }, [setFrom, fromWatch, setStartDate, startDateWatch])
 
 
     const setFormValue = useCallback((fieldName: "from" | "startDate") => (value: SearchItem | Date | null) => { setValue(fieldName, value) }, [setValue])
-
-    const handleDateChange = useCallback((date: Date | null) => {
-        setFormValue("startDate")(date);
-    }, [setFormValue])
 
     return (
         <form onSubmit={handleSubmit(doSubmit)}>
@@ -81,7 +90,19 @@ export default function SearchForm({ onSubmit, defaultValues, ...props }: Search
                             <SearchInput selectedItem={from} onSelect={setFormValue("from")} label={searchOptions.from} searchOptions={selectedOptions} fullWidth size="small" error={errors.from?.message} />
                         </Grid>
                         <Grid item xs={12} sm={4}>
-                            <AppDatePicker onChange={handleDateChange} slotProps={{ textField: { size: "small", error: Boolean(errors?.startDate?.message), helperText: errors?.startDate?.message, fullWidth: true } }} />
+                            <AppDatePicker
+                                label={searchOptions.startDate}
+                                onChange={setFormValue("startDate")}
+                                value={startDate}
+                                slotProps={{
+                                    textField: {
+                                        size: "small",
+                                        error: Boolean(errors?.startDate?.message),
+                                        helperText: errors?.startDate?.message,
+                                        fullWidth: true
+                                    }
+                                }}
+                            />
                         </Grid>
                     </Grid>
                     <TypeChoice selectedOptions={selectedOptions} setSelectedOptions={setSelectedOptions} />
