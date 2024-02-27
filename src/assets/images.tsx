@@ -14,6 +14,8 @@ export const internalImages = {
     langFr: { url: "language/flag_FR.png", alt: "" },
     langEn: { url: "language/flag_EN.png", alt: "" },
     genericCity: { url: "generic_city.png", alt: "" },
+    manWithMap: {url: "man_with_map.png", alt: "man looking at map"},
+    manStanding: {url: "man_standing_trans.png", alt: "man standing looking left"}
 }
 
 export type InternalImage = keyof typeof internalImages;
@@ -42,6 +44,7 @@ export type ImageProps = Omit<BoxProps, "justifyContent" | "alignItems" | "displ
     url: InternalImage | string;
     alt?: string;
     blur?: number;
+    flip?: boolean;
 };
 
 
@@ -53,7 +56,7 @@ export type ImageProps = Omit<BoxProps, "justifyContent" | "alignItems" | "displ
  * @param props - The properties for the Image component, including URL key and any BoxProps.
  * @returns A Box component containing the specified image.
  */
-export function Image({ alt, url, blur, ...props }: ImageProps) {
+export function Image({ alt, url, blur, flip, ...props }: ImageProps) {
     const { imgUrl, imgAlt } = useMemo(() => {
         const urlIsInternal = Object.keys(internalImages).includes(url);
         if (urlIsInternal) {
@@ -75,6 +78,7 @@ export function Image({ alt, url, blur, ...props }: ImageProps) {
         maxHeight: '100%',
         objectFit: 'cover' as const,
         filter: `blur(${blur ?? 0}px)`,
+        transform: flip ? "scaleX(-1)" : ""
     }), [blur, props]);
 
     return (

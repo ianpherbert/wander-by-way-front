@@ -10,6 +10,7 @@ import { useTripPlannerContext } from "./hooks/useTripPlannerContext";
 import WanderCard from "../common/WanderCard";
 import ExploreForm from "./ExploreForm";
 import CenteredLoader from "../common/CenteredLoader";
+import { List, Map } from "@mui/icons-material";
 
 const exploreLabels: TranslationLabelObject<{
     hideListLabel: string;
@@ -20,8 +21,8 @@ const exploreLabels: TranslationLabelObject<{
         showListLabel: "Show List"
     },
     [Languages.FR]: {
-        hideListLabel: "Cacher la liste",
-        showListLabel: "Afficher la liste"
+        hideListLabel: "Cacher liste",
+        showListLabel: "Afficher liste"
     }
 }
 
@@ -32,10 +33,11 @@ function ShowButton({ listVisible, toggleVisible }: { listVisible: boolean, togg
 
     return <Button
         onClick={toggleVisible}
-        variant="contained"
-        color="primary"
+        variant={!listVisible ? "outlined" : "contained" }
+        color="secondary"
         sx={styles.showButton}
         size="small"
+        startIcon={listVisible ? <Map/> : <List/> }
     >
         {label}
     </Button>
@@ -91,6 +93,7 @@ const styles = {
         bottom: 20,
         left: "50%",
         transform: "translateX(-50%)",
+
     }
 
 }
