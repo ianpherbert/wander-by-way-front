@@ -72,7 +72,7 @@ export default function Explore() {
         <Stack>
             <WanderCard background="noisePrimary" sx={{ p: .5 }}>
                 <ExploreForm />
-                <Stack direction="row" height={800} position="relative">
+                <Stack direction="row" height={"85vh"} position="relative">
                     {shouldShowLoader && <CenteredLoader type="circular"/>}
                     {shouldShowSearchList && <RouteSearchList visible={listOpen} />}
                     <ExploreMap onLoad={loadMap} />

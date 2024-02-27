@@ -85,7 +85,7 @@ export default function RouteSearchList({ visible }: RouteSearchListProps) {
     return (
         <WanderCard sx={[styles.card, { maxWidth: visible ? "100%" : 0, }]} elevation={5}>
             <Stack height={"100%"}>
-                <PlaceImage queryString={currentOrigin?.name} height={50} width={"100%"} blur={2}>
+                <PlaceImage queryString={currentOrigin?.name} height={50} width={"100%"} minWidth={400} blur={2}>
                     <h2>{currentOrigin?.name}</h2>
                 </PlaceImage>
                 <Box flex={1} overflow={"auto"} pb={10} position="relative">

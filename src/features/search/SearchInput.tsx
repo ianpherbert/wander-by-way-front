@@ -8,6 +8,7 @@ import { countryLabels } from "../../translations/countries";
 import { SearchItem, SearchOptions } from "./SearchResult";
 import useTranslation from "../../translations/useTranslation";
 import { SearchItemType } from "../common/SearchItemType";
+import { normalizeString } from "../../utils/stringUtils";
 
 
 const styles = {
@@ -35,7 +36,7 @@ const searchIcons: { [key in SearchItemType]: JSX.Element } = {
 function Option({ item, ...props }: React.HTMLAttributes<HTMLLIElement> & { item: SearchItem }) {
     const countries = useTranslation(countryLabels)
     return (
-        <ListItem {...props} disablePadding={true}>
+        <ListItem {...props} disablePadding={true} >
             <ListItemIcon>
                 {searchIcons[item.type]}
             </ListItemIcon>
@@ -99,8 +100,8 @@ export default function SearchInput({ onSelect, selectedItem, searchOptions, lab
             onChange={handleSelect}
             value={selectedItem}
             filterOptions={(options, state) => {
-                const regex = new RegExp(state.inputValue.replace(/[- ]/g, '[- ]'), 'i');
-                return options.filter(string => regex.test(string.name));
+                const regex = new RegExp(normalizeString(state.inputValue), 'i');
+                return options.filter(string => regex.test(normalizeString(string.name)));
             }}
             renderOption={(props, item) => <Option item={item} {...props} />}
         />
