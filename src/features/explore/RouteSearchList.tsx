@@ -5,6 +5,7 @@ import { SearchItemType } from "../common/SearchItemType";
 import { searchItemTypeIcons } from "../../utils/icons";
 import PlaceImage from "../common/unsplash/CityImage";
 import WanderCard from "../common/WanderCard";
+import CenteredLoader from "../common/CenteredLoader";
 
 
 
@@ -27,7 +28,7 @@ type RouteSearchListProps = {
 
 export default function RouteSearchList({ visible }: RouteSearchListProps) {
 
-    const { currentSearchResult, setSelectedSearchGroup } = useTripPlannerContext();
+    const { currentSearchResult, setSelectedSearchGroup, currentSearchQueryFetching, currentOrigin } = useTripPlannerContext();
     const doSelectGroup = useCallback((id: number) => () => {
         const match = currentSearchResult?.destinations.find(it => it.destination.id === id);
         setSelectedSearchGroup(match);
@@ -37,10 +38,10 @@ export default function RouteSearchList({ visible }: RouteSearchListProps) {
     return (
         <WanderCard sx={[styles.card, { maxWidth: visible ? "100%" : 0, }]} elevation={5}>
             <Stack height={"100%"}>
-                <PlaceImage queryString={currentSearchResult?.origin.name} height={50} width={400} blur={2}>
-                    <h2>{currentSearchResult?.origin.name}</h2>
+                <PlaceImage queryString={currentOrigin?.name} height={50} width={400} blur={2}>
+                    <h2>{currentOrigin?.name}</h2>
                 </PlaceImage>
-                <Box flex={1} overflow={"auto"} pb={10}>
+                <Box flex={1} overflow={"auto"} pb={10} position="relative">
                     <List dense>
                         {currentSearchResult?.destinations.map(({ destination, routes }) => (
                             <RouteSearchListItem
@@ -51,7 +52,9 @@ export default function RouteSearchList({ visible }: RouteSearchListProps) {
                                 onClick={doSelectGroup(destination.id)}
                             />
                         ))}
+
                     </List>
+                    {currentSearchQueryFetching && <CenteredLoader type="circular" />}
                 </Box>
             </Stack>
         </WanderCard>

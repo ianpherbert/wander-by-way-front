@@ -18,7 +18,9 @@ type TripPlannerContext = {
     unselectSearchGroup: () => void;
     setSelectedSearchGroup: (group?: RouteSearchGroup) => void;
     currentSearchResult?: RouteSearchResult;
+    currentSearchQueryFetching: boolean;
     currentOrigin?: SearchItem;
+    currentOriginQueryFetching: boolean;
     /** The places on the current selected route */
     selectedRouteStops: RouteSearchPlace[];
     /** The places on the current selected route */
@@ -33,7 +35,7 @@ export default function TripPlannerPage() {
     const [selectedSearchGroup, setSelectedSearchGroup] = useState<RouteSearchGroup>();
     const [selectedRouteStops, setSelectedRouteStops] = useState<RouteSearchPlace[]>([]);
 
-    const { origin: currentOrigin, routeQuery: currentSearchQuery } = useRouteSearch(originId, originType, startDate);
+    const { originQuery, routeQuery: currentSearchQuery } = useRouteSearch(originId, originType, startDate);
 
     const selectPoint = useCallback((point?: Point) => {
         setCurrentPoint(point);
@@ -56,8 +58,10 @@ export default function TripPlannerPage() {
         currentPoint,
         selectedSearchGroup,
         selectPoint,
-        currentSearchResult: currentSearchQuery?.data,
-        currentOrigin,
+        currentSearchResult: Boolean(currentSearchQuery?.isFetching) ? undefined : currentSearchQuery?.data,
+        currentSearchQueryFetching: Boolean(currentSearchQuery?.isFetching),
+        currentOrigin: Boolean(originQuery?.isFetching) ? undefined : originQuery?.data,
+        currentOriginQueryFetching: Boolean(originQuery?.isFetching), 
         unselectSearchGroup,
         setSelectedSearchGroup,
         selectedRouteStops,
