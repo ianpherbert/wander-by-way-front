@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { TranslationLabelObject, Languages } from "../../translations/global";
 import useTranslation from "../../translations/useTranslation";
 import { useBreakPoint } from "../../useBreakpoint";
-import { useTripPlannerContext } from "./hooks/useTripPlannerContext";
+import { useExploreContext } from "./hooks/useExploreContext";
 import WanderCard from "../common/WanderCard";
 import ExploreForm from "./ExploreForm";
 import CenteredLoader from "../common/CenteredLoader";
@@ -54,7 +54,7 @@ export default function Explore() {
     const shouldImpose = useMemo(() => imposeBreakpoints.includes(breakpoint), [breakpoint]);
 
     const toggleListOpen = useCallback(() => setListOpen(value => !value), [setListOpen]);
-    const { selectedSearchGroup, currentOrigin, currentOriginQueryFetching } = useTripPlannerContext();
+    const { selectedSearchGroup, currentOrigin, currentOriginQueryFetching } = useExploreContext();
 
     //The list is always open on desktop
     useEffect(() => {

@@ -6,7 +6,7 @@ type MapIcons = {
 
 export const mapIcons: MapIcons = {
     ORIGIN: {
-        name: "home-point", path: "home.png", scale: 1
+        name: "home-point", path: "home.png", scale: 4
     }, SEARCH_ITEM: {
         name: "search",
         path: "search-point.png",  scale: 1

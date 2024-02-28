@@ -4,9 +4,10 @@ import { createContext, useCallback, useState } from "react";
 import { RouteSearchGroup, RouteSearchPlace, RouteSearchResult } from "../features/explore/RouteSearchResult";
 import { SearchItem } from "../features/search/SearchResult";
 import Explore from "../features/explore/Explore";
+import { PointHover } from "../features/common/map/Map";
 
 
-type TripPlannerContext = {
+type ExploreContext = {
     /** The search group that is selected. Corresponds to the selected point */
     selectedSearchGroup?: RouteSearchGroup;
     /** Set search group (and selectedPoint) to null */
@@ -20,14 +21,17 @@ type TripPlannerContext = {
     selectedRouteStops: RouteSearchPlace[];
     /** The places on the current selected route */
     setSelectedRouteStops: (places: RouteSearchPlace[]) => void;
+    hoveredPoint?: PointHover;
+    setHoveredPoint: (options?: PointHover) => void
 }
 
-export const tripPlannerContext = createContext<TripPlannerContext>({} as TripPlannerContext);
+export const exploreContext = createContext<ExploreContext>({} as ExploreContext);
 
-export default function TripPlannerPage() {
+export default function ExplorePage() {
     const { originId, originType, startDate } = useExploreParams();
     const [selectedSearchGroup, setSelectedSearchGroup] = useState<RouteSearchGroup>();
     const [selectedRouteStops, setSelectedRouteStops] = useState<RouteSearchPlace[]>([]);
+    const [hoveredPoint, setHoveredPoint] = useState<PointHover>();
 
     const { originQuery, routeQuery: currentSearchQuery } = useRouteSearch(originId, originType, startDate);
 
@@ -40,7 +44,7 @@ export default function TripPlannerPage() {
         setSelectedSearchGroup(group)
     },[setSelectedSearchGroup, setSelectedRouteStops])
 
-    return <tripPlannerContext.Provider value={{
+    return <exploreContext.Provider value={{
         selectedSearchGroup,
         currentSearchResult: Boolean(currentSearchQuery?.isFetching) ? undefined : currentSearchQuery?.data,
         currentSearchQueryFetching: Boolean(currentSearchQuery?.isFetching),
@@ -50,7 +54,9 @@ export default function TripPlannerPage() {
         setSelectedSearchGroup: handleSetSelecteSearchGroup,
         selectedRouteStops,
         setSelectedRouteStops,
+        hoveredPoint,
+        setHoveredPoint
     }}>
         <Explore />
-    </tripPlannerContext.Provider>
+    </exploreContext.Provider>
 }

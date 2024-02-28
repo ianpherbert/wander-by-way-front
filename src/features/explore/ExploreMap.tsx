@@ -1,8 +1,8 @@
 import Map from "../common/map/Map";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { searchItemTypeToMapPointType, searchItemTypeToMapPointTypeConnection } from "../common/SearchItemType";
-import { useTripPlannerContext } from "./hooks/useTripPlannerContext";
-import { Point } from "../common/map/Point";
+import { useExploreContext } from "./hooks/useExploreContext";
+import { MapPointType, Point } from "../common/map/Point";
 
 type RouteSearchMapProps = {
     onLoad: () => void;
@@ -10,7 +10,7 @@ type RouteSearchMapProps = {
 
 export default function ExploreMap({ onLoad }: RouteSearchMapProps) {
     const [selectedPoint, setSelectedPoint] = useState<Point>()
-    const { currentSearchResult, selectedRouteStops: selectedRouteStops, setSelectedSearchGroup, selectedSearchGroup } = useTripPlannerContext();
+    const { currentSearchResult, selectedRouteStops: selectedRouteStops, setSelectedSearchGroup, selectedSearchGroup, setHoveredPoint } = useExploreContext();
 
     const currentSearchPoints: Point[] = useMemo(() =>
         currentSearchResult?.destinations.map(({ destination }) => ({
@@ -18,15 +18,26 @@ export default function ExploreMap({ onLoad }: RouteSearchMapProps) {
             longitude: destination.longitude,
             latitude: destination.latitude,
             type: searchItemTypeToMapPointType[destination.type],
-            label: destination.name
+            label: destination.name,
+            selectionnable: true
         })) ?? [], [currentSearchResult]);
+
+    const currentOriginPoint: Point | undefined = useMemo(() => currentSearchResult?.origin ? ({
+        id: String(currentSearchResult?.origin.id),
+        longitude: currentSearchResult?.origin.longitude,
+        latitude: currentSearchResult?.origin.latitude,
+        type: MapPointType.ORIGIN,
+        label: currentSearchResult?.origin.name,
+        selectionnable: false
+    }) : undefined, [currentSearchResult])
 
     const selectedRoutePoints = useMemo(() => selectedRouteStops.map(({ id, longitude, latitude, type, name }) => ({
         id: String(id),
         longitude: longitude,
         latitude: latitude,
         type: searchItemTypeToMapPointTypeConnection[type],
-        label: name
+        label: name,
+        selectionnable: false
     })), [selectedRouteStops]);
 
     const selectPoint = useCallback((point?: Point) => {
@@ -43,13 +54,14 @@ export default function ExploreMap({ onLoad }: RouteSearchMapProps) {
 
     return (
         <Map
-            searchPoints={currentSearchPoints}
+            searchPoints={currentSearchPoints.concat(currentOriginPoint ?? [])}
             routePoints={selectedRoutePoints}
             onSelectPoint={selectPoint}
             selectedPoint={selectedPoint}
             flex={1}
             onLoad={onLoad}
             autoZoom={true}
+            onPointHover={setHoveredPoint}
         />
     )
 }

@@ -1,7 +1,7 @@
 import { Box, BoxProps } from "@mui/material";
 import mapBox, { GeoJSONSource, LngLatBoundsLike, LngLatLike } from "mapbox-gl";
 import { mapKey, mapStyle } from "../../../variables";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { mapIcons } from "./icons";
 import { Feature } from "geojson";
 import { Point } from "./Point";
@@ -9,9 +9,12 @@ import mapPointsToFeatures from "./mapPointInfo";
 import mapboxgl from "mapbox-gl";
 import MapError from "./MapError";
 import { useBreakPoint } from "../../../useBreakpoint";
+import addLayer, { MapEventHandler } from "./addLayer";
+import { theme } from "../../../theme";
 
 type MapBox = mapBox.Map;
-type MapBoxError = mapBox.ErrorEvent
+type MapBoxError = mapBox.ErrorEvent;
+type MapBoxPopup = mapBox.Popup;
 
 const MAP_CONTAINER = "map"
 const layers = {
@@ -43,93 +46,12 @@ function initMap() {
     })
 }
 
-function addSearchPointsLayer(map: mapboxgl.Map, onSelectPoint: (id: string) => void) {
-    const NAME = layers.searchPoints
-    if (!map.getSource(NAME)) {
-        map.addSource(NAME, {
-            type: "geojson",
-            data: {
-                type: "FeatureCollection",
-                features: []
-            }
-        });
-    }
-
-    if (!map.getLayer(NAME)) {
-        map.addLayer({
-            'id': NAME,
-            'type': 'symbol',
-            'source': NAME, // reference the data source
-            'layout': {
-                'icon-image': ['get', 'icon'],
-                "icon-size": ['get', 'scale'],
-                'icon-allow-overlap': false
-            }
-        });
-    }
-
-    // Change the cursor to a pointer when the mouse is over the places layer.
-    map.on('mouseenter', 'points', () => {
-        map.getCanvas().style.cursor = 'pointer';
-    });
-
-    // Change it back to a pointer when it leaves.
-    map.on('mouseleave', 'points', () => {
-        map.getCanvas().style.cursor = '';
-    });
-
-
-    map.on('click', NAME, ({ features }) => {
-        const feature = features?.[0] as Feature;
-        if (!feature) return;
-        const { id } = feature.properties ?? {};
-        onSelectPoint(id);
-    });
+function customPopup(name: string) {
+    return `<div class="custom-popup">${name}</div>`
 }
 
-function addRoutePointsLayer(map: mapboxgl.Map) {
-    const NAME = layers.routePoints;
-    if (!map.getSource(NAME)) {
-        map.addSource(NAME, {
-            type: "geojson",
-            data: {
-                type: "FeatureCollection",
-                features: []
-            }
-        });
-    }
-
-    if (!map.getLayer(NAME)) {
-        map.addLayer({
-            'id': NAME,
-            'type': 'symbol',
-            'source': NAME, // reference the data source
-            'layout': {
-                'icon-image': ['get', 'icon'],
-                "icon-size": ['get', 'scale'],
-                'icon-allow-overlap': false
-            }
-        });
-    }
-
-    // Change the cursor to a pointer when the mouse is over the places layer.
-    map.on('mouseenter', 'points', () => {
-        map.getCanvas().style.cursor = 'pointer';
-    });
-
-    // Change it back to a pointer when it leaves.
-    map.on('mouseleave', 'points', () => {
-        map.getCanvas().style.cursor = '';
-    });
-
-
-    // map.on('click', NAME, ({ features }) => {
-    //     const feature = features?.[0] as Feature;
-    //     if (!feature) return;
-    //     const { id } = feature.properties ?? {};
-    //     onSelectPoint(id);
-    // });
-}
+/** Tells which point, as well as the name of the layer */
+export type PointHover = { point?: Point, layer: "search" | "route" }
 
 type MapProps = BoxProps & {
     searchPoints?: Point[];
@@ -140,15 +62,19 @@ type MapProps = BoxProps & {
     selectedPoint?: Point;
     onSelectPoint?: (point?: Point) => void;
     onLoad?: () => void;
+    onPointHover?: (options?: PointHover) => void;
 }
 
-
-export default function Map({ searchPoints, routePoints, showConnections, onSelectPoint, selectedPoint, autoZoom, autoZoomLevel, onLoad, ...props }: MapProps) {
+export default function Map({ searchPoints, routePoints, showConnections, onSelectPoint, selectedPoint, autoZoom, autoZoomLevel, onLoad, onPointHover, ...props }: MapProps) {
     const [map, setMap] = useState<MapBox>();
     const [mapError, setMapError] = useState<MapBoxError>();
     // Unfortunately we are obligated to have a selectedId state in order to ensure that the mapbox js calls the same function every time without reloading
     // However this state should not be used internally, and serves only to elevate the selected point.
     const [selectedId, setSelectedId] = useState<string>();
+    /** Here we use a ref instead of a state, because we will need to pass this object at initialisation. Same problem as above */
+    const openPopup = useRef<MapBoxPopup>();
+
+    const handleHoverUpdate = (layer: "search" | "route") => (point?: Point) => onPointHover?.({ point, layer });
 
     const breakpoint = useBreakPoint(true);
 
@@ -158,8 +84,42 @@ export default function Map({ searchPoints, routePoints, showConnections, onSele
     useEffect(() => {
         if (!map) {
             initMap()?.then((newMap) => {
-                addSearchPointsLayer(newMap, setSelectedId);
-                addRoutePointsLayer(newMap);
+
+                const initPopup = (event: MapEventHandler) => {
+                    const popup = new mapboxgl.Popup()
+                        .setLngLat(event.getCoordinates())
+                        .setHTML(customPopup(event.getPoint()?.label ?? ""))
+                        .addTo(newMap);
+                    openPopup.current = popup;
+                }
+
+
+                addLayer(layers.searchPoints, newMap, {
+                    onPointClick: (event) => {
+                        const feature = event.getFeatures()?.[0] as Feature;
+                        if (!feature) return;
+                        const { id } = feature.properties ?? {};
+                        setSelectedId(id);
+                    },
+                    onMouseEnter: (event) => {
+                        initPopup(event)
+                        handleHoverUpdate("search")(event.getPoint());
+                    },
+                    onMouseExit: () => {
+                        openPopup.current?.remove();
+                        handleHoverUpdate("search")(undefined);
+                    }
+                })
+                addLayer(layers.routePoints, newMap, {
+                    onMouseEnter: (event) => {
+                        initPopup(event);
+                        handleHoverUpdate("route")(event.getPoint());
+                    },
+                    onMouseExit: () => {
+                        openPopup.current?.remove();
+                        handleHoverUpdate("route")(undefined);
+                    }
+                });
                 setMap(newMap);
                 onLoad?.();
             }).catch((error) => {
@@ -179,13 +139,13 @@ export default function Map({ searchPoints, routePoints, showConnections, onSele
 
 
     useEffect(() => {
+        setSelectedId(selectedPoint?.id);
         if (autoZoom && selectedPoint && !Boolean(routePoints?.length)) {
             const feature = searchFeatures?.find(it => it.properties.id === selectedPoint?.id);
             const geometry = feature?.geometry as unknown as {
                 coordinates: number[],
                 type: string;
             };
-            console.log("zoom one", routePoints)
             const coordinates = geometry?.coordinates as LngLatLike;
             if (!coordinates) return;
             map?.flyTo({
@@ -207,8 +167,7 @@ export default function Map({ searchPoints, routePoints, showConnections, onSele
     }, [routePoints])
 
     /**Will set view of map to include all of the points that are passed to this method */
-    const zoomToAllPoints = useCallback((pointsToZoom?: Point[], level?: number) => {
-        console.log("zoom to all", pointsToZoom)
+    const zoomToAllPoints = useCallback((pointsToZoom?: Point[]) => {
         if (!pointsToZoom || !Boolean(pointsToZoom?.length)) {
             return;
         }
@@ -228,7 +187,7 @@ export default function Map({ searchPoints, routePoints, showConnections, onSele
                 const bbox = [southwest, northeast] as LngLatBoundsLike;
                 map?.fitBounds(bbox, {
                     duration: 2000,
-                    padding: {top: 50, bottom: 50, left: 50, right: 50},
+                    padding: { top: 50, bottom: 50, left: 50, right: 50 },
                 });
             } catch (e) {
                 console.error(e)
@@ -282,6 +241,26 @@ const styles = {
         left: 0,
         ".mapboxgl-control-container": {
             display: "none"
+        },
+        ".mapboxgl-popup": {
+        },
+        ".mapboxgl-popup-content": {
+            background: "none",
+            "box-shadow": "none",
+            height: "fit-content",
+            width: "fit-content",
+            "button": {
+                display: "none"
+            }
+        },
+        ".mapboxgl-popup-tip": {
+            display: "none"
+        },
+        ".custom-popup": {
+            background: theme.palette.secondary.main,
+            padding: "2px 5px 2px 5px",
+            "border-radius": "5px",
+            color: "white"
         }
     }
 }
