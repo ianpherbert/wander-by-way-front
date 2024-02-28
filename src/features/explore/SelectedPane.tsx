@@ -15,19 +15,22 @@ import { differenceInMinutes, isAfter, parseISO } from "date-fns";
 import WanderCard from "../common/WanderCard";
 
 const selectedPaneLabels: TranslationLabelObject<{
-    addToTrip: string;
-    countries: CountryLabel;
-    minutesLayover: string
+    addToTripLabel: string;
+    countriesLabel: CountryLabel;
+    minutesLayoverLabel: string;
+    closeLabel: string;
 }> = {
     [Languages.EN]: {
-        addToTrip: "See the stops on this route",
-        countries: countryLabels.EN,
-        minutesLayover: "minute stop"
+        addToTripLabel: "See the stops on this route",
+        countriesLabel: countryLabels.EN,
+        minutesLayoverLabel: "minute stop",
+        closeLabel: "close"
     },
     [Languages.FR]: {
-        addToTrip: "Voir les arrêts sur cette ligne",
-        countries: countryLabels.FR,
-        minutesLayover: "minutes d'arrêt"
+        addToTripLabel: "Voir les arrêts sur cette ligne",
+        countriesLabel: countryLabels.FR,
+        minutesLayoverLabel: "minutes d'arrêt",
+        closeLabel: "fermer"
     }
 }
 
@@ -36,7 +39,7 @@ const DATE_FORMAT = "MMM d h:mma"
 function StopList({ open, departureTime, routeId }: {
     open: boolean, departureTime: string, routeId: string
 }) {
-    const { minutesLayover } = useTranslation(selectedPaneLabels);
+    const { minutesLayoverLabel: minutesLayover } = useTranslation(selectedPaneLabels);
     const { currentOrigin, setSelectedRouteStops: setAdditionalSearchPlaces } = useTripPlannerContext();
     const { formatDate } = useDateFormatter();
 
@@ -113,7 +116,7 @@ function StopList({ open, departureTime, routeId }: {
 }
 
 function RouteListItem({ type, destination, departureTime, open, toggleOpen, routeId }: RouteSearchRoute & { open: boolean; toggleOpen: () => void }) {
-    const { addToTrip: expandLabel, countries } = useTranslation(selectedPaneLabels);
+    const { addToTripLabel: expandLabel, countriesLabel: countries } = useTranslation(selectedPaneLabels);
     const name = useMemo(() => `${destination.name} ${countries[destination.country as keyof CountryLabel]}`, [destination]);
     const { formatDateFromString } = useDateFormatter();
 
@@ -133,6 +136,7 @@ function RouteListItem({ type, destination, departureTime, open, toggleOpen, rou
 export default function SelectedPane() {
     const { selectedSearchGroup, unselectSearchGroup, setSelectedRouteStops: setAdditionalSearchPlaces } = useTripPlannerContext();
     const [openDestinationId, setOpenDestinationId] = useState<string>();
+    const {closeLabel} = useTranslation(selectedPaneLabels)
 
     const handleSetOpenDestinationId = useCallback(({ routeId }: RouteSearchRoute) => () => {
         if (openDestinationId === routeId) {
@@ -172,7 +176,7 @@ export default function SelectedPane() {
                     color="info"
                     sx={{ margin: 1 }}
                 >
-                    Close
+                    {closeLabel}
                 </Button>
             </Stack>
         </WanderCard>

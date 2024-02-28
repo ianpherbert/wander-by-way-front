@@ -4,23 +4,22 @@ import { skipToken } from "@reduxjs/toolkit/query"
 import { useSearchFromPointQuery } from "../exploreRest"
 import { useSearchFromIdQuery } from "../../search/SearchRest"
 
-export default function useRouteSearch(placeId?: string, placeType?: SearchItemType, startDate?: string, endDate?: string) {
+export default function useRouteSearch(placeId?: string, placeType?: SearchItemType, startDate?: string) {
 
-    const searchParams = useMemo(() => (placeId && placeType && startDate && endDate ? {
+    const searchParams = useMemo(() => (placeId && placeType && startDate ? {
         placeId: placeId,
         placeType: placeType,
         startDate,
-        endDate
-    } : skipToken), [placeId, placeType, startDate, endDate]);
+    } : skipToken), [placeId, placeType, startDate]);
 
     const originParams = useMemo(() => (placeId && placeType ? {
         placeId: placeId,
         placeType: placeType,
     } : skipToken), [placeId, placeType]);
 
-    const { data } = useSearchFromIdQuery(originParams);
-    const routeQuery = useSearchFromPointQuery(searchParams);
+    const originQuery = useSearchFromIdQuery(originParams);
+    const routeQuery = useSearchFromPointQuery(searchParams, { refetchOnMountOrArgChange: true, });
 
 
-    return useMemo(() => ({ origin: data, routeQuery }), [data, routeQuery])
+    return useMemo(() => ({ routeQuery, originQuery }), [originQuery, routeQuery])
 }

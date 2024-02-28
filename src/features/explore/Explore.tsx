@@ -1,5 +1,5 @@
 import { Button, Stack } from "@mui/material";
-import RouteSearchMap from "./RouteSearchMap";
+import ExploreMap from "./ExploreMap";
 import SelectedPane from "./SelectedPane";
 import RouteSearchList from "./RouteSearchList";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -9,6 +9,8 @@ import useBreakPoint from "../../useBreakpoint";
 import { useTripPlannerContext } from "./hooks/useTripPlannerContext";
 import WanderCard from "../common/WanderCard";
 import ExploreForm from "./ExploreForm";
+import CenteredLoader from "../common/CenteredLoader";
+import { List, Map } from "@mui/icons-material";
 
 const exploreLabels: TranslationLabelObject<{
     hideListLabel: string;
@@ -19,8 +21,8 @@ const exploreLabels: TranslationLabelObject<{
         showListLabel: "Show List"
     },
     [Languages.FR]: {
-        hideListLabel: "Cacher la liste",
-        showListLabel: "Afficher la liste"
+        hideListLabel: "Cacher liste",
+        showListLabel: "Afficher liste"
     }
 }
 
@@ -31,16 +33,17 @@ function ShowButton({ listVisible, toggleVisible }: { listVisible: boolean, togg
 
     return <Button
         onClick={toggleVisible}
-        variant="contained"
-        color="primary"
+        variant={!listVisible ? "outlined" : "contained" }
+        color="secondary"
         sx={styles.showButton}
         size="small"
+        startIcon={listVisible ? <Map/> : <List/> }
     >
         {label}
     </Button>
 }
 
-const imposeBreakpoints = ["sx", "sm", "md"]
+const imposeBreakpoints = ["sx", "sm", "md"];
 
 export default function Explore() {
     const [mapLoaded, setMapLoaded] = useState(false);
@@ -51,7 +54,7 @@ export default function Explore() {
     const shouldImpose = useMemo(() => imposeBreakpoints.includes(breakpoint), [breakpoint]);
 
     const toggleListOpen = useCallback(() => setListOpen(value => !value), [setListOpen]);
-    const { selectedSearchGroup } = useTripPlannerContext();
+    const { selectedSearchGroup, currentOrigin, currentOriginQueryFetching } = useTripPlannerContext();
 
     //The list is always open on desktop
     useEffect(() => {
@@ -62,16 +65,17 @@ export default function Explore() {
 
     // When the selectedPane is open, we do not want to see the toggle button, as it has its own close button.
     const shouldShowToggleButton = useMemo(() => !Boolean(selectedSearchGroup) && mapLoaded && shouldImpose, [selectedSearchGroup, mapLoaded, shouldImpose]);
-    const shouldShowSearchList = useMemo(() => (mapLoaded && !shouldImpose) || (mapLoaded && listOpen && !Boolean(selectedSearchGroup)), [mapLoaded, listOpen, selectedSearchGroup, shouldImpose]);
+    const shouldShowSearchList = useMemo(() => (mapLoaded && !shouldImpose && Boolean(currentOrigin)) || (Boolean(currentOrigin) && mapLoaded && listOpen && !Boolean(selectedSearchGroup)), [mapLoaded, listOpen, selectedSearchGroup, shouldImpose, currentOrigin]);
     const shouldShowSelectedPane = useMemo(() => (mapLoaded && !shouldImpose) || (mapLoaded && Boolean(selectedSearchGroup)), [mapLoaded, selectedSearchGroup, shouldImpose]);
-
+    const shouldShowLoader = useMemo(()=> mapLoaded && currentOriginQueryFetching, [mapLoaded, currentOriginQueryFetching])
     return (
         <Stack>
             <WanderCard background="noisePrimary" sx={{ p: .5 }}>
-            <ExploreForm />
-                <Stack direction="row" height={800} position="relative">
+                <ExploreForm />
+                <Stack direction="row" height={"85vh"} position="relative">
+                    {shouldShowLoader && <CenteredLoader type="circular"/>}
                     {shouldShowSearchList && <RouteSearchList visible={listOpen} />}
-                    <RouteSearchMap onLoad={loadMap} />
+                    <ExploreMap onLoad={loadMap} />
                     {shouldShowSelectedPane && <SelectedPane />}
                     {shouldShowToggleButton && <ShowButton toggleVisible={toggleListOpen} listVisible={listOpen} />}
                 </Stack>
@@ -89,6 +93,7 @@ const styles = {
         bottom: 20,
         left: "50%",
         transform: "translateX(-50%)",
+
     }
 
 }

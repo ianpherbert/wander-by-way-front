@@ -1,49 +1,41 @@
 import useExploreParams from "../features/explore/hooks/useExploreParams";
 import useRouteSearch from "../features/explore/hooks/useRouteSearch";
-import { createContext, useCallback, useMemo, useState } from "react";
+import { createContext, useCallback, useEffect, useState } from "react";
 import { Point } from "../features/common/map/Point";
-import { RouteSearchGroup, RouteSearchPlace, RouteSearchResult, RouteSearchRoute } from "../features/explore/RouteSearchResult";
+import { RouteSearchGroup, RouteSearchPlace, RouteSearchResult } from "../features/explore/RouteSearchResult";
 import { SearchItem } from "../features/search/SearchResult";
 import Explore from "../features/explore/Explore";
 
 
 type TripPlannerContext = {
+    /** Select point on map */
     selectPoint: (point?: Point) => void;
+    /**Point selected on map */
     currentPoint?: Point;
-    trip: RouteSearchRoute[];
+    /** The search group that is selected. Corresponds to the selected point */
     selectedSearchGroup?: RouteSearchGroup;
+    /** Set search group (and selectedPoint) to null */
     unselectSearchGroup: () => void;
     setSelectedSearchGroup: (group?: RouteSearchGroup) => void;
-    addToTrip: (route: RouteSearchRoute) => void;
     currentSearchResult?: RouteSearchResult;
+    currentSearchQueryFetching: boolean;
     currentOrigin?: SearchItem;
-    listOpen: boolean;
-    setListOpen: (value: boolean) => void;
+    currentOriginQueryFetching: boolean;
+    /** The places on the current selected route */
     selectedRouteStops: RouteSearchPlace[];
+    /** The places on the current selected route */
     setSelectedRouteStops: (places: RouteSearchPlace[]) => void;
 }
 
 export const tripPlannerContext = createContext<TripPlannerContext>({} as TripPlannerContext);
 
 export default function TripPlannerPage() {
-    const { originId, originType, startDate, endDate } = useExploreParams();
+    const { originId, originType, startDate } = useExploreParams();
     const [currentPoint, setCurrentPoint] = useState<Point>();
-    const [trip, setTrip] = useState<RouteSearchRoute[]>([]);
     const [selectedSearchGroup, setSelectedSearchGroup] = useState<RouteSearchGroup>();
-    const [searchFrom, setSearchFrom] = useState<RouteSearchPlace>();
-    const [listOpen, setListOpen] = useState(true);
     const [selectedRouteStops, setSelectedRouteStops] = useState<RouteSearchPlace[]>([]);
 
-    const currentSearch = useMemo(() =>
-        searchFrom ?
-            { id: String(searchFrom?.id), type: searchFrom?.type, startDate, endDate } :
-            { id: originId, type: originType, startDate, endDate }
-        , [originId, originType, currentPoint]
-    );
-
-    const { origin: currentOrigin, routeQuery: currentSearchQuery } = useRouteSearch(currentSearch.id, currentSearch.type, currentSearch.startDate, currentSearch.endDate);
-
-
+    const { originQuery, routeQuery: currentSearchQuery } = useRouteSearch(originId, originType, startDate);
 
     const selectPoint = useCallback((point?: Point) => {
         setCurrentPoint(point);
@@ -51,26 +43,26 @@ export default function TripPlannerPage() {
         setSelectedSearchGroup(match);
     }, [setSelectedSearchGroup, currentSearchQuery])
 
-    const addToTrip = useCallback((route: RouteSearchRoute) => {
-        setSearchFrom(route.destination);
-        setTrip(it => [...it, route]);
-    }, [setTrip])
 
     const unselectSearchGroup = useCallback(() => {
         setSelectedSearchGroup(undefined);
-    }, [setSelectedSearchGroup])
+    }, [setSelectedSearchGroup]);
+
+    useEffect(()=>{
+        if(currentSearchQuery.isFetching){
+            selectPoint(undefined);
+        }
+    },[currentSearchQuery])
 
     return <tripPlannerContext.Provider value={{
         currentPoint,
-        trip,
         selectedSearchGroup,
-        addToTrip,
         selectPoint,
-        currentSearchResult: currentSearchQuery?.data,
-        currentOrigin,
+        currentSearchResult: Boolean(currentSearchQuery?.isFetching) ? undefined : currentSearchQuery?.data,
+        currentSearchQueryFetching: Boolean(currentSearchQuery?.isFetching),
+        currentOrigin: Boolean(originQuery?.isFetching) ? undefined : originQuery?.data,
+        currentOriginQueryFetching: Boolean(originQuery?.isFetching), 
         unselectSearchGroup,
-        listOpen,
-        setListOpen,
         setSelectedSearchGroup,
         selectedRouteStops,
         setSelectedRouteStops,

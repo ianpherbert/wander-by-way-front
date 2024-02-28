@@ -15,15 +15,14 @@ export default function WelcomeCard() {
     const welcomeText = useTranslation(welcomeCopy);
     const navigate = useNavigate();
 
-    const redirectToTripPlanner = useCallback(({from, startDate, endDate}: SearchFormType)=>{
+    const redirectToTripPlanner = useCallback(({ from, startDate }: SearchFormType) => {
         const origin = from?.id ? `${from?.id}-${from?.type}` : "";
         const queryParams = new URLSearchParams();
         queryParams.append("origin", origin);
-        queryParams.append("startDate", format(startDate!, 'yyyy-MM-dd'));
-        queryParams.append("endDate", format(endDate!, 'yyyy-MM-dd'));
+        queryParams.append("startDate", format(startDate!.toISOString(), 'yyyy-MM-dd'));
         const path = `/${endPoints.explore.entrypoint}?${queryParams}`
         navigate(path);
-    },[])
+    }, [])
 
     return (
         <WanderCard sx={styles.card} elevation={5} background="noisePrimary">

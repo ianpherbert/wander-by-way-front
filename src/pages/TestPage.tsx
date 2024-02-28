@@ -1,13 +1,12 @@
 import { Box } from "@mui/material";
 import PlaceImage from "../features/common/unsplash/CityImage";
+import { NoResults } from "../features/explore/RouteSearchList";
 
 export default function TestPage() {
 
     return (
-        <PlaceImage queryString="bayonne" height={300} blur={1.5}>
-            <Box>
-
-            </Box>
-        </PlaceImage>
+        <Box height={"90vh"} width={500}>
+            <NoResults/>
+        </Box>
     )
 }
