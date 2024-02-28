@@ -51,12 +51,13 @@ export default function SearchForm({ onSubmit, defaultValues, ...props }: Search
             setFormValue("from")(defaultValues.from);
             setFrom(defaultValues.from)
         }
-        if(defaultValues?.startDate){
+        if (defaultValues?.startDate) {
             setFormValue("startDate")(defaultValues.startDate);
             setStartDate(defaultValues.startDate);
-        }else{
+        } else {
+            // Set form value as today if no default
             setFormValue("startDate")(new Date());
-            setStartDate(new Date()); 
+            setStartDate(new Date());
         }
     }, [defaultValues])
 

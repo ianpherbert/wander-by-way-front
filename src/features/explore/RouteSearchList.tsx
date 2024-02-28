@@ -66,7 +66,7 @@ export default function RouteSearchList({ visible }: RouteSearchListProps) {
     }, [setSelectedSearchGroup, currentSearchResult]);
 
     const content = useMemo(() => {
-        if (!Boolean(currentSearchResult?.destinations.length)) {
+        if (!Boolean(currentSearchResult?.destinations.length) && !currentSearchQueryFetching) {
             return <NoResults />
         }
         return (<List dense>

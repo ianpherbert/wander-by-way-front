@@ -18,8 +18,8 @@ export default function useRouteSearch(placeId?: string, placeType?: SearchItemT
     } : skipToken), [placeId, placeType]);
 
     const originQuery = useSearchFromIdQuery(originParams);
-    const routeQuery = useSearchFromPointQuery(searchParams);
+    const routeQuery = useSearchFromPointQuery(searchParams, { refetchOnMountOrArgChange: true, });
 
 
-    return useMemo(() => ({ routeQuery,  originQuery}), [originQuery, routeQuery])
+    return useMemo(() => ({ routeQuery, originQuery }), [originQuery, routeQuery])
 }
