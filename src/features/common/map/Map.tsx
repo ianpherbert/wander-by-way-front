@@ -1,5 +1,5 @@
 import { Box, BoxProps } from "@mui/material";
-import mapBox, { GeoJSONSource } from "mapbox-gl";
+import mapBox, { GeoJSONSource, LngLatLike } from "mapbox-gl";
 import { mapKey, mapStyle } from "../../../variables";
 import { useEffect, useMemo, useState } from "react";
 import { mapIcons } from "./icons";
@@ -167,23 +167,23 @@ export default function Map({ searchPoints, routePoints, showConnections, onSele
         onSelectPoint?.(selectPoint)
     }, [selectedId])
 
-    // useEffect(() => {
-    //     if (autoZoom) {
-    //         // Here we use the selectedPoint.id instead of selectedId because the parent is the one who decides which point is selected.
-    //         const feature = searchFeatures?.find(it => it.properties.id === selectedPoint?.id)
-    //         const geometry = feature?.geometry as unknown as {
-    //             coordinates: number[],
-    //             type: string;
-    //         };
-    //         const coordinates = geometry?.coordinates as LngLatLike;
-    //         map?.flyTo({
-    //             center: coordinates,
-    //             essential: true,
-    //             zoom: autoZoomLevel ?? 10,
-    //             padding: { top: 0, bottom: 0, left: 0, right: 0 }
-    //         });
-    //     }
-    // }, [selectedPoint])
+    useEffect(() => {
+        if (autoZoom) {
+            // Here we use the selectedPoint.id instead of selectedId because the parent is the one who decides which point is selected.
+            const feature = searchFeatures?.find(it => it.properties.id === selectedPoint?.id)
+            const geometry = feature?.geometry as unknown as {
+                coordinates: number[],
+                type: string;
+            };
+            const coordinates = geometry?.coordinates as LngLatLike;
+            map?.flyTo({
+                center: coordinates,
+                essential: true,
+                zoom: autoZoomLevel ?? 10,
+                padding: { top: 0, bottom: 0, left: 0, right: 0 }
+            });
+        }
+    }, [selectedPoint])
 
     const searchFeatures = useMemo(() => searchPoints ? mapPointsToFeatures(searchPoints) : [], [searchPoints, showConnections]);
     const routeFeatures = useMemo(() => routePoints ? mapPointsToFeatures(routePoints) : [], [routePoints, showConnections]);
