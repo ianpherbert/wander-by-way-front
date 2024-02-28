@@ -1,7 +1,6 @@
 import { Stack, Box, List, ListItem, ListItemIcon, ListItemText, ListItemButton, Typography } from "@mui/material";
 import { useExploreContext } from "./hooks/useExploreContext";
 import { useCallback, useMemo } from "react";
-import { SearchItemType } from "../common/SearchItemType";
 import { searchItemTypeIcons } from "../../utils/icons";
 import PlaceImage from "../common/unsplash/CityImage";
 import WanderCard from "../common/WanderCard";
@@ -10,7 +9,7 @@ import { Image } from "../../assets/images";
 import { theme } from "../../theme";
 import { Languages, TranslationLabelObject } from "../../translations/global";
 import useTranslation from "../../translations/useTranslation";
-import { RouteSearchGroup, RouteSearchPlace } from "./RouteSearchResult";
+import { RouteSearchPlace } from "./RouteSearchResult";
 import { PlaceOutlined } from "@mui/icons-material";
 
 const routeSearchListLabels: TranslationLabelObject<{

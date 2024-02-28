@@ -1,4 +1,4 @@
-import mapboxgl, { LngLat, LngLatLike, } from "mapbox-gl";
+import mapboxgl, { LngLatLike, } from "mapbox-gl";
 import { Point } from "./Point";
 
 type MapEvent = mapboxgl.MapMouseEvent & {
