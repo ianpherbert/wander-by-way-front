@@ -32,8 +32,13 @@ export default function TripPlannerPage() {
     const { originQuery, routeQuery: currentSearchQuery } = useRouteSearch(originId, originType, startDate);
 
     const unselectSearchGroup = useCallback(() => {
-        setSelectedSearchGroup(undefined);
+        handleSetSelecteSearchGroup(undefined);
     }, [setSelectedSearchGroup]);
+
+    const handleSetSelecteSearchGroup = useCallback((group?: RouteSearchGroup) => {
+        setSelectedRouteStops([]);
+        setSelectedSearchGroup(group)
+    },[setSelectedSearchGroup, setSelectedRouteStops])
 
     return <tripPlannerContext.Provider value={{
         selectedSearchGroup,
@@ -42,7 +47,7 @@ export default function TripPlannerPage() {
         currentOrigin: Boolean(originQuery?.isFetching) ? undefined : originQuery?.data,
         currentOriginQueryFetching: Boolean(originQuery?.isFetching), 
         unselectSearchGroup,
-        setSelectedSearchGroup,
+        setSelectedSearchGroup: handleSetSelecteSearchGroup,
         selectedRouteStops,
         setSelectedRouteStops,
     }}>

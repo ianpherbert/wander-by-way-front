@@ -33,7 +33,7 @@ export default function ExploreMap({ onLoad }: RouteSearchMapProps) {
         const match = point ? currentSearchResult?.destinations.find((it) => String(it.destination.id) === point.id) : undefined;
         setSelectedPoint(point);
         setSelectedSearchGroup(match);
-    }, [setSelectedPoint]);
+    }, [setSelectedPoint, setSelectedSearchGroup, currentSearchResult]);
 
     useEffect(() => {
         const allPoints = [...selectedRoutePoints, ...currentSearchPoints];

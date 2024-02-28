@@ -1,13 +1,14 @@
 import { Box, BoxProps } from "@mui/material";
-import mapBox, { GeoJSONSource, LngLatLike } from "mapbox-gl";
+import mapBox, { GeoJSONSource, LngLatBoundsLike, LngLatLike } from "mapbox-gl";
 import { mapKey, mapStyle } from "../../../variables";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { mapIcons } from "./icons";
 import { Feature } from "geojson";
 import { Point } from "./Point";
 import mapPointsToFeatures from "./mapPointInfo";
 import mapboxgl from "mapbox-gl";
 import MapError from "./MapError";
+import { useBreakPoint } from "../../../useBreakpoint";
 
 type MapBox = mapBox.Map;
 type MapBoxError = mapBox.ErrorEvent
@@ -141,12 +142,17 @@ type MapProps = BoxProps & {
     onLoad?: () => void;
 }
 
+
 export default function Map({ searchPoints, routePoints, showConnections, onSelectPoint, selectedPoint, autoZoom, autoZoomLevel, onLoad, ...props }: MapProps) {
     const [map, setMap] = useState<MapBox>();
     const [mapError, setMapError] = useState<MapBoxError>();
     // Unfortunately we are obligated to have a selectedId state in order to ensure that the mapbox js calls the same function every time without reloading
     // However this state should not be used internally, and serves only to elevate the selected point.
     const [selectedId, setSelectedId] = useState<string>();
+
+    const breakpoint = useBreakPoint(true);
+
+    const isMobile = breakpoint < 2;
 
     //Initialize map
     useEffect(() => {
@@ -162,31 +168,76 @@ export default function Map({ searchPoints, routePoints, showConnections, onSele
         }
     }, [])
 
+    //See above comment about selectedId
     useEffect(() => {
         const selectPoint = searchPoints?.find(it => it.id === selectedId);
         onSelectPoint?.(selectPoint)
     }, [selectedId])
 
+    const searchFeatures = useMemo(() => searchPoints ? mapPointsToFeatures(searchPoints) : [], [searchPoints, showConnections]);
+    const routeFeatures = useMemo(() => routePoints ? mapPointsToFeatures(routePoints) : [], [routePoints, showConnections]);
+
+
     useEffect(() => {
-        if (autoZoom) {
-            // Here we use the selectedPoint.id instead of selectedId because the parent is the one who decides which point is selected.
-            const feature = searchFeatures?.find(it => it.properties.id === selectedPoint?.id)
+        if (autoZoom && selectedPoint && !Boolean(routePoints?.length)) {
+            const feature = searchFeatures?.find(it => it.properties.id === selectedPoint?.id);
             const geometry = feature?.geometry as unknown as {
                 coordinates: number[],
                 type: string;
             };
+            console.log("zoom one", routePoints)
             const coordinates = geometry?.coordinates as LngLatLike;
+            if (!coordinates) return;
             map?.flyTo({
                 center: coordinates,
                 essential: true,
                 zoom: autoZoomLevel ?? 10,
-                padding: { top: 0, bottom: 0, left: 0, right: 0 }
+                padding: { top: 0, bottom: 0, left: 0, right: isMobile ? 0 : 800 }
             });
         }
-    }, [selectedPoint])
+        if (autoZoom && !selectedPoint) {
+            zoomToAllPoints(searchPoints)
+        }
+    }, [selectedPoint, isMobile])
 
-    const searchFeatures = useMemo(() => searchPoints ? mapPointsToFeatures(searchPoints) : [], [searchPoints, showConnections]);
-    const routeFeatures = useMemo(() => routePoints ? mapPointsToFeatures(routePoints) : [], [routePoints, showConnections]);
+    useEffect(() => {
+        if (routePoints) {
+            zoomToAllPoints(routePoints)
+        }
+    }, [routePoints])
+
+    /**Will set view of map to include all of the points that are passed to this method */
+    const zoomToAllPoints = useCallback((pointsToZoom?: Point[], level?: number) => {
+        console.log("zoom to all", pointsToZoom)
+        if (!pointsToZoom || !Boolean(pointsToZoom?.length)) {
+            return;
+        }
+        const latSorted = pointsToZoom.sort((a, b) => a.latitude - b.latitude);
+        const lonSorted = pointsToZoom.sort((a, b) => a.longitude - b.longitude);
+
+        const extremePoints = {
+            north: lonSorted[0],
+            south: lonSorted[lonSorted.length - 1],
+            west: latSorted[0],
+            east: latSorted[latSorted.length - 1]
+        };
+        if (map) {
+            try {
+                const southwest = [extremePoints.west?.longitude, extremePoints.south?.latitude];
+                const northeast = [extremePoints.east?.longitude, extremePoints.north?.latitude];
+                const bbox = [southwest, northeast] as LngLatBoundsLike;
+                map?.fitBounds(bbox, {
+                    duration: 2000,
+                    padding: {top: 50, bottom: 50, left: 50, right: 50},
+                });
+            } catch (e) {
+                console.error(e)
+            }
+
+        }
+    }, [map, searchPoints])
+
+
 
     // Add search points data to map
     useEffect(() => {

@@ -134,23 +134,23 @@ function RouteListItem({ type, destination, departureTime, open, toggleOpen, rou
 }
 
 export default function SelectedPane() {
-    const { selectedSearchGroup, unselectSearchGroup, setSelectedRouteStops: setAdditionalSearchPlaces } = useTripPlannerContext();
+    const { selectedSearchGroup, unselectSearchGroup, setSelectedRouteStops } = useTripPlannerContext();
     const [openDestinationId, setOpenDestinationId] = useState<string>();
-    const {closeLabel} = useTranslation(selectedPaneLabels)
+    const { closeLabel } = useTranslation(selectedPaneLabels)
 
     const handleSetOpenDestinationId = useCallback(({ routeId }: RouteSearchRoute) => () => {
         if (openDestinationId === routeId) {
             setOpenDestinationId(undefined);
-            setAdditionalSearchPlaces([]);
+            setSelectedRouteStops([]);
         } else {
             setOpenDestinationId(routeId);
         }
-    }, [setOpenDestinationId, openDestinationId]);
+    }, [setOpenDestinationId, openDestinationId, setSelectedRouteStops]);
 
     const closePane = useCallback(() => {
-        setAdditionalSearchPlaces([]);
+        setOpenDestinationId(undefined);
         unselectSearchGroup();
-    }, [setAdditionalSearchPlaces, unselectSearchGroup])
+    }, [unselectSearchGroup])
 
     return (
         <WanderCard sx={{ height: "100%", width: Boolean(selectedSearchGroup) ? "fit-content" : 0 }} elevation={5}>
