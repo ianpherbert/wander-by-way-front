@@ -11,6 +11,7 @@ export interface Point {
     type: MapPointType;
     label: string;
     match?: boolean
+    selectionnable: boolean;
 }
 
 export enum MapPointType {

@@ -1,7 +1,6 @@
 import { Stack, Box, List, ListItem, ListItemIcon, ListItemText, ListItemButton, Typography } from "@mui/material";
-import { useTripPlannerContext } from "./hooks/useTripPlannerContext";
+import { useExploreContext } from "./hooks/useExploreContext";
 import { useCallback, useMemo } from "react";
-import { SearchItemType } from "../common/SearchItemType";
 import { searchItemTypeIcons } from "../../utils/icons";
 import PlaceImage from "../common/unsplash/CityImage";
 import WanderCard from "../common/WanderCard";
@@ -10,6 +9,8 @@ import { Image } from "../../assets/images";
 import { theme } from "../../theme";
 import { Languages, TranslationLabelObject } from "../../translations/global";
 import useTranslation from "../../translations/useTranslation";
+import { RouteSearchPlace } from "./RouteSearchResult";
+import { PlaceOutlined } from "@mui/icons-material";
 
 const routeSearchListLabels: TranslationLabelObject<{
     noResultsLabel: string;
@@ -25,14 +26,18 @@ const routeSearchListLabels: TranslationLabelObject<{
     }
 }
 
-function RouteSearchListItem({ type, name, routeCount, onClick }: { type: SearchItemType, name: string, routeCount: number; onClick: () => void }) {
-    const countLabel = routeCount + " Routes"
+function RouteSearchListItem({ destination, routeCount, onClick }: { destination: RouteSearchPlace, routeCount: number; onClick: () => void }) {
+    const countLabel = routeCount + " Routes";
+    const { selectedSearchGroup, hoveredPoint } = useExploreContext();
+
+    const isSelected = useMemo(() => selectedSearchGroup?.destination.id === destination.id, [destination, selectedSearchGroup])
+    const isHoveredOnMap = useMemo(() => hoveredPoint?.layer === "search" && hoveredPoint?.point?.id === String(destination.id), [destination, hoveredPoint])
 
     return (
-        <ListItem >
-            <ListItemButton onClick={onClick}>
-                <ListItemIcon>{searchItemTypeIcons[type]}</ListItemIcon>
-                <ListItemText primary={name} secondary={countLabel} />
+        <ListItem secondaryAction={isHoveredOnMap && <PlaceOutlined />}>
+            <ListItemButton onClick={onClick} selected={isSelected}>
+                <ListItemIcon>{searchItemTypeIcons[destination.type]}</ListItemIcon>
+                <ListItemText primary={destination.name} secondary={countLabel} />
             </ListItemButton>
         </ListItem>
     )
@@ -59,7 +64,7 @@ type RouteSearchListProps = {
 
 export default function RouteSearchList({ visible }: RouteSearchListProps) {
 
-    const { currentSearchResult, setSelectedSearchGroup, currentSearchQueryFetching, currentOrigin } = useTripPlannerContext();
+    const { currentSearchResult, setSelectedSearchGroup, currentSearchQueryFetching, currentOrigin } = useExploreContext();
     const doSelectGroup = useCallback((id: number) => () => {
         const match = currentSearchResult?.destinations.find(it => it.destination.id === id);
         setSelectedSearchGroup(match);
@@ -74,8 +79,7 @@ export default function RouteSearchList({ visible }: RouteSearchListProps) {
                 <RouteSearchListItem
                     routeCount={routes.length}
                     key={destination.id}
-                    type={destination.type}
-                    name={destination.name}
+                    destination={destination}
                     onClick={doSelectGroup(destination.id)}
                 />
             ))}

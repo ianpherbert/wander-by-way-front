@@ -5,8 +5,8 @@ import RouteSearchList from "./RouteSearchList";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { TranslationLabelObject, Languages } from "../../translations/global";
 import useTranslation from "../../translations/useTranslation";
-import useBreakPoint from "../../useBreakpoint";
-import { useTripPlannerContext } from "./hooks/useTripPlannerContext";
+import { useBreakPoint } from "../../useBreakpoint";
+import { useExploreContext } from "./hooks/useExploreContext";
 import WanderCard from "../common/WanderCard";
 import ExploreForm from "./ExploreForm";
 import CenteredLoader from "../common/CenteredLoader";
@@ -33,11 +33,11 @@ function ShowButton({ listVisible, toggleVisible }: { listVisible: boolean, togg
 
     return <Button
         onClick={toggleVisible}
-        variant={!listVisible ? "outlined" : "contained" }
+        variant={!listVisible ? "outlined" : "contained"}
         color="secondary"
         sx={styles.showButton}
         size="small"
-        startIcon={listVisible ? <Map/> : <List/> }
+        startIcon={listVisible ? <Map /> : <List />}
     >
         {label}
     </Button>
@@ -54,7 +54,7 @@ export default function Explore() {
     const shouldImpose = useMemo(() => imposeBreakpoints.includes(breakpoint), [breakpoint]);
 
     const toggleListOpen = useCallback(() => setListOpen(value => !value), [setListOpen]);
-    const { selectedSearchGroup, currentOrigin, currentOriginQueryFetching } = useTripPlannerContext();
+    const { selectedSearchGroup, currentOrigin, currentOriginQueryFetching } = useExploreContext();
 
     //The list is always open on desktop
     useEffect(() => {
@@ -64,16 +64,16 @@ export default function Explore() {
     }, [shouldImpose]);
 
     // When the selectedPane is open, we do not want to see the toggle button, as it has its own close button.
-    const shouldShowToggleButton = useMemo(() => !Boolean(selectedSearchGroup) && mapLoaded && shouldImpose, [selectedSearchGroup, mapLoaded, shouldImpose]);
+    const shouldShowToggleButton = useMemo(() => (!shouldImpose && mapLoaded) || !Boolean(selectedSearchGroup) && mapLoaded && shouldImpose, [selectedSearchGroup, mapLoaded, shouldImpose]);
     const shouldShowSearchList = useMemo(() => (mapLoaded && !shouldImpose && Boolean(currentOrigin)) || (Boolean(currentOrigin) && mapLoaded && listOpen && !Boolean(selectedSearchGroup)), [mapLoaded, listOpen, selectedSearchGroup, shouldImpose, currentOrigin]);
     const shouldShowSelectedPane = useMemo(() => (mapLoaded && !shouldImpose) || (mapLoaded && Boolean(selectedSearchGroup)), [mapLoaded, selectedSearchGroup, shouldImpose]);
-    const shouldShowLoader = useMemo(()=> mapLoaded && currentOriginQueryFetching, [mapLoaded, currentOriginQueryFetching])
+    const shouldShowLoader = useMemo(() => mapLoaded && currentOriginQueryFetching, [mapLoaded, currentOriginQueryFetching])
     return (
         <Stack>
             <WanderCard background="noisePrimary" sx={{ p: .5 }}>
                 <ExploreForm />
                 <Stack direction="row" height={"85vh"} position="relative">
-                    {shouldShowLoader && <CenteredLoader type="circular"/>}
+                    {shouldShowLoader && <CenteredLoader type="circular" />}
                     {shouldShowSearchList && <RouteSearchList visible={listOpen} />}
                     <ExploreMap onLoad={loadMap} />
                     {shouldShowSelectedPane && <SelectedPane />}
@@ -93,7 +93,6 @@ const styles = {
         bottom: 20,
         left: "50%",
         transform: "translateX(-50%)",
-
     }
 
 }

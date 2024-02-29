@@ -1,17 +1,13 @@
 import useExploreParams from "../features/explore/hooks/useExploreParams";
 import useRouteSearch from "../features/explore/hooks/useRouteSearch";
-import { createContext, useCallback, useEffect, useState } from "react";
-import { Point } from "../features/common/map/Point";
+import { createContext, useCallback, useState } from "react";
 import { RouteSearchGroup, RouteSearchPlace, RouteSearchResult } from "../features/explore/RouteSearchResult";
 import { SearchItem } from "../features/search/SearchResult";
 import Explore from "../features/explore/Explore";
+import { PointHover } from "../features/common/map/Map";
 
 
-type TripPlannerContext = {
-    /** Select point on map */
-    selectPoint: (point?: Point) => void;
-    /**Point selected on map */
-    currentPoint?: Point;
+type ExploreContext = {
     /** The search group that is selected. Corresponds to the selected point */
     selectedSearchGroup?: RouteSearchGroup;
     /** Set search group (and selectedPoint) to null */
@@ -25,48 +21,42 @@ type TripPlannerContext = {
     selectedRouteStops: RouteSearchPlace[];
     /** The places on the current selected route */
     setSelectedRouteStops: (places: RouteSearchPlace[]) => void;
+    hoveredPoint?: PointHover;
+    setHoveredPoint: (options?: PointHover) => void
 }
 
-export const tripPlannerContext = createContext<TripPlannerContext>({} as TripPlannerContext);
+export const exploreContext = createContext<ExploreContext>({} as ExploreContext);
 
-export default function TripPlannerPage() {
+export default function ExplorePage() {
     const { originId, originType, startDate } = useExploreParams();
-    const [currentPoint, setCurrentPoint] = useState<Point>();
     const [selectedSearchGroup, setSelectedSearchGroup] = useState<RouteSearchGroup>();
     const [selectedRouteStops, setSelectedRouteStops] = useState<RouteSearchPlace[]>([]);
+    const [hoveredPoint, setHoveredPoint] = useState<PointHover>();
 
     const { originQuery, routeQuery: currentSearchQuery } = useRouteSearch(originId, originType, startDate);
 
-    const selectPoint = useCallback((point?: Point) => {
-        setCurrentPoint(point);
-        const match = point ? currentSearchQuery.data?.destinations.find((it) => String(it.destination.id) === point.id) : undefined;
-        setSelectedSearchGroup(match);
-    }, [setSelectedSearchGroup, currentSearchQuery])
-
-
     const unselectSearchGroup = useCallback(() => {
-        setSelectedSearchGroup(undefined);
+        handleSetSelecteSearchGroup(undefined);
     }, [setSelectedSearchGroup]);
 
-    useEffect(()=>{
-        if(currentSearchQuery.isFetching){
-            selectPoint(undefined);
-        }
-    },[currentSearchQuery])
+    const handleSetSelecteSearchGroup = useCallback((group?: RouteSearchGroup) => {
+        setSelectedRouteStops([]);
+        setSelectedSearchGroup(group)
+    },[setSelectedSearchGroup, setSelectedRouteStops])
 
-    return <tripPlannerContext.Provider value={{
-        currentPoint,
+    return <exploreContext.Provider value={{
         selectedSearchGroup,
-        selectPoint,
         currentSearchResult: Boolean(currentSearchQuery?.isFetching) ? undefined : currentSearchQuery?.data,
         currentSearchQueryFetching: Boolean(currentSearchQuery?.isFetching),
         currentOrigin: Boolean(originQuery?.isFetching) ? undefined : originQuery?.data,
         currentOriginQueryFetching: Boolean(originQuery?.isFetching), 
         unselectSearchGroup,
-        setSelectedSearchGroup,
+        setSelectedSearchGroup: handleSetSelecteSearchGroup,
         selectedRouteStops,
         setSelectedRouteStops,
+        hoveredPoint,
+        setHoveredPoint
     }}>
         <Explore />
-    </tripPlannerContext.Provider>
+    </exploreContext.Provider>
 }

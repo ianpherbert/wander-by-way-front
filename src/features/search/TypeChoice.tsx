@@ -3,7 +3,7 @@ import { PropsWithChildren, useCallback, useState } from "react";
 import useTranslation from "../../translations/useTranslation";
 import { searchOptionLabels } from "./searchTranslations";
 import { SearchOptions } from "./SearchResult";
-import useBreakPoint from "../../useBreakpoint";
+import { useBreakPoint } from "../../useBreakpoint";
 import { FilterAlt, FilterAltOff } from "@mui/icons-material";
 
 type TypeChoiceProps = Omit<StackProps, "direction"> & {

@@ -1,6 +1,6 @@
 import { Box, Divider, Grid, Typography } from "@mui/material";
 import LanguageButton from "../../../translations/LanguageButton";
-import useBreakPoint from "../../../useBreakpoint";
+import { useBreakPoint } from "../../../useBreakpoint";
 
 
 const small = ["sx", "sm"]

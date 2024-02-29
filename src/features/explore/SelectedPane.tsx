@@ -1,6 +1,6 @@
-import { Box, Button, CircularProgress, Collapse, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack, Tooltip } from "@mui/material";
+import { Box, Button, Collapse, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack, Tooltip } from "@mui/material";
 import PlaceImage from "../common/unsplash/CityImage";
-import { useTripPlannerContext } from "./hooks/useTripPlannerContext";
+import { useExploreContext } from "./hooks/useExploreContext";
 import { IntermediateIcon, routeSearchRouteTypeIcons } from "../../utils/icons";
 import { RouteSearchRoute } from "./RouteSearchResult";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -13,6 +13,8 @@ import { skipToken } from "@reduxjs/toolkit/query";
 import { useGetRouteQuery } from "./exploreRest";
 import { differenceInMinutes, isAfter, parseISO } from "date-fns";
 import WanderCard from "../common/WanderCard";
+import CenteredLoader from "../common/CenteredLoader";
+import { PlaceOutlined } from "@mui/icons-material";
 
 const selectedPaneLabels: TranslationLabelObject<{
     addToTripLabel: string;
@@ -40,7 +42,7 @@ function StopList({ open, departureTime, routeId }: {
     open: boolean, departureTime: string, routeId: string
 }) {
     const { minutesLayoverLabel: minutesLayover } = useTranslation(selectedPaneLabels);
-    const { currentOrigin, setSelectedRouteStops: setAdditionalSearchPlaces } = useTripPlannerContext();
+    const { currentOrigin, setSelectedRouteStops, hoveredPoint } = useExploreContext();
     const { formatDate } = useDateFormatter();
 
     const tripSearchParams = useMemo(() => {
@@ -89,24 +91,27 @@ function StopList({ open, departureTime, routeId }: {
     useEffect(() => {
         if (open) {
             const places = routes?.flatMap(it => it.stops.map(({ stop }) => stop))
-            setAdditionalSearchPlaces(places ?? []);
+            setSelectedRouteStops(places ?? []);
         }
-    }, [setAdditionalSearchPlaces, routes, open])
+    }, [setSelectedRouteStops, routes, open])
 
     return (
         <Collapse in={open}>
             <List component="div" disablePadding>
                 {!loading ?
                     displayedStops?.map(({ stop, plannedDeparture, plannedArrival }) => (
-                        <ListItemButton sx={{ pl: 4 }} key={stop.id}>
-                            <ListItemIcon>
-                                <IntermediateIcon />
-                            </ListItemIcon>
-                            <ListItemText primary={stop.name} secondary={buildSecondaryLabel(plannedDeparture, plannedArrival)} />
-                        </ListItemButton>
+                        <ListItem secondaryAction={hoveredPoint?.point?.id === String(stop.id) && <PlaceOutlined />}>
+                            <ListItemButton sx={{ pl: 4 }} key={stop.id}>
+                                <ListItemIcon>
+                                    <IntermediateIcon />
+                                </ListItemIcon>
+                                <ListItemText primary={stop.name} secondary={buildSecondaryLabel(plannedDeparture, plannedArrival)} />
+                            </ListItemButton>
+                        </ListItem>
+
                     )) :
                     <ListItem sx={{ pl: 4 }}>
-                        <ListItemIcon><CircularProgress /></ListItemIcon>
+                        <ListItemIcon><CenteredLoader type="circular" /></ListItemIcon>
                     </ListItem>
                 }
             </List>
@@ -134,23 +139,23 @@ function RouteListItem({ type, destination, departureTime, open, toggleOpen, rou
 }
 
 export default function SelectedPane() {
-    const { selectedSearchGroup, unselectSearchGroup, setSelectedRouteStops: setAdditionalSearchPlaces } = useTripPlannerContext();
+    const { selectedSearchGroup, unselectSearchGroup, setSelectedRouteStops } = useExploreContext();
     const [openDestinationId, setOpenDestinationId] = useState<string>();
-    const {closeLabel} = useTranslation(selectedPaneLabels)
+    const { closeLabel } = useTranslation(selectedPaneLabels)
 
     const handleSetOpenDestinationId = useCallback(({ routeId }: RouteSearchRoute) => () => {
         if (openDestinationId === routeId) {
             setOpenDestinationId(undefined);
-            setAdditionalSearchPlaces([]);
+            setSelectedRouteStops([]);
         } else {
             setOpenDestinationId(routeId);
         }
-    }, [setOpenDestinationId, openDestinationId]);
+    }, [setOpenDestinationId, openDestinationId, setSelectedRouteStops]);
 
     const closePane = useCallback(() => {
-        setAdditionalSearchPlaces([]);
+        setOpenDestinationId(undefined);
         unselectSearchGroup();
-    }, [setAdditionalSearchPlaces, unselectSearchGroup])
+    }, [unselectSearchGroup])
 
     return (
         <WanderCard sx={{ height: "100%", width: Boolean(selectedSearchGroup) ? "fit-content" : 0 }} elevation={5}>

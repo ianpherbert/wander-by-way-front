@@ -8,7 +8,7 @@ import { ExpandMore, Search } from "@mui/icons-material";
 import WanderCard from "../common/WanderCard";
 import { Languages, TranslationLabelObject } from "../../translations/global";
 import useTranslation from "../../translations/useTranslation";
-import { useTripPlannerContext } from "./hooks/useTripPlannerContext";
+import { useExploreContext } from "./hooks/useExploreContext";
 import useExploreParams from "./hooks/useExploreParams";
 
 const exploreFormLabels: TranslationLabelObject<{ searchLabel: string }> = {
@@ -20,7 +20,7 @@ export default function ExploreForm() {
     const [open, setOpen] = useState(true);
     const navigate = useNavigate();
     const { searchLabel } = useTranslation(exploreFormLabels);
-    const { currentOrigin } = useTripPlannerContext();
+    const { currentOrigin } = useExploreContext();
     const {startDate } = useExploreParams()
 
 
