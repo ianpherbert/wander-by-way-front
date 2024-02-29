@@ -140,7 +140,7 @@ export default function Map({ searchPoints, routePoints, showConnections, onSele
 
     useEffect(() => {
         setSelectedId(selectedPoint?.id);
-        if (autoZoom && selectedPoint && !Boolean(routePoints?.length)) {
+        if (selectedPoint && !Boolean(routePoints?.length) && autoZoom) {
             const feature = searchFeatures?.find(it => it.properties.id === selectedPoint?.id);
             const geometry = feature?.geometry as unknown as {
                 coordinates: number[],
@@ -155,7 +155,7 @@ export default function Map({ searchPoints, routePoints, showConnections, onSele
                 padding: { top: 0, bottom: 0, left: 0, right: isMobile ? 0 : 800 }
             });
         }
-        if (autoZoom && !selectedPoint) {
+        if (!selectedPoint) {
             zoomToAllPoints(searchPoints)
         }
     }, [selectedPoint, isMobile])
@@ -168,7 +168,7 @@ export default function Map({ searchPoints, routePoints, showConnections, onSele
 
     /**Will set view of map to include all of the points that are passed to this method */
     const zoomToAllPoints = useCallback((pointsToZoom?: Point[]) => {
-        if (!pointsToZoom || !Boolean(pointsToZoom?.length)) {
+        if (!pointsToZoom || !Boolean(pointsToZoom?.length) || !autoZoom) {
             return;
         }
         const latSorted = pointsToZoom.sort((a, b) => a.latitude - b.latitude);
@@ -194,7 +194,7 @@ export default function Map({ searchPoints, routePoints, showConnections, onSele
             }
 
         }
-    }, [map, searchPoints])
+    }, [map, searchPoints, autoZoom])
 
 
 

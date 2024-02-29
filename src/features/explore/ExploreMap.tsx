@@ -1,15 +1,17 @@
 import Map from "../common/map/Map";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { searchItemTypeToMapPointType, searchItemTypeToMapPointTypeConnection } from "../common/SearchItemType";
 import { useExploreContext } from "./hooks/useExploreContext";
 import { MapPointType, Point } from "../common/map/Point";
+import { Stack, Switch, Tooltip } from "@mui/material";
 
 type RouteSearchMapProps = {
     onLoad: () => void;
 }
 
 export default function ExploreMap({ onLoad }: RouteSearchMapProps) {
-    const [selectedPoint, setSelectedPoint] = useState<Point>()
+    const [autoZoom, setAutoZoom] = useState(true);
+
     const { currentSearchResult, selectedRouteStops: selectedRouteStops, setSelectedSearchGroup, selectedSearchGroup, setHoveredPoint } = useExploreContext();
 
     const currentSearchPoints: Point[] = useMemo(() =>
@@ -42,26 +44,32 @@ export default function ExploreMap({ onLoad }: RouteSearchMapProps) {
 
     const selectPoint = useCallback((point?: Point) => {
         const match = point ? currentSearchResult?.destinations.find((it) => String(it.destination.id) === point.id) : undefined;
-        setSelectedPoint(point);
         setSelectedSearchGroup(match);
-    }, [setSelectedPoint, setSelectedSearchGroup, currentSearchResult]);
+    }, [setSelectedSearchGroup, currentSearchResult]);
 
-    useEffect(() => {
+    const memoSelectedPoint = useMemo(() => {
         const allPoints = [...selectedRoutePoints, ...currentSearchPoints];
         const match = selectedSearchGroup ? allPoints.find(it => it.id === String(selectedSearchGroup.destination.id)) : undefined;
-        setSelectedPoint(match);
-    }, [selectedSearchGroup, selectedRoutePoints, currentSearchPoints, setSelectedPoint])
+        return match;
+    }, [selectedSearchGroup, selectedRoutePoints, currentSearchPoints,])
 
     return (
-        <Map
-            searchPoints={currentSearchPoints.concat(currentOriginPoint ?? [])}
-            routePoints={selectedRoutePoints}
-            onSelectPoint={selectPoint}
-            selectedPoint={selectedPoint}
-            flex={1}
-            onLoad={onLoad}
-            autoZoom={true}
-            onPointHover={setHoveredPoint}
-        />
+        <>
+            <Map
+                searchPoints={currentSearchPoints.concat(currentOriginPoint ?? [])}
+                routePoints={selectedRoutePoints}
+                onSelectPoint={selectPoint}
+                selectedPoint={memoSelectedPoint}
+                flex={1}
+                onLoad={onLoad}
+                autoZoom={autoZoom}
+                onPointHover={setHoveredPoint}
+            />
+            <Stack position="absolute" bottom={0} right={0}>
+                <Tooltip title="toggle autozoom">
+                    <Switch color="success" checked={autoZoom} onChange={(_, checked) => setAutoZoom(checked)} />
+                </Tooltip>
+            </Stack>
+        </>
     )
 }
