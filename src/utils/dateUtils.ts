@@ -24,7 +24,6 @@ export function useDateFormatter() {
             const parsedDate = parseISO(date)
             return format(parsedDate, dateFormat, { locale });
         }catch(e){
-            console.log("Could not parse "+date, e)
             return date;
         }
     }

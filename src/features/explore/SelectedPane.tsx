@@ -120,23 +120,6 @@ function StopList({ open, departureTime, routeId }: {
     )
 }
 
-// function RouteSearchListItem({ destination, routeCount, onClick }: { destination: RouteSearchPlace, routeCount: number; onClick: () => void }) {
-//     const countLabel = routeCount + " Routes";
-//     const { selectedSearchGroup, hoveredPoint } = useExploreContext();
-
-//     const isSelected = useMemo(() => selectedSearchGroup?.destination.id === destination.id, [destination, selectedSearchGroup])
-//     const isHoveredOnMap = useMemo(() => hoveredPoint?.layer === "search" && hoveredPoint?.point?.id === String(destination.id), [destination, hoveredPoint])
-
-//     return (
-//         <ListItem secondaryAction={isHoveredOnMap && <PlaceOutlined />}>
-//             <ListItemButton onClick={onClick} selected={isSelected}>
-//                 <ListItemIcon>{searchItemTypeIcons[destination.type]}</ListItemIcon>
-//                 <ListItemText primary={destination.name} secondary={countLabel} />
-//             </ListItemButton>
-//         </ListItem>
-//     )
-// }
-
 function RouteListItem({ type, destination, departureTime, open, toggleOpen, routeId }: RouteSearchRoute & { open: boolean; toggleOpen: () => void }) {
     const { addToTripLabel: expandLabel, countriesLabel: countries } = useTranslation(selectedPaneLabels);
     const name = useMemo(() => `${destination.name} ${countries[destination.country as keyof CountryLabel]}`, [destination]);
