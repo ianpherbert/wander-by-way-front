@@ -2,7 +2,7 @@ import { Box, Button, Collapse, List, ListItem, ListItemButton, ListItemIcon, Li
 import PlaceImage from "../common/unsplash/CityImage";
 import { useExploreContext } from "./hooks/useExploreContext";
 import { IntermediateIcon, routeSearchRouteTypeIcons } from "../../utils/icons";
-import { RouteSearchRoute } from "./RouteSearchResult";
+import { RouteSearchRoute, RouteSearchRouteType, routeSearchRouteToSimpleRouteStopList } from "./RouteSearchResult";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import useTranslation from "../../translations/useTranslation";
 import { CountryLabel, countryLabels } from "../../translations/countries";
@@ -36,40 +36,50 @@ const selectedPaneLabels: TranslationLabelObject<{
     }
 }
 
-const DATE_FORMAT = "MMM d h:mma"
+const DATE_FORMAT = "MMM d h:mma";
 
-function StopList({ open, departureTime, routeId }: {
-    open: boolean, departureTime: string, routeId: string
+const getDetails = [
+    RouteSearchRouteType.TRAIN
+]
+
+function StopList({ open, route }: {
+    open: boolean, route: RouteSearchRoute
 }) {
     const { minutesLayoverLabel: minutesLayover } = useTranslation(selectedPaneLabels);
     const { currentOrigin, setSelectedRouteStops, hoveredPoint } = useExploreContext();
     const { formatDate } = useDateFormatter();
 
+    const shouldFetchDetails = useMemo(() => getDetails.includes(route.type), [route])
+
     const tripSearchParams = useMemo(() => {
         // Only need to focus on open. RTK query will not refetch if the last query is in its cache
-        if (open) {
-            return { routeIds: [routeId], placeType: SearchItemType.TRAIN_STATION }
+        if (open && shouldFetchDetails) {
+            return { routeIds: [route.routeId], placeType: SearchItemType.TRAIN_STATION }
         }
         return skipToken;
-    }, [open])
+    }, [open, shouldFetchDetails, route])
 
     const { data: routes, isFetching: loading } = useGetRouteQuery(tripSearchParams);
 
-    const { stops } = useMemo(() => routes?.find(it => it.routeId === routeId) ?? { stops: [] }, [routes, routeId])
+    // We always get a list from the api, but since we are only requesting one routeId, the list should only be one long.
+    const { stops } = useMemo(() => routes?.find(it => it.routeId === route.routeId) ?? { stops: [] }, [routes, route])
 
     const displayedStops = useMemo(() => {
-        if (!stops) return [];
+        if (!stops && shouldFetchDetails) return [];
+        if(!shouldFetchDetails){
+            return routeSearchRouteToSimpleRouteStopList(route);
+        }
 
         const filtered = stops.filter(({ plannedDeparture, stop }) => {
             if (plannedDeparture === null) return true;
-            if (plannedDeparture && departureTime) {
+            if (plannedDeparture && route.departureTime) {
                 const parsedStop = parseISO(plannedDeparture);
-                const parsedDeparture = parseISO(departureTime);
+                const parsedDeparture = parseISO(route.departureTime);
                 return isAfter(parsedStop, parsedDeparture) || currentOrigin?.name === stop.name;
             }
         })
         return filtered;
-    }, [stops, departureTime]);
+    }, [stops, route]);
 
     const buildSecondaryLabel = useCallback((plannedArrival?: string | null, plannedDeparture?: string | null) => {
         const plannedDepartureIso = Boolean(plannedArrival) ? parseISO(plannedArrival!) : undefined;
@@ -120,20 +130,20 @@ function StopList({ open, departureTime, routeId }: {
     )
 }
 
-function RouteListItem({ type, destination, departureTime, open, toggleOpen, routeId }: RouteSearchRoute & { open: boolean; toggleOpen: () => void }) {
+function RouteListItem({ route, open, toggleOpen }: { open: boolean; toggleOpen: () => void, route: RouteSearchRoute }) {
     const { addToTripLabel: expandLabel, countriesLabel: countries } = useTranslation(selectedPaneLabels);
-    const name = useMemo(() => `${destination.name} ${countries[destination.country as keyof CountryLabel]}`, [destination]);
+    const name = useMemo(() => `${route.destination.name} ${countries[route.destination.country as keyof CountryLabel]}`, [route]);
     const { formatDateFromString } = useDateFormatter();
 
     return (
         <>
             <Tooltip title={expandLabel}>
                 <ListItemButton onClick={toggleOpen} selected={open}>
-                    <ListItemIcon>{routeSearchRouteTypeIcons[type]}</ListItemIcon>
-                    <ListItemText primary={name} secondary={formatDateFromString(departureTime, DATE_FORMAT)} />
+                    <ListItemIcon>{routeSearchRouteTypeIcons[route.type]}</ListItemIcon>
+                    <ListItemText primary={name} secondary={formatDateFromString(route.departureTime, DATE_FORMAT)} />
                 </ListItemButton>
             </Tooltip>
-            <StopList open={open} departureTime={departureTime} routeId={routeId} />
+            <StopList open={open} route={route} />
         </>
     )
 }
@@ -165,12 +175,12 @@ export default function SelectedPane() {
                 </PlaceImage>
                 <Box flex={1} overflow={"auto"}>
                     <List>
-                        {selectedSearchGroup?.routes.map((props, index) => (
+                        {selectedSearchGroup?.routes.map((route, index) => (
                             <RouteListItem
-                                {...props}
-                                key={props.destination.id + index}
-                                toggleOpen={handleSetOpenDestinationId(props)}
-                                open={openDestinationId === props.routeId}
+                                route={route}
+                                key={route.destination.id + index}
+                                toggleOpen={handleSetOpenDestinationId(route)}
+                                open={openDestinationId === route.routeId}
                             />
                         ))}
                     </List>
