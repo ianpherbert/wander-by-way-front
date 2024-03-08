@@ -2,6 +2,7 @@ import { Divider, Grid, Link, Typography } from "@mui/material";
 import { Image } from "../../../assets/images";
 import { Languages, TranslationLabelObject } from "../../../translations/global";
 import useTranslation from "../../../translations/useTranslation";
+import { environment } from "../../../variables";
 
 
 
@@ -38,7 +39,7 @@ export default function Footer() {
                         <Image url="shortLogo" height={100} />
                     </Grid>
                     <Grid item>
-                        <Typography variant="caption">Wander by Way ©2024</Typography>
+                        <Typography variant="caption">Wander by Way ©2024 {environment}</Typography>
                     </Grid>
                 </Grid>
             </Grid>
@@ -64,28 +65,6 @@ export default function Footer() {
                 </Grid>
             </Grid>
         </Grid>
-        {/* <Stack direction="row" justifyContent="space-between" mx={20} my={5}>
-            <Stack>
-                <Image url="shortLogo" height={100} />
-                <Typography variant={"caption"}>Wander by Way ©2024</Typography>
-            </Stack>
-
-            <Stack>
-                <Stack>
-                    <Typography>{labels.contactUs}:</Typography>
-                    <Link underline="hover" color={"info"}
-                        href={"mailto:hello@wanderbyway.com"}>hello@wanderbyway.com</Link>
-                </Stack>
-                <Divider />
-                <Stack marginTop={"2rem"}>
-                    <Typography>{labels.funding}:</Typography>
-
-                    <Link underline="hover" color={"info"}
-                        href={"https://bmc.link/ianpatrickherbert"}>Buy me a coffee</Link>
-                </Stack>
-            </Stack>
-
-        </Stack> */}
     </footer>;
 }
 
