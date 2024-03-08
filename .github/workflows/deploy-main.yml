@@ -35,6 +35,12 @@ jobs:
       - name: Generate deployment package
         run: zip -r deploy.zip Dockerrun.aws.json
 
+      - name: Upload deployment package
+        uses: actions/upload-artifact@v2
+        with:
+          name: deploy.zip
+          path: deploy.zip
+
   deploy:
     runs-on: ubuntu-latest
     needs: prepare-deployment-package
