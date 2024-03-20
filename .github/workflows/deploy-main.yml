@@ -64,7 +64,7 @@ jobs:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           application_name: wander-by-way-app
-          environment_name: wander-by-way-app-dev
+          environment_name: Wander-by-way-app-prod
           version_label: ${{ github.sha }}
           region: eu-west-3
           deployment_package: deploy.zip
