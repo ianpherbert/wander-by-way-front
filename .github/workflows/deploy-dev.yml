@@ -1,0 +1,68 @@
+name: Deploy Docker Image with Zip Package
+
+on:
+  push:
+    branches: [ dev ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ianpherbert/wander-by-way-app:latest
+          build-args: |
+            VITE_MAPBOX_KEY=${{ secrets.VITE_MAPBOX_KEY }}
+            VITE_MAPBOX_STYLE=${{ secrets.VITE_MAPBOX_STYLE }}
+            VITE_TRAVEL_ENDPOINT=${{ secrets.VITE_TRAVEL_ENDPOINT_DEV }}
+            VITE_UNSPLASH_CLIENT_ID=${{ secrets.VITE_UNSPLASH_CLIENT_ID }}
+            VITE_ENV=DEV
+
+  prepare-deployment-package:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Generate deployment package
+        run: zip -r deploy.zip Dockerrun.aws.json
+
+      - name: Upload deployment package
+        uses: actions/upload-artifact@v2
+        with:
+          name: deploy.zip
+          path: deploy.zip
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: prepare-deployment-package
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Download deployment package
+        uses: actions/download-artifact@v2
+        with:
+          name: deploy.zip
+
+      - name: Deploy to Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v18
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: wander-by-way-app
+          environment_name: wander-by-way-app-dev
+          version_label: ${{ github.sha }}
+          region: eu-west-3
+          deployment_package: deploy.zip
