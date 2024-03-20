@@ -39,7 +39,8 @@ export default function Footer() {
                         <Image url="shortLogo" height={100} />
                     </Grid>
                     <Grid item>
-                        <Typography variant="caption">Wander by Way ©2024 {environment}</Typography>
+                        <Typography variant="caption">Wander by Way ©2024</Typography>
+                        {environment === "DEV" && <Typography variant="caption">{environment}</Typography>}
                     </Grid>
                 </Grid>
             </Grid>
