@@ -15,7 +15,8 @@ export const internalImages = {
     langEn: { url: "language/flag_EN.png", alt: "" },
     genericCity: { url: "generic_city.png", alt: "" },
     manWithMap: {url: "man_with_map.png", alt: "man looking at map"},
-    manStanding: {url: "man_standing_trans.png", alt: "man standing looking left"}
+    manStanding: {url: "man_standing_trans.png", alt: "man standing looking left"},
+    happyLawyer: {url: "happy_lawyer.png", alt: "man with papers smiling"}
 }
 
 export type InternalImage = keyof typeof internalImages;

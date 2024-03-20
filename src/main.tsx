@@ -10,11 +10,13 @@ import { ThemeProvider } from '@mui/material'
 import store from './redux/store.ts'
 import TestPage from './pages/TestPage.tsx'
 import ExplorePage from './pages/ExplorePage.tsx'
+import GdprPage from './pages/GdprPage.tsx'
 
 export const endPoints = {
   home: { entrypoint: "" },
   test: { entrypoint: "test" },
-  explore: { entrypoint: "explore" }
+  explore: { entrypoint: "explore" },
+  gdpr: { entrypoint: "gdpr" }
 }
 
 const routes = [
@@ -22,6 +24,7 @@ const routes = [
   { path: endPoints.test.entrypoint, element: <TestPage /> },
   { path: endPoints.explore.entrypoint, element: <ExplorePage /> },
   { path: `${endPoints.explore.entrypoint}`, element: <ExplorePage /> },
+  { path: endPoints.gdpr.entrypoint, element: <GdprPage /> }
 ]
 
 const router = createBrowserRouter([
