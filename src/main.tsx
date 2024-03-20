@@ -12,7 +12,7 @@ import TestPage from './pages/TestPage.tsx'
 import ExplorePage from './pages/ExplorePage.tsx'
 
 export const endPoints = {
-  home: { entrypoint: "home" },
+  home: { entrypoint: "" },
   test: { entrypoint: "test" },
   explore: { entrypoint: "explore" }
 }
