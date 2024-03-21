@@ -16,6 +16,7 @@ export const internalImages = {
     genericCity: { url: "generic_city.png", alt: "" },
     manWithMap: {url: "man_with_map.png", alt: "man looking at map"},
     manStanding: {url: "man_standing_trans.png", alt: "man standing looking left"},
+    manStandingRight: {url: "man_standing_looking_right.png", alt: "man standing looking right"},
     happyLawyer: {url: "happy_lawyer.png", alt: "man with papers smiling"},
     cityscape1: {url: "places/cityscape_1.png", alt: "A generic european cityscape"},
     cityscape2: {url: "places/cityscape_2.png", alt: "A generic european cityscape"},

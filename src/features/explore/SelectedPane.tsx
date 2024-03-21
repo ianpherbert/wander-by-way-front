@@ -1,7 +1,7 @@
 import { Box, Button, Collapse, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack, Tooltip, Typography } from "@mui/material";
 import { useExploreContext } from "./hooks/useExploreContext";
 import { IntermediateIcon, routeSearchRouteTypeIcons } from "../../utils/icons";
-import { RouteSearchRoute, RouteSearchRouteType, routeSearchRouteToSimpleRouteStopList } from "./RouteSearchResult";
+import { RouteSearchPlace, RouteSearchRoute, RouteSearchRouteType, routeSearchRouteToSimpleRouteStopList } from "./RouteSearchResult";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import useTranslation from "../../translations/useTranslation";
 import { CountryLabel, countryLabels } from "../../translations/countries";
@@ -16,6 +16,7 @@ import CenteredLoader from "../common/CenteredLoader";
 import ContainerWithImage from "../common/ContainerWithImage";
 import { InternalImage } from "../../assets/images";
 import { theme } from "../../theme";
+import NewSearchDialog from "./NewSearchDialog";
 
 const selectedPaneLabels: TranslationLabelObject<{
     addToTripLabel: string;
@@ -49,6 +50,8 @@ function StopList({ open, route }: {
     const { minutesLayoverLabel: minutesLayover } = useTranslation(selectedPaneLabels);
     const { currentOrigin, setSelectedRouteStops, hoveredPoint } = useExploreContext();
     const { formatDate } = useDateFormatter();
+
+    const [selectedStop, setSelectedStop] = useState<RouteSearchPlace>();
 
     const shouldFetchDetails = useMemo(() => getDetails.includes(route.type), [route])
 
@@ -106,21 +109,26 @@ function StopList({ open, route }: {
         }
     }, [setSelectedRouteStops, routes, open])
 
+    /** Will search from selected stop on the same day */
+    const handleStopClick = useCallback((stop?: RouteSearchPlace) => () => {
+        setSelectedStop(stop);
+
+    }, [setSelectedStop])
+
     return (
         <Collapse in={open}>
             <List component="div" disablePadding sx={{ bgcolor: "grey.100" }}>
                 {!loading ?
                     displayedStops?.map(({ stop, plannedDeparture, plannedArrival }) => (
-                        <ListItem  key={stop.id} >
-                            <ListItemButton >
-                                <ListItemIcon>
-                                    <IntermediateIcon sx={hoveredPoint?.point?.id === String(stop.id) ? { color: theme.palette.primary.main } : {}} />
-                                </ListItemIcon>
-                                <ListItemText primary={stop.name} secondary={buildSecondaryLabel(plannedDeparture, plannedArrival)}
-                                    sx={styles.intermediateItem}
-                                />
-                            </ListItemButton>
-                        </ListItem>
+                        //We do not need to handle the case of a user clicking on the current stop, because the navigate will just do nothing.
+                        <ListItemButton key={stop.id} onClick={handleStopClick(stop)} >
+                            <ListItemIcon>
+                                <IntermediateIcon sx={hoveredPoint?.point?.id === String(stop.id) ? { color: theme.palette.primary.main } : {}} />
+                            </ListItemIcon>
+                            <ListItemText primary={stop.name} secondary={buildSecondaryLabel(plannedDeparture, plannedArrival)}
+                                sx={styles.intermediateItem}
+                            />
+                        </ListItemButton>
 
                     )) :
                     <ListItem>
@@ -128,7 +136,7 @@ function StopList({ open, route }: {
                     </ListItem>
                 }
             </List>
-
+            <NewSearchDialog stop={selectedStop} onClose={handleStopClick(undefined)} />
         </Collapse>
     )
 }
