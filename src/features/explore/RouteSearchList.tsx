@@ -1,16 +1,16 @@
-import { Stack, Box, List, ListItem, ListItemIcon, ListItemText, ListItemButton, Typography } from "@mui/material";
+import { Stack, Box, List, ListItemIcon, ListItemText, ListItemButton, Typography } from "@mui/material";
 import { useExploreContext } from "./hooks/useExploreContext";
 import { useCallback, useMemo } from "react";
 import { searchItemTypeIcons } from "../../utils/icons";
-import PlaceImage from "../common/unsplash/CityImage";
 import WanderCard from "../common/WanderCard";
 import CenteredLoader from "../common/CenteredLoader";
-import { Image } from "../../assets/images";
+import { Image, InternalImage } from "../../assets/images";
 import { theme } from "../../theme";
 import { Languages, TranslationLabelObject } from "../../translations/global";
 import useTranslation from "../../translations/useTranslation";
 import { RouteSearchPlace } from "./RouteSearchResult";
-import { PlaceOutlined } from "@mui/icons-material";
+import { SearchItemType } from "../common/SearchItemType";
+import ContainerWithImage from "../common/ContainerWithImage";
 
 const routeSearchListLabels: TranslationLabelObject<{
     noResultsLabel: string;
@@ -34,12 +34,10 @@ function RouteSearchListItem({ destination, routeCount, onClick }: { destination
     const isHoveredOnMap = useMemo(() => hoveredPoint?.layer === "search" && hoveredPoint?.point?.id === String(destination.id), [destination, hoveredPoint])
 
     return (
-        <ListItem secondaryAction={isHoveredOnMap && <PlaceOutlined />}>
-            <ListItemButton onClick={onClick} selected={isSelected}>
-                <ListItemIcon>{searchItemTypeIcons[destination.type]}</ListItemIcon>
-                <ListItemText primary={destination.name} secondary={countLabel} />
-            </ListItemButton>
-        </ListItem>
+        <ListItemButton onClick={onClick} selected={isSelected}>
+            <ListItemIcon sx={isHoveredOnMap ? { color: theme.palette.primary.main } : {}}>{searchItemTypeIcons[destination.type]}</ListItemIcon>
+            <ListItemText primary={destination.name} secondary={countLabel} />
+        </ListItemButton>
     )
 }
 
@@ -86,12 +84,28 @@ export default function RouteSearchList({ visible }: RouteSearchListProps) {
         </List>)
     }, [currentSearchResult])
 
+    const containerImage: InternalImage = useMemo(() => {
+        switch (currentOrigin?.type) {
+            case SearchItemType.AIRPORT:
+                return "airport2";
+            case SearchItemType.CITY:
+                return "cityscape1";
+            case SearchItemType.TRAIN_STATION:
+                return "trainStation2";
+            case SearchItemType.BUS_STATION:
+                return "busStation2";
+            case SearchItemType.PORT:
+                return "port2"
+        }
+        return "cityscape2"
+    }, [currentOrigin])
+
     return (
         <WanderCard sx={[styles.card, { maxWidth: visible ? "100%" : 0, }]} elevation={5}>
             <Stack height={"100%"}>
-                <PlaceImage queryString={currentOrigin?.name} height={50} width={"100%"} minWidth={400} blur={2}>
-                    <h2>{currentOrigin?.name}</h2>
-                </PlaceImage>
+                <ContainerWithImage url={containerImage} height={100} width={400}>
+                    <Typography variant="h4" sx={styles.title}>{currentOrigin?.name}</Typography>
+                </ContainerWithImage>
                 <Box flex={1} overflow={"auto"} pb={10} position="relative">
                     {content}
                     {currentSearchQueryFetching && <CenteredLoader type="circular" />}
@@ -111,4 +125,11 @@ const styles = {
         background: `radial-gradient(circle, ${theme.palette.secondary.main} 50%, transparent 50%)`,
         display: 'inline-block',
     },
+    title: {
+        bgcolor: "#DCDADAcc",
+        p: .2,
+        borderRadius: 3,
+        textAlign: "center"
+    },
 }
+
