@@ -16,7 +16,17 @@ export const internalImages = {
     genericCity: { url: "generic_city.png", alt: "" },
     manWithMap: {url: "man_with_map.png", alt: "man looking at map"},
     manStanding: {url: "man_standing_trans.png", alt: "man standing looking left"},
-    happyLawyer: {url: "happy_lawyer.png", alt: "man with papers smiling"}
+    happyLawyer: {url: "happy_lawyer.png", alt: "man with papers smiling"},
+    cityscape1: {url: "places/cityscape_1.png", alt: "A generic european cityscape"},
+    cityscape2: {url: "places/cityscape_2.png", alt: "A generic european cityscape"},
+    trainStation1: {url: "places/train_station_1.png", alt: "A smiling woman in a 1960's train station"},
+    trainStation2: {url: "places/train_station_2.png", alt: "A 1960's train station"},
+    airport1: {url: "places/airport_1.png", alt: "A woman overlooking an airport with mountains in the background"},
+    airport2: {url: "places/airport_2.png", alt: "A woman overlooking an airport with mountains in the background"},
+    port1: {url: "places/port_1.png", alt: "A generic european port"},
+    port2: {url: "places/port_2.png", alt: "A generic european port"},
+    busStation1: {url: "places/bus_station_1.png", alt: "A generic european bus station"},
+    busStation2: {url: "places/bus_station_2.png", alt: "A generic european bus station"},
 }
 
 export type InternalImage = keyof typeof internalImages;

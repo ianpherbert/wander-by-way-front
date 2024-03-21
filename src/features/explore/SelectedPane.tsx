@@ -1,5 +1,4 @@
-import { Box, Button, Collapse, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack, Tooltip } from "@mui/material";
-import PlaceImage from "../common/unsplash/CityImage";
+import { Box, Button, Collapse, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack, Tooltip, Typography } from "@mui/material";
 import { useExploreContext } from "./hooks/useExploreContext";
 import { IntermediateIcon, routeSearchRouteTypeIcons } from "../../utils/icons";
 import { RouteSearchRoute, RouteSearchRouteType, routeSearchRouteToSimpleRouteStopList } from "./RouteSearchResult";
@@ -14,7 +13,9 @@ import { useGetRouteQuery } from "./exploreRest";
 import { differenceInMinutes, isAfter, parseISO } from "date-fns";
 import WanderCard from "../common/WanderCard";
 import CenteredLoader from "../common/CenteredLoader";
-import { PlaceOutlined } from "@mui/icons-material";
+import ContainerWithImage from "../common/ContainerWithImage";
+import { InternalImage } from "../../assets/images";
+import { theme } from "../../theme";
 
 const selectedPaneLabels: TranslationLabelObject<{
     addToTripLabel: string;
@@ -66,7 +67,7 @@ function StopList({ open, route }: {
 
     const displayedStops = useMemo(() => {
         if (!stops && shouldFetchDetails) return [];
-        if(!shouldFetchDetails){
+        if (!shouldFetchDetails) {
             return routeSearchRouteToSimpleRouteStopList(route);
         }
 
@@ -107,20 +108,22 @@ function StopList({ open, route }: {
 
     return (
         <Collapse in={open}>
-            <List component="div" disablePadding>
+            <List component="div" disablePadding sx={{ bgcolor: "grey.100" }}>
                 {!loading ?
                     displayedStops?.map(({ stop, plannedDeparture, plannedArrival }) => (
-                        <ListItem secondaryAction={hoveredPoint?.point?.id === String(stop.id) && <PlaceOutlined />}>
-                            <ListItemButton sx={{ pl: 4 }} key={stop.id}>
+                        <ListItem  key={stop.id} >
+                            <ListItemButton >
                                 <ListItemIcon>
-                                    <IntermediateIcon />
+                                    <IntermediateIcon sx={hoveredPoint?.point?.id === String(stop.id) ? { color: theme.palette.primary.main } : {}} />
                                 </ListItemIcon>
-                                <ListItemText primary={stop.name} secondary={buildSecondaryLabel(plannedDeparture, plannedArrival)} />
+                                <ListItemText primary={stop.name} secondary={buildSecondaryLabel(plannedDeparture, plannedArrival)}
+                                    sx={styles.intermediateItem}
+                                />
                             </ListItemButton>
                         </ListItem>
 
                     )) :
-                    <ListItem sx={{ pl: 4 }}>
+                    <ListItem>
                         <ListItemIcon><CenteredLoader type="circular" /></ListItemIcon>
                     </ListItem>
                 }
@@ -132,7 +135,7 @@ function StopList({ open, route }: {
 
 function RouteListItem({ route, open, toggleOpen }: { open: boolean; toggleOpen: () => void, route: RouteSearchRoute }) {
     const { addToTripLabel: expandLabel, countriesLabel: countries } = useTranslation(selectedPaneLabels);
-    const name = useMemo(() => `${route.destination.name} ${countries[route.destination.country as keyof CountryLabel]}`, [route]);
+    const name = useMemo(() => `${route.destination.name} (${countries[route.destination.country as keyof CountryLabel]})`, [route]);
     const { formatDateFromString } = useDateFormatter();
 
     return (
@@ -167,12 +170,29 @@ export default function SelectedPane() {
         unselectSearchGroup();
     }, [unselectSearchGroup])
 
+    const containerImage: InternalImage = useMemo(() => {
+        switch (selectedSearchGroup?.destination.type) {
+            case SearchItemType.AIRPORT:
+                return "airport1";
+            case SearchItemType.CITY:
+                return "cityscape1";
+            case SearchItemType.TRAIN_STATION:
+                return "trainStation1";
+            case SearchItemType.BUS_STATION:
+                return "busStation1";
+            case SearchItemType.PORT:
+                return "port1"
+        }
+        return "cityscape1"
+    }, [selectedSearchGroup])
+
     return (
         <WanderCard sx={{ height: "100%", width: Boolean(selectedSearchGroup) ? "fit-content" : 0 }} elevation={5}>
             <Stack height={"100%"}>
-                <PlaceImage queryString={selectedSearchGroup?.destination.name} height={50} width={400} blur={2}>
-                    <h2>{selectedSearchGroup?.destination.name}</h2>
-                </PlaceImage>
+                <ContainerWithImage url={containerImage} height={100} width={400}>
+                    <Typography variant="h4" sx={styles.title}>{selectedSearchGroup?.destination.name}</Typography>
+                </ContainerWithImage>
+
                 <Box flex={1} overflow={"auto"}>
                     <List>
                         {selectedSearchGroup?.routes.map((route, index) => (
@@ -196,4 +216,19 @@ export default function SelectedPane() {
             </Stack>
         </WanderCard>
     )
+}
+
+const styles = {
+    title: {
+        bgcolor: "#DCDADAcc",
+        p: .2,
+        borderRadius: 3,
+        textAlign: "center"
+    },
+    intermediateItem: {
+        width: 250,
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis"
+    }
 }
