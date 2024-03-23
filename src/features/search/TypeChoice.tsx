@@ -1,10 +1,10 @@
 import { Checkbox, FormControlLabel, StackProps, Grid, Stack, IconButton, Collapse } from "@mui/material";
 import { PropsWithChildren, useCallback, useState } from "react";
 import useTranslation from "../../translations/useTranslation";
-import { searchOptionLabels } from "./searchTranslations";
 import { SearchOptions } from "./SearchResult";
 import { useBreakPoint } from "../../useBreakpoint";
 import { FilterAlt, FilterAltOff } from "@mui/icons-material";
+import { TranslationLabel, TranslationLabelObject, Languages } from "../../translations/global";
 
 type TypeChoiceProps = Omit<StackProps, "direction"> & {
     selectedOptions: SearchOptions;
@@ -30,6 +30,28 @@ function TypeChoiceCollapse({ children }: PropsWithChildren) {
             </Collapse>
         </Stack>
     )
+}
+
+const searchOptionsLabelEn: TranslationLabel<SearchOptions> = {
+    airport: "Airport",
+    train: "Train Station",
+    city: "City",
+    port: "Sea Port",
+    bus: "Bus Station"
+}
+
+const searchOptionsLabelFr: TranslationLabel<SearchOptions> = {
+    airport: "Aéroport",
+    train: "Gare",
+    city: "Ville",
+    port: "Port",
+    bus: "Gare Routière"
+}
+
+
+export const searchOptionLabels: TranslationLabelObject<TranslationLabel<SearchOptions>> = {
+    [Languages.EN]: searchOptionsLabelEn,
+    [Languages.FR]: searchOptionsLabelFr
 }
 
 export default function TypeChoice({ selectedOptions, setSelectedOptions, ...props }: TypeChoiceProps) {
