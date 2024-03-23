@@ -45,10 +45,10 @@ export const searchLabels: TranslationLabelObject<{
 }> = {
     [Languages.EN]: {
         searchOptions: {
-            from: "From",
-            startDate: "Start date",
+            from: "Where do you want to start?",
+            startDate: "Search Date",
             endDate: "End Date",
-            submit: "let's go!"
+            submit: "Explore"
         }, errors: {
             origin: "Select an origin",
             startDate: "Select a date to search from",
@@ -57,10 +57,10 @@ export const searchLabels: TranslationLabelObject<{
     },
     [Languages.FR]: {
         searchOptions: {
-            from: "Origin",
-            startDate: "Date de début",
+            from: "Où souhaitez-vous commencer ?",
+            startDate: "Date de recherche",
             endDate: "Date de fin",
-            submit: "Allons-y !"
+            submit: "Explorer"
         },
         errors: {
             origin: "Sélectionnez une origine",
