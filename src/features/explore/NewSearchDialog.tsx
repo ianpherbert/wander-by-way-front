@@ -9,7 +9,7 @@ import { useExploreContext } from "./hooks/useExploreContext";
 
 
 type NewSearchDialogProps = {
-    stop?: RouteSearchPlace;
+    stop?: Partial<RouteSearchPlace>;
     onClose: () => void;
 }
 

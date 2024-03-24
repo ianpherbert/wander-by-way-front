@@ -22,7 +22,8 @@ type ExploreContext = {
     /** The places on the current selected route */
     setSelectedRouteStops: (places: RouteSearchPlace[]) => void;
     hoveredPoint?: PointHover;
-    setHoveredPoint: (options?: PointHover) => void
+    setHoveredPoint: (options?: PointHover) => void;
+    
 }
 
 export const exploreContext = createContext<ExploreContext>({} as ExploreContext);
