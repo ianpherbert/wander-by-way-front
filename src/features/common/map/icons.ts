@@ -6,38 +6,38 @@ type MapIcons = {
 
 export const mapIcons: MapIcons = {
     ORIGIN: {
-        name: "home-point", path: "home.png", scale: 4
+        name: "home-point", path: "home.png", scale: 30
     }, SEARCH_ITEM: {
         name: "search",
-        path: "search-point.png",  scale: 1
+        path: "search-point.png",  scale: 20
     }, DESTINATION: {
-        name: "destination-point", path: "destination-point.png",  scale: 1
+        name: "destination-point", path: "destination-point.png",  scale: 20
     }, INTERMEDIATE: {
         name: "intermediate",
-        path: "intermediate-point.png", scale: 1
+        path: "intermediate-point.png", scale: 20
     }, SEARCH_ITEM_CONNECTION: {
-        name: "connection-point", path: "connection-point.png", scale: 1 
+        name: "connection-point", path: "connection-point.png", scale: 20 
     }, AIRPORT: {
-        name: "plane-point", path: "plane-point.png",scale: 1
+        name: "plane-point", path: "plane-point.png",scale: 20
     },
     TRAIN_STATION: {
-        name: "train-point", path: "train-point.png", scale: 1 
+        name: "train-point", path: "train-point.png", scale: 20 
     },
     BUS_STATION: {
-        name: "bus-point", path: "bus-point.png", scale: 1
+        name: "bus-point", path: "bus-point.png", scale: 20
     },
     PORT: {
-        name: "ferry-point", path: "ferry-point.png", scale: 1 
+        name: "ferry-point", path: "ferry-point.png", scale: 20 
     }, AIRPORT_CONNECTION: {
-        name: "plane-point-connection", path: "plane-point-connection.png", scale: 1
+        name: "plane-point-connection", path: "plane-point-connection.png", scale: 20
     },
     TRAIN_STATION_CONNECTION: {
-        name: "train-point-connection", path: "train-point-connection.png", scale: 1
+        name: "train-point-connection", path: "train-point-connection.png", scale: 20
     },
     BUS_STATION_CONNECTION: {
-        name: "bus-point-connection", path: "bus-point-connection.png", scale: 1
+        name: "bus-point-connection", path: "bus-point-connection.png", scale: 20
     },
     PORT_CONNECTION: {
-        name: "ferry-point-connection", path: "ferry-point-connection.png", scale: 1
+        name: "ferry-point-connection", path: "ferry-point-connection.png", scale: 20
     }
 };

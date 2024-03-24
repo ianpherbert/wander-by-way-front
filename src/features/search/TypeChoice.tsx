@@ -1,30 +1,32 @@
-import { Checkbox, FormControlLabel, StackProps, Grid, Stack, IconButton, Collapse } from "@mui/material";
+import { Checkbox, FormControlLabel, StackProps, Grid, Stack, IconButton, Collapse, Tooltip } from "@mui/material";
 import { PropsWithChildren, useCallback, useState } from "react";
 import useTranslation from "../../translations/useTranslation";
-import { searchOptionLabels } from "./searchTranslations";
 import { SearchOptions } from "./SearchResult";
-import { useBreakPoint } from "../../useBreakpoint";
 import { FilterAlt, FilterAltOff } from "@mui/icons-material";
+import { TranslationLabel, TranslationLabelObject, Languages } from "../../translations/global";
 
 type TypeChoiceProps = Omit<StackProps, "direction"> & {
     selectedOptions: SearchOptions;
     setSelectedOptions: (options: SearchOptions) => void;
 }
 
-const small = ["xs", "sm"];
 
 function TypeChoiceCollapse({ children }: PropsWithChildren) {
     const [open, setOpen] = useState(false);
 
     const toggleOpen = useCallback(() => setOpen((it) => !it), [setOpen]);
 
+    const { searchFor } = useTranslation(searchOptionLabels)
+
     return (
-        <Stack direction="row-reverse">
-            <div>
-                <IconButton onClick={toggleOpen}>
-                    {open ? <FilterAltOff /> : <FilterAlt />}
-                </IconButton>
-            </div>
+        <Stack direction="row-reverse" justifyContent="space-between">
+            <Tooltip title={searchFor}>
+                <div>
+                    <IconButton onClick={toggleOpen}>
+                        {open ? <FilterAltOff /> : <FilterAlt />}
+                    </IconButton>
+                </div>
+            </Tooltip>
             <Collapse in={open}>
                 {children}
             </Collapse>
@@ -32,9 +34,29 @@ function TypeChoiceCollapse({ children }: PropsWithChildren) {
     )
 }
 
+const searchOptionsLabelEn: TranslationLabel<SearchOptions> = {
+    airport: "Airport",
+    train: "Train Station",
+    city: "City",
+    port: "Sea Port",
+    bus: "Bus Station"
+}
+
+const searchOptionsLabelFr: TranslationLabel<SearchOptions> = {
+    airport: "Aéroport",
+    train: "Gare",
+    city: "Ville",
+    port: "Port",
+    bus: "Gare Routière"
+}
+
+export const searchOptionLabels: TranslationLabelObject<{ options: TranslationLabel<SearchOptions>, searchFor: string }> = {
+    [Languages.EN]: { options: searchOptionsLabelEn, searchFor: "Search for origins with type" },
+    [Languages.FR]: { options: searchOptionsLabelFr, searchFor: "Résultats pour des origines de type" }
+}
+
 export default function TypeChoice({ selectedOptions, setSelectedOptions, ...props }: TypeChoiceProps) {
-    const breakPoint = useBreakPoint();
-    const optionLabels = useTranslation(searchOptionLabels);
+    const { options: optionLabels } = useTranslation(searchOptionLabels);
 
     const toggleOption = useCallback((key: keyof SearchOptions) => {
         setSelectedOptions({
@@ -44,9 +66,9 @@ export default function TypeChoice({ selectedOptions, setSelectedOptions, ...pro
     }, [setSelectedOptions, selectedOptions, optionLabels])
 
     const options = (
-        <Grid container {...props} spacing={.5}>
+        <Grid container {...props}>
             {Object.entries(optionLabels).map(([key, label]) => (
-                <Grid item>
+                <Grid item ml={2}>
                     <FormControlLabel
                         checked={selectedOptions[key as keyof SearchOptions]} onChange={() => toggleOption(key as keyof SearchOptions)}
                         control={<Checkbox size="small" color="info" />}
@@ -56,13 +78,9 @@ export default function TypeChoice({ selectedOptions, setSelectedOptions, ...pro
             ))}
         </Grid>
     )
-
-    if (small.includes(breakPoint)) {
-        return (
-            <TypeChoiceCollapse>
-                {options}
-            </TypeChoiceCollapse>
-        )
-    }
-    return options;
+    return (
+        <TypeChoiceCollapse>
+            {options}
+        </TypeChoiceCollapse>
+    )
 }
