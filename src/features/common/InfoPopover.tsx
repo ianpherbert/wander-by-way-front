@@ -24,7 +24,7 @@ export default function InfoPopover({ helpBody, helpTitle, ...props }: InfoPopov
             height: "fit-content"
         }} {...props}>
             <Tooltip title={helpTitle}>
-                <IconButton onClick={handleClick} color="info">
+                <IconButton onClick={handleClick} color="info" sx={{ color: "white" }}>
                     <HelpOutline />
                 </IconButton>
             </Tooltip>
@@ -35,7 +35,7 @@ export default function InfoPopover({ helpBody, helpTitle, ...props }: InfoPopov
                 onClose={handleClose}
                 sx={{ maxWidth: 1000, pt: 25, }}
             >
-                <Stack sx={{minWidth: 500}}>
+                <Stack sx={{ minWidth: 500 }}>
                     <Box sx={styles.closeButton}>
                         <Typography variant="h6">{helpTitle}</Typography>
                         <IconButton onClick={handleClose} >
