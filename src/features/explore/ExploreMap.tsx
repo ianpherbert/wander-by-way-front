@@ -56,7 +56,7 @@ export default function ExploreMap({ onLoad }: RouteSearchMapProps) {
     return (
         <>
             <Map
-                searchPoints={currentSearchPoints.concat(currentOriginPoint ?? [])}
+                searchPoints={currentSearchPoints}
                 routePoints={selectedRoutePoints}
                 onSelectPoint={selectPoint}
                 selectedPoint={memoSelectedPoint}
@@ -64,6 +64,7 @@ export default function ExploreMap({ onLoad }: RouteSearchMapProps) {
                 onLoad={onLoad}
                 autoZoom={autoZoom}
                 onPointHover={setHoveredPoint}
+                markers={currentOriginPoint ? [currentOriginPoint] : undefined}
             />
             <Stack position="absolute" bottom={0} right={0}>
                 <Tooltip title="toggle autozoom">

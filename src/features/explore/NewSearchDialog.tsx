@@ -14,16 +14,16 @@ type NewSearchDialogProps = {
 }
 
 
-const labelObject: TranslationLabelObject<{ cancel: string, confirm: string, title: string }> = {
+const labelObject: TranslationLabelObject<{ cancel: string, confirm: string, title: (name?: string) =>  string }> = {
     [Languages.EN]: {
         cancel: "No",
         confirm: "yes",
-        title: "Do you want to search from "
+        title: (name?: string)=> `Do you want to start a new search from ${name} on the same day?`
     },
     [Languages.FR]: {
         cancel: "Non",
         confirm: "Oui",
-        title: "Vous voulez chercher depuis "
+        title: (name?: string)=> `Voulez-vous lancer une nouvelle recherche à partir de ${name} le même jour ?`
     }
 }
 
@@ -48,7 +48,7 @@ export default function NewSearchDialog({ stop, onClose }: NewSearchDialogProps)
 
     return (
         <Dialog open={Boolean(stop)} fullWidth>
-            <DialogTitle>{title}<strong> {stop?.name} </strong>?</DialogTitle>
+            <DialogTitle>{title(stop?.name)}</DialogTitle>
             <DialogActions>
                 <Button variant="outlined" color="secondary" onClick={onClose}>{cancel}</Button>
                 <Button variant="contained" onClick={handleStopClick}>{confirm}</Button>

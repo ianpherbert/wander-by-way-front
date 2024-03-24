@@ -17,24 +17,35 @@ import ContainerWithImage from "../common/ContainerWithImage";
 import { InternalImage } from "../../assets/images";
 import { theme } from "../../theme";
 import NewSearchDialog from "./NewSearchDialog";
+import InfoPopover from "../common/InfoPopover";
 
 const selectedPaneLabels: TranslationLabelObject<{
     addToTripLabel: string;
     countriesLabel: CountryLabel;
     minutesLayoverLabel: string;
     closeLabel: string;
+    helpTitle: string;
+    helpBody: string;
+    towardLabel: string;
 }> = {
     [Languages.EN]: {
+        towardLabel: "Lines toward",
         addToTripLabel: "See the stops on this route",
         countriesLabel: countryLabels.EN,
         minutesLayoverLabel: "minute stop",
-        closeLabel: "close"
+        closeLabel: "close",
+        helpTitle: "What am I looking at?",
+        helpBody: "when you access the panel displaying departures, you'll see the name of the destination at the top of each entry. Clicking on any departure reveals the list of intermediate stops for that journey. Should you click on one of these stops, the app prompts you with a crucial question: \"Do you want to start a new search from this point on the same day?\" This feature allows you to dynamically adjust your journey, offering the flexibility to explore different segments of your initial route or to discover new directions based on your current location and time preferences."
+
     },
     [Languages.FR]: {
+        towardLabel: "Lignes vers",
         addToTripLabel: "Voir les arrêts sur cette ligne",
         countriesLabel: countryLabels.FR,
         minutesLayoverLabel: "minutes d'arrêt",
-        closeLabel: "fermer"
+        closeLabel: "fermer",
+        helpTitle: "Je regarde quoi ?",
+        helpBody: "Lorsque vous accédez au panneau affichant les départs, le nom de la destination apparaît en haut de chaque entrée. Cliquer sur un départ dévoile la liste des arrêts intermédiaires pour ce voyage. Si vous cliquez sur l'un de ces arrêts, l'application vous pose une question cruciale : \"Voulez-vous lancer une nouvelle recherche à partir de ce point le même jour ?\" Cette fonctionnalité vous permet d'ajuster dynamiquement votre parcours, offrant la flexibilité d'explorer différents segments de votre itinéraire initial ou de découvrir de nouvelles directions basées sur votre emplacement actuel et vos préférences horaires."
     }
 }
 
@@ -95,7 +106,7 @@ function StopList({ open, route }: {
             return `${formatDate(plannedDepartureIso, DATE_FORMAT)} ${stopoverString}`;
         }
         if (plannedArrivalIso) {
-            return formatDate(plannedArrivalIso, DATE_FORMAT);
+            return `${formatDate(plannedArrivalIso, DATE_FORMAT)} (Terminus)`;
         }
         if (plannedDepartureIso) {
             return formatDate(plannedDepartureIso, DATE_FORMAT);
@@ -117,12 +128,12 @@ function StopList({ open, route }: {
 
     return (
         <Collapse in={open}>
-            <List component="div" disablePadding sx={{ bgcolor: "grey.100" }}>
+            <List component="div" disablePadding sx={{ borderBottom: "solid 1px grey" }}>
                 {!loading ?
                     displayedStops?.map(({ stop, plannedDeparture, plannedArrival }) => (
                         //We do not need to handle the case of a user clicking on the current stop, because the navigate will just do nothing.
-                        <ListItemButton key={stop.id} onClick={handleStopClick(stop)} >
-                            <ListItemIcon>
+                        <ListItemButton key={stop.id} onClick={handleStopClick(stop)} selected>
+                            <ListItemIcon sx={{ pl: 5 }}>
                                 <IntermediateIcon sx={hoveredPoint?.point?.id === String(stop.id) ? { color: theme.palette.primary.main } : {}} />
                             </ListItemIcon>
                             <ListItemText primary={stop.name} secondary={buildSecondaryLabel(plannedDeparture, plannedArrival)}
@@ -149,8 +160,8 @@ function RouteListItem({ route, open, toggleOpen }: { open: boolean; toggleOpen:
     return (
         <>
             <Tooltip title={expandLabel}>
-                <ListItemButton onClick={toggleOpen} selected={open}>
-                    <ListItemIcon>{routeSearchRouteTypeIcons[route.type]}</ListItemIcon>
+                <ListItemButton onClick={toggleOpen} selected={open} sx={open ? { pl: 5 } : {}}>
+                    <ListItemIcon sx={open ? { color: theme.palette.info.main } : {}}>{routeSearchRouteTypeIcons[route.type]}</ListItemIcon>
                     <ListItemText primary={name} secondary={formatDateFromString(route.departureTime, DATE_FORMAT)} />
                 </ListItemButton>
             </Tooltip>
@@ -162,7 +173,7 @@ function RouteListItem({ route, open, toggleOpen }: { open: boolean; toggleOpen:
 export default function SelectedPane() {
     const { selectedSearchGroup, unselectSearchGroup, setSelectedRouteStops } = useExploreContext();
     const [openDestinationId, setOpenDestinationId] = useState<string>();
-    const { closeLabel } = useTranslation(selectedPaneLabels)
+    const { closeLabel, helpBody, helpTitle, towardLabel } = useTranslation(selectedPaneLabels)
 
     const handleSetOpenDestinationId = useCallback(({ routeId }: RouteSearchRoute) => () => {
         if (openDestinationId === routeId) {
@@ -197,8 +208,18 @@ export default function SelectedPane() {
     return (
         <WanderCard sx={{ height: "100%", width: Boolean(selectedSearchGroup) ? "fit-content" : 0 }} elevation={5}>
             <Stack height={"100%"}>
-                <ContainerWithImage url={containerImage} height={100} width={400}>
-                    <Typography variant="h4" sx={styles.title}>{selectedSearchGroup?.destination.name}</Typography>
+                <ContainerWithImage url={containerImage} minHeight={100} width={400} py={5} px={2}>
+                    <Stack sx={styles.title}>
+                        <Typography variant="h6" >
+                            {towardLabel}
+                        </Typography>
+                        <Typography variant="h4">{selectedSearchGroup?.destination.name}</Typography>
+                    </Stack>
+                    <InfoPopover
+                        helpBody={helpBody}
+                        helpTitle={helpTitle}
+                        sx={{ position: "absolute", bottom: 1, right: 5 }}
+                    />
                 </ContainerWithImage>
 
                 <Box flex={1} overflow={"auto"}>
@@ -231,7 +252,8 @@ const styles = {
         bgcolor: "#DCDADAcc",
         p: .2,
         borderRadius: 3,
-        textAlign: "center"
+        textAlign: "center",
+        px: 1
     },
     intermediateItem: {
         width: 250,
