@@ -1,4 +1,4 @@
-import { Button, Stack } from "@mui/material";
+import { Button, Stack, Typography, lighten } from "@mui/material";
 import ExploreMap from "./ExploreMap";
 import SelectedPane from "./SelectedPane";
 import RouteSearchList from "./RouteSearchList";
@@ -11,18 +11,27 @@ import WanderCard from "../common/WanderCard";
 import ExploreForm from "./ExploreForm";
 import CenteredLoader from "../common/CenteredLoader";
 import { List, Map } from "@mui/icons-material";
+import useExploreParams from "./hooks/useExploreParams";
+import { Image } from "../../assets/images";
+import { theme } from "../../theme";
 
 const exploreLabels: TranslationLabelObject<{
     hideListLabel: string;
     showListLabel: string;
+    noSearchTitle: string;
+    noSearchText: string;
 }> = {
     [Languages.EN]: {
         hideListLabel: "Hide List",
-        showListLabel: "Show List"
+        showListLabel: "Show List",
+        noSearchText: "To start exploring search for a place above to see all of the destinations directly reachable from that place",
+        noSearchTitle: "Let's get exploring!"
     },
     [Languages.FR]: {
         hideListLabel: "Cacher liste",
-        showListLabel: "Afficher liste"
+        showListLabel: "Afficher liste",
+        noSearchText: "Pour commencer à explorer, recherchez un lieu ci-dessus pour voir toutes les destinations directement accessibles à partir de ce lieu",
+        noSearchTitle: "Partons à l'exploration!"
     }
 }
 
@@ -43,6 +52,20 @@ function ShowButton({ listVisible, toggleVisible }: { listVisible: boolean, togg
     </Button>
 }
 
+function NoSearch() {
+    const { noSearchText, noSearchTitle } = useTranslation(exploreLabels);
+
+    return (
+        <WanderCard sx={styles.noSearchCard} elevation={10}>
+            <Stack >
+                <Typography variant="h3">{noSearchTitle}</Typography>
+                <Typography>{noSearchText}</Typography>
+                <Image url="coupleWithSuitcase1" sx={styles.noSearchBg} />
+            </Stack>
+        </WanderCard>
+    )
+}
+
 const imposeBreakpoints = ["sx", "sm", "md"];
 
 export default function Explore() {
@@ -50,6 +73,8 @@ export default function Explore() {
     const [listOpen, setListOpen] = useState(true);
     // it is essential that the map is initialised in its largest form. otherwise it will not fill space correctly
     const loadMap = useCallback(() => setMapLoaded(true), [setMapLoaded]);
+    const { valid } = useExploreParams()
+
     const breakpoint = useBreakPoint();
     const shouldImpose = useMemo(() => imposeBreakpoints.includes(breakpoint), [breakpoint]);
 
@@ -68,6 +93,8 @@ export default function Explore() {
     const shouldShowSearchList = useMemo(() => (mapLoaded && !shouldImpose && Boolean(currentOrigin)) || (Boolean(currentOrigin) && mapLoaded && listOpen && !Boolean(selectedSearchGroup)), [mapLoaded, listOpen, selectedSearchGroup, shouldImpose, currentOrigin]);
     const shouldShowSelectedPane = useMemo(() => (mapLoaded && !shouldImpose) || (mapLoaded && Boolean(selectedSearchGroup)), [mapLoaded, selectedSearchGroup, shouldImpose]);
     const shouldShowLoader = useMemo(() => mapLoaded && currentOriginQueryFetching, [mapLoaded, currentOriginQueryFetching])
+    const shouldShowNoSearch = useMemo(() => mapLoaded && !valid, [mapLoaded, valid])
+
     return (
         <Stack>
             <WanderCard background="noisePrimary" sx={{ p: .5 }}>
@@ -78,6 +105,7 @@ export default function Explore() {
                     <ExploreMap onLoad={loadMap} />
                     {shouldShowSelectedPane && <SelectedPane />}
                     {shouldShowToggleButton && <ShowButton toggleVisible={toggleListOpen} listVisible={listOpen} />}
+                    {shouldShowNoSearch && <NoSearch />}
                 </Stack>
             </WanderCard>
         </Stack>
@@ -93,6 +121,18 @@ const styles = {
         bottom: 20,
         left: "50%",
         transform: "translateX(-50%)",
+    },
+    noSearchCard: {
+        position: "absolute",
+        top: "5%",
+        left: "50%",
+        transform: "translateX(-50%)",
+        p: 2
+    },
+    noSearchBg: {
+        textAlign: "center",
+        background: `radial-gradient(circle, ${lighten(theme.palette.secondary.main, .5)} 40%, transparent 20%)`,
+        display: 'inline-block',
     }
 
 }

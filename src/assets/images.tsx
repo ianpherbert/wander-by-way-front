@@ -18,6 +18,7 @@ export const internalImages = {
     manStanding: {url: "man_standing_trans.png", alt: "man standing looking left"},
     manStandingRight: {url: "man_standing_looking_right.png", alt: "man standing looking right"},
     happyLawyer: {url: "happy_lawyer.png", alt: "man with papers smiling"},
+    coupleWithSuitcase1: {url: "couple_with_suitcase_1.png", alt: "a couple holding suitcases smiling"},
     cityscape1: {url: "places/cityscape_1.png", alt: "A generic european cityscape"},
     cityscape2: {url: "places/cityscape_2.png", alt: "A generic european cityscape"},
     trainStation1: {url: "places/train_station_1.png", alt: "A smiling woman in a 1960's train station"},
