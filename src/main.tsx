@@ -11,6 +11,8 @@ import store from './redux/store.ts'
 import TestPage from './pages/TestPage.tsx'
 import ExplorePage from './pages/ExplorePage.tsx'
 import GdprPage from './pages/GdprPage.tsx'
+import Hotjar from '@hotjar/browser';
+import { environment, hotjarSiteId, hotjarVersion } from './variables.ts'
 
 export const endPoints = {
   home: { entrypoint: "" },
@@ -35,6 +37,11 @@ const router = createBrowserRouter([
     children: routes
   },
 ]);
+
+
+if (environment === "PROD") {
+  Hotjar.init(hotjarSiteId, hotjarVersion);
+}
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
