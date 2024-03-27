@@ -1,9 +1,11 @@
 import Map from "../common/map/Map";
 import { useCallback, useMemo, useState } from "react";
-import { searchItemTypeToMapPointType, searchItemTypeToMapPointTypeConnection } from "../common/SearchItemType";
+import { mapPointTypeToSearchItemType, searchItemTypeToMapPointType, searchItemTypeToMapPointTypeConnection } from "../common/SearchItemType";
 import { useExploreContext } from "./hooks/useExploreContext";
 import { MapPointType, Point } from "../common/map/Point";
 import { Stack, Switch, Tooltip } from "@mui/material";
+import NewSearchDialog from "./NewSearchDialog";
+import { RouteSearchPlace } from "./RouteSearchResult";
 
 type RouteSearchMapProps = {
     onLoad: () => void;
@@ -11,6 +13,7 @@ type RouteSearchMapProps = {
 
 export default function ExploreMap({ onLoad }: RouteSearchMapProps) {
     const [autoZoom, setAutoZoom] = useState(true);
+    const [selectedStop, setSelectedStop] = useState<Partial<RouteSearchPlace>>();
 
     const { currentSearchResult, selectedRouteStops: selectedRouteStops, setSelectedSearchGroup, selectedSearchGroup, setHoveredPoint } = useExploreContext();
 
@@ -53,10 +56,28 @@ export default function ExploreMap({ onLoad }: RouteSearchMapProps) {
         return match;
     }, [selectedSearchGroup, selectedRoutePoints, currentSearchPoints,])
 
+    const unselectSelectedStop = useCallback(() => setSelectedStop(undefined), [setSelectedStop]);
+
+    const selectStop = useCallback((point?: Point) => {
+        if (!point) {
+            setSelectedStop(undefined);
+            return;
+        }
+        const { id, label: name, longitude, latitude, type } = point;
+        setSelectedStop({
+            id: parseInt(id),
+            name,
+            longitude,
+            latitude,
+            type: mapPointTypeToSearchItemType[type],
+        })
+    }, [setSelectedStop])
+
     return (
         <>
+            <NewSearchDialog stop={selectedStop} onClose={unselectSelectedStop} />
             <Map
-                searchPoints={currentSearchPoints.concat(currentOriginPoint ?? [])}
+                searchPoints={currentSearchPoints}
                 routePoints={selectedRoutePoints}
                 onSelectPoint={selectPoint}
                 selectedPoint={memoSelectedPoint}
@@ -64,6 +85,8 @@ export default function ExploreMap({ onLoad }: RouteSearchMapProps) {
                 onLoad={onLoad}
                 autoZoom={autoZoom}
                 onPointHover={setHoveredPoint}
+                markers={currentOriginPoint ? [currentOriginPoint] : undefined}
+                onRoutePointLayerClick={selectStop}
             />
             <Stack position="absolute" bottom={0} right={0}>
                 <Tooltip title="toggle autozoom">

@@ -6,9 +6,9 @@ import { useCallback, useEffect, useState } from "react";
 import { grey } from "@mui/material/colors";
 import TypeChoice from "./TypeChoice";
 import useTranslation from "../../translations/useTranslation";
-import { searchLabels } from "./searchTranslations";
 import WanderCard from "../common/WanderCard";
 import AppDatePicker from "../common/AppDatePicker";
+import { TranslationLabelObject, Languages } from "../../translations/global";
 
 const defaultOptions: SearchOptions = {
     airport: true,
@@ -27,6 +27,60 @@ export type SearchFormType = {
 type SearchFromProps = Omit<BoxProps, "onSubmit" | "defaultValues"> & {
     onSubmit: (data: SearchFormType) => void;
     defaultValues?: Partial<SearchFormType>;
+}
+
+
+export const searchLabels: TranslationLabelObject<{
+    searchOptions: {
+        from: string;
+        startDate: string;
+        endDate: string;
+        submit: string
+    },
+    errors: {
+        origin: string,
+        startDate: string,
+        endDate: string
+    }
+}> = {
+    [Languages.EN]: {
+        searchOptions: {
+            from: "Where do you want to start?",
+            startDate: "Search Date",
+            endDate: "End Date",
+            submit: "Explore"
+        }, errors: {
+            origin: "Select an origin",
+            startDate: "Select a date to search from",
+            endDate: "Select a date to search to"
+        }
+    },
+    [Languages.FR]: {
+        searchOptions: {
+            from: "Où souhaitez-vous commencer ?",
+            startDate: "Date de recherche",
+            endDate: "Date de fin",
+            submit: "Explorer"
+        },
+        errors: {
+            origin: "Sélectionnez une origine",
+            startDate: "Sélectionnez une date de début de recherche",
+            endDate: "Sélectionnez une date de fin de recherche"
+        }
+    }
+}
+
+export const originErrorLabel: TranslationLabelObject<{ origin: string, startDate: string, endDate: string }> = {
+    [Languages.EN]: {
+        origin: "Select an origin",
+        startDate: "Select a date to search from",
+        endDate: "Select a date to search to"
+    },
+    [Languages.FR]: {
+        origin: "Sélectionnez une origine",
+        startDate: "Sélectionnez une date de début de recherche",
+        endDate: "Sélectionnez une date de fin de recherche"
+    }
 }
 
 

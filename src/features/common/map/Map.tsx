@@ -15,6 +15,7 @@ import { theme } from "../../../theme";
 type MapBox = mapBox.Map;
 type MapBoxError = mapBox.ErrorEvent;
 type MapBoxPopup = mapBox.Popup;
+type Marker = mapBox.Marker;
 
 const MAP_CONTAINER = "map"
 const layers = {
@@ -35,7 +36,7 @@ function initMap() {
         map.on("load", async () => {
             for (const icon of Object.values(mapIcons)) {
                 map.loadImage(`/cartography/icons/${icon.path}`, (_, image) => {
-                    map.addImage(icon.name, image as HTMLImageElement, { pixelRatio: 30 });
+                    map.addImage(icon.name, image as HTMLImageElement, { pixelRatio: icon.scale });
                 });
             }
             resolve(map)
@@ -63,14 +64,21 @@ type MapProps = BoxProps & {
     onSelectPoint?: (point?: Point) => void;
     onLoad?: () => void;
     onPointHover?: (options?: PointHover) => void;
+    markers?: Point[];
+    onRoutePointLayerClick?: (point?: Point) => void;
 }
 
-export default function Map({ searchPoints, routePoints, showConnections, onSelectPoint, selectedPoint, autoZoom, autoZoomLevel, onLoad, onPointHover, ...props }: MapProps) {
+export default function Map({ markers, searchPoints, routePoints, showConnections, onSelectPoint, selectedPoint, autoZoom, autoZoomLevel, onLoad, onPointHover, onRoutePointLayerClick, ...props }: MapProps) {
     const [map, setMap] = useState<MapBox>();
     const [mapError, setMapError] = useState<MapBoxError>();
     // Unfortunately we are obligated to have a selectedId state in order to ensure that the mapbox js calls the same function every time without reloading
     // However this state should not be used internally, and serves only to elevate the selected point.
-    const [selectedId, setSelectedId] = useState<string>();
+    const [selectedSearchLayerId, setSelectedSearchLayerId] = useState<string>();
+    const [selectedRouteLayerId, setSelectedRouteLayerId] = useState<string>();
+
+
+    const [mapMarkers, setMapMarkers] = useState<Marker[]>([])
+
     /** Here we use a ref instead of a state, because we will need to pass this object at initialisation. Same problem as above */
     const openPopup = useRef<MapBoxPopup>();
 
@@ -99,7 +107,7 @@ export default function Map({ searchPoints, routePoints, showConnections, onSele
                         const feature = event.getFeatures()?.[0] as Feature;
                         if (!feature) return;
                         const { id } = feature.properties ?? {};
-                        setSelectedId(id);
+                        setSelectedSearchLayerId(id);
                     },
                     onMouseEnter: (event) => {
                         initPopup(event)
@@ -118,7 +126,13 @@ export default function Map({ searchPoints, routePoints, showConnections, onSele
                     onMouseExit: () => {
                         openPopup.current?.remove();
                         handleHoverUpdate("route")(undefined);
-                    }
+                    },
+                    onPointClick: (event) => {
+                        const feature = event.getFeatures()?.[0] as Feature;
+                        if (!feature) return;
+                        const { id } = feature.properties ?? {};
+                        setSelectedRouteLayerId(id)
+                    },
                 });
                 setMap(newMap);
                 onLoad?.();
@@ -130,16 +144,25 @@ export default function Map({ searchPoints, routePoints, showConnections, onSele
 
     //See above comment about selectedId
     useEffect(() => {
-        const selectPoint = searchPoints?.find(it => it.id === selectedId);
+        const selectPoint = searchPoints?.find(it => it.id === selectedSearchLayerId);
         onSelectPoint?.(selectPoint)
-    }, [selectedId])
+    }, [selectedSearchLayerId])
+
+    useEffect(() => {
+        if (selectedRouteLayerId) {
+            const routePoint = routePoints?.find(it => it.id === selectedRouteLayerId);
+            if (!routePoint) return;
+            onRoutePointLayerClick?.(routePoint);
+            setSelectedRouteLayerId(undefined);
+        }
+    }, [selectedRouteLayerId, setSelectedRouteLayerId])
 
     const searchFeatures = useMemo(() => searchPoints ? mapPointsToFeatures(searchPoints) : [], [searchPoints, showConnections]);
     const routeFeatures = useMemo(() => routePoints ? mapPointsToFeatures(routePoints) : [], [routePoints, showConnections]);
 
 
     useEffect(() => {
-        setSelectedId(selectedPoint?.id);
+        setSelectedSearchLayerId(selectedPoint?.id);
         if (selectedPoint && !Boolean(routePoints?.length) && autoZoom) {
             const feature = searchFeatures?.find(it => it.properties.id === selectedPoint?.id);
             const geometry = feature?.geometry as unknown as {
@@ -165,6 +188,25 @@ export default function Map({ searchPoints, routePoints, showConnections, onSele
             zoomToAllPoints(routePoints)
         }
     }, [routePoints])
+
+    useEffect(() => {
+
+        for (const marker of mapMarkers) {
+            marker.remove()
+        }
+
+        if (markers && map) {
+            const newMarkers = [];
+            for (const marker of markers) {
+                newMarkers.push(
+                    new mapboxgl.Marker({ color: theme.palette.secondary.main })
+                        .setLngLat([marker.longitude, marker.latitude])
+                        .addTo(map)
+                )
+            }
+            setMapMarkers(newMarkers)
+        }
+    }, [map, markers])
 
     /**Will set view of map to include all of the points that are passed to this method */
     const zoomToAllPoints = useCallback((pointsToZoom?: Point[]) => {

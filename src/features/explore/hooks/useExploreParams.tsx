@@ -8,7 +8,7 @@ export type TripParams = {
     originId?: string;
     originType?: SearchItemType;
     startDate?: string,
-
+    valid: boolean;
 }
 
 export default function useExploreParams(): TripParams {
@@ -21,5 +21,6 @@ export default function useExploreParams(): TripParams {
         originId,
         originType: originType ? originType as SearchItemType : undefined,
         startDate: dateFrom,
+        valid: Boolean(originId) && Boolean(originType) && Boolean(dateFrom)
     }
 }
