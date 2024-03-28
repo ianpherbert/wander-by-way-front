@@ -3,8 +3,6 @@ name: Deploy Docker Image with Zip Package
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   build-and-push:
@@ -30,7 +28,6 @@ jobs:
             VITE_MAPBOX_STYLE=${{ secrets.VITE_MAPBOX_STYLE }}
             VITE_TRAVEL_ENDPOINT=${{ secrets.VITE_TRAVEL_ENDPOINT_PROD }}
             VITE_UNSPLASH_CLIENT_ID=${{ secrets.VITE_UNSPLASH_CLIENT_ID }}
-            VITE_HOTJAR_ID=${{ secrets.VITE_HOTJAR_ID }}
             VITE_ENV=PROD
 
   prepare-deployment-package:

@@ -38,16 +38,16 @@ const searchOptionsLabelEn: TranslationLabel<SearchOptions> = {
     airport: "Airport",
     train: "Train Station",
     city: "City",
-    port: "Sea Port",
-    bus: "Bus Station"
+    // port: "Sea Port",
+    // bus: "Bus Station"
 }
 
 const searchOptionsLabelFr: TranslationLabel<SearchOptions> = {
     airport: "Aéroport",
     train: "Gare",
     city: "Ville",
-    port: "Port",
-    bus: "Gare Routière"
+    // port: "Port",
+    // bus: "Gare Routière"
 }
 
 export const searchOptionLabels: TranslationLabelObject<{ options: TranslationLabel<SearchOptions>, searchFor: string }> = {
@@ -68,7 +68,7 @@ export default function TypeChoice({ selectedOptions, setSelectedOptions, ...pro
     const options = (
         <Grid container {...props}>
             {Object.entries(optionLabels).map(([key, label]) => (
-                <Grid item ml={2}>
+                <Grid item ml={2} key={key}>
                     <FormControlLabel
                         checked={selectedOptions[key as keyof SearchOptions]} onChange={() => toggleOption(key as keyof SearchOptions)}
                         control={<Checkbox size="small" color="info" />}

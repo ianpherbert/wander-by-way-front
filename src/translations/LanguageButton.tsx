@@ -56,7 +56,10 @@ export default function LanguageButton() {
     return (
         <>
             <Tooltip title={changeText[language]} placement="left">
-                <Image url={icon} component={IconButton} sx={styles.image} onClick={handleClick} />
+                {/* Added fragment around Image to avoid tooltip error */}
+                <>
+                    <Image url={icon} sx={styles.image} component={IconButton} onClick={handleClick} />
+                </>
             </Tooltip>
             <Popper id={id} open={open} anchorEl={anchorEl} transition>
                 {({ TransitionProps }) => (

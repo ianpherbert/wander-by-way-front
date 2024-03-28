@@ -18,21 +18,27 @@ const routeSearchListLabels: TranslationLabelObject<{
     retryLabel: string;
     helpTitle: string;
     helpBody: string;
-    routesLabel: string
+    routesLabel: string;
+    longLoadText: string;
+    longLoadSecondaryText: string;
 }> = {
     [Languages.EN]: {
         noResultsLabel: "No journeys found!",
         retryLabel: "Please search a different day or nearby location.",
         helpTitle: "What am I looking at?",
         helpBody: "The list you're viewing shows the ultimate destinations of each line, such as a train from Paris to Nantes. To uncover the journey's details, including intermediate stops like Angers, you must first select your desired final destination, like Nantes. Then, by choosing an hour, you can access a detailed view of all the stops along that line. This feature emphasizes that while the list initially presents only the endpoint of each route, a deeper exploration reveals the full spectrum of destinations accessible on your journey, allowing for a comprehensive planning experience.",
-        routesLabel: "Departure"
+        routesLabel: "Departure",
+        longLoadText: "Extended search time due to high connectivity of selected origin. ",
+        longLoadSecondaryText: "Cities with numerous train stations, and airports require more time to process due to the increased number of possible departure points. Please be patient as we cover all available routes from highly connected cities. The complexity of these locations results in longer search durations."
     },
     [Languages.FR]: {
         noResultsLabel: "Aucun voyage trouvé !",
         retryLabel: "Veuillez rechercher un autre jour ou un lieu à proximité.",
         helpTitle: "Je regarde quoi ?",
         helpBody: "La liste que vous consultez affiche les destinations finales de chaque ligne, comme un train de Paris à Nantes. Pour découvrir les détails du voyage, y compris les arrêts intermédiaires comme Angers, vous devez d'abord sélectionner votre destination finale souhaitée, comme Nantes. En choisissant ensuite une heure, vous accédez à une vue détaillée de tous les arrêts le long de cette ligne. Cette fonctionnalité souligne que, bien que la liste présente initialement uniquement le point final de chaque itinéraire, une exploration plus approfondie révèle la gamme complète des destinations accessibles sur votre parcours, permettant ainsi une expérience de planification complète.",
-        routesLabel: "Départ"
+        routesLabel: "Départ",
+        longLoadText: "Temps de recherche prolongé en raison de la haute connectivité de l'origine sélectionnée.",
+        longLoadSecondaryText: "Veuillez patienter pendant que nous couvrons toutes les routes disponibles depuis des villes hautement connectées. La complexité de ces emplacements entraîne des durées de recherche plus longues.  Les villes dotées de nombreuses gares et aéroports nécessitent plus de temps pour être traitées en raison du nombre accru de points de départ possibles."
     }
 }
 
@@ -72,7 +78,7 @@ type RouteSearchListProps = {
 }
 
 export default function RouteSearchList({ visible }: RouteSearchListProps) {
-    const { helpBody, helpTitle } = useTranslation(routeSearchListLabels);
+    const { helpBody, helpTitle, longLoadSecondaryText, longLoadText } = useTranslation(routeSearchListLabels);
 
     const { currentSearchResult, setSelectedSearchGroup, currentSearchQueryFetching, currentOrigin } = useExploreContext();
     const doSelectGroup = useCallback((id: number) => () => {
@@ -133,7 +139,7 @@ export default function RouteSearchList({ visible }: RouteSearchListProps) {
                 </ContainerWithImage>
                 <Box flex={1} overflow={"auto"} pb={10} position="relative">
                     {content}
-                    {currentSearchQueryFetching && <CenteredLoader type="circular" />}
+                    {currentSearchQueryFetching && <CenteredLoader type="circular" longLoadText={longLoadText} longLoadTextDelay={1} longLoadSecondaryText={longLoadSecondaryText} />}
 
                 </Box>
             </Stack>
