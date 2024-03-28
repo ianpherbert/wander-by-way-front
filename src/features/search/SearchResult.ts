@@ -5,8 +5,8 @@ export type SearchOptions = {
     airport: boolean,
     train: boolean,
     city: boolean,
-    port: boolean,
-    bus: boolean,
+    // port: boolean,
+    // bus: boolean,
 }
 
 export type SearchItem = {
