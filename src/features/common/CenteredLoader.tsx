@@ -1,13 +1,32 @@
-import { Box, CircularProgress, CircularProgressProps, LinearProgress, LinearProgressProps } from "@mui/material";
+import { CircularProgress, CircularProgressProps, LinearProgress, LinearProgressProps, Stack, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
 
-type CenteredCircularLoaderProps = CircularProgressProps & { type: "circular" };
-type CenteredLinearLoaderProps = LinearProgressProps & { type: "linear" };
+
+type GenericCenteredLoaderProps = {
+    longLoadText?: string;
+    /**Number of seconds before displaying message for long load */
+    longLoadTextDelay?: number;
+    longLoadSecondaryText?: string;
+}
+
+type CenteredCircularLoaderProps = CircularProgressProps & { type: "circular" } & GenericCenteredLoaderProps;
+type CenteredLinearLoaderProps = LinearProgressProps & { type: "linear" } & GenericCenteredLoaderProps;
 
 type CenteredLoaderProps = CenteredCircularLoaderProps | CenteredLinearLoaderProps;
 
-export default function CenteredLoader({ type, ...props }: CenteredLoaderProps) {
+export default function CenteredLoader({ type, longLoadText, longLoadTextDelay, longLoadSecondaryText, ...props }: CenteredLoaderProps) {
+    const [displayLongLoadText, setDisplayLongLoadText] = useState(false);
+
+    useEffect(() => {
+        if (longLoadText && longLoadTextDelay) {
+            setTimeout(() => {
+                setDisplayLongLoadText(true)
+            }, (longLoadTextDelay ?? 0) * 1000)
+        }
+    }, [longLoadText])
+
     return (
-        <Box
+        <Stack
             position={"absolute"}
             top={0}
             bottom={0}
@@ -16,10 +35,15 @@ export default function CenteredLoader({ type, ...props }: CenteredLoaderProps) 
             display="flex"
             alignItems="center"
             justifyContent="center"
+            spacing={1}
             zIndex={500}
         >
             {type === "circular" && <CircularProgress {...props as CircularProgressProps} />}
             {type === "linear" && <LinearProgress {...props as LinearProgressProps} />}
-        </Box>
+            <Stack p={2}>
+                {displayLongLoadText && <Typography variant="body1">{longLoadText}</Typography>}
+                {displayLongLoadText && longLoadSecondaryText && <Typography variant="caption">{longLoadSecondaryText}</Typography>}
+            </Stack>
+        </Stack>
     )
 }

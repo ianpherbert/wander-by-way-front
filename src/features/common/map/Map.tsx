@@ -288,7 +288,7 @@ const styles = {
         },
         ".mapboxgl-popup-content": {
             background: "none",
-            "box-shadow": "none",
+            "boxShadow": "none",
             height: "fit-content",
             width: "fit-content",
             "button": {
@@ -301,7 +301,7 @@ const styles = {
         ".custom-popup": {
             background: theme.palette.secondary.main,
             padding: "2px 5px 2px 5px",
-            "border-radius": "5px",
+            "borderRadius": "5px",
             color: "white"
         }
     }
