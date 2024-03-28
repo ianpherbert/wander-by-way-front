@@ -68,7 +68,7 @@ export default function TypeChoice({ selectedOptions, setSelectedOptions, ...pro
     const options = (
         <Grid container {...props}>
             {Object.entries(optionLabels).map(([key, label]) => (
-                <Grid item ml={2}>
+                <Grid item ml={2} key={key}>
                     <FormControlLabel
                         checked={selectedOptions[key as keyof SearchOptions]} onChange={() => toggleOption(key as keyof SearchOptions)}
                         control={<Checkbox size="small" color="info" />}
