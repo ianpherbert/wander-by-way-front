@@ -19,7 +19,7 @@ const styles = {
 
 type SearchInputProps = Omit<AutocompleteProps<SearchItem, false, false, false>, "renderInput" | "options" | "value" | "onSelect"> & {
     onSelect: (item: SearchItem | null) => void;
-    selectedItem?: SearchItem | null;
+    selectedItem: SearchItem | null;
     searchOptions: SearchOptions;
     label: string;
     error?: string;
@@ -98,12 +98,12 @@ export default function SearchInput({ onSelect, selectedItem, searchOptions, lab
             getOptionLabel={(option: SearchItem) => `${option.name} (${countries[option.country]})`}
             noOptionsText={noResults}
             onChange={handleSelect}
-            value={selectedItem}
+            value={selectedItem ?? null}
             filterOptions={(options, state) => {
                 const regex = new RegExp(normalizeString(state.inputValue), 'i');
                 return options.filter(string => regex.test(normalizeString(string.name)));
             }}
-            renderOption={(props, item) => <Option item={item} {...props} />}
+            renderOption={(props, item) => <Option item={item} {...props}/>}
         />
     )
 }

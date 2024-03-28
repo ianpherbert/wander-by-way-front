@@ -16,7 +16,7 @@ export default function AppDatePicker({value, onChange, ...props}: AppDatePicker
     return (
         <AppLocalizationProvider>
                 <DatePicker
-                    value={dayjs(value)}
+                    value={dayjs(value) ?? null}
                     onChange={handleChange}
                     {...props}
                 />
