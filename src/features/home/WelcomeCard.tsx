@@ -27,7 +27,7 @@ export default function WelcomeCard() {
     return (
         <WanderCard sx={styles.card} elevation={5} background="noisePrimary">
             <Grid container spacing={2} alignItems="center" justifyContent="center">
-                <Grid item xs={12} md={12} lg={8} sm={12} justifyContent="center" display="flex" flexDirection="column" spacing={2}>
+                <Grid item xs={12} md={12} lg={8} sm={12} justifyContent="center" display="flex" flexDirection="column" >
                     <Typography variant="body1">{welcomeText}</Typography>
                     <SearchForm onSubmit={redirectToTripPlanner} mt={2} />
                 </Grid>

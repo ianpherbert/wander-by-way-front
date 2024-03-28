@@ -14,8 +14,8 @@ const defaultOptions: SearchOptions = {
     airport: true,
     train: true,
     city: true,
-    port: true,
-    bus: true,
+    // port: true,
+    // bus: true,
 }
 
 export type SearchFormType = {
@@ -142,7 +142,7 @@ export default function SearchForm({ onSubmit, defaultValues, ...props }: Search
         <form onSubmit={handleSubmit(doSubmit)}>
             <Box sx={styles.container} {...props}>
                 <WanderCard sx={styles.card} background="noiseGrey">
-                    <Grid container spacing={.5} pt={1} mb={1}>
+                    <Grid container spacing={1.5} pt={1} mb={1}>
                         <Grid item xs={12} sm={8}>
                             <SearchInput selectedItem={from} onSelect={setFormValue("from")} label={searchOptions.from} searchOptions={selectedOptions} fullWidth size="small" error={errors.from?.message} />
                         </Grid>
